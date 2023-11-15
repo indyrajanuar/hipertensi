@@ -1,4 +1,5 @@
 import streamlit as st
+import pandas as pd
 
 def main():
     st.title("Aplikasi Web Statis dengan Streamlit")
@@ -25,7 +26,14 @@ def show_home():
 
 def show_dataset():
     st.write("Halaman Dataset")
-    # Tambahkan konten sesuai dengan halaman Dataset
+
+    # Impor dataset dari file CSV
+    dataset_path = "path/to/your/dataset.csv"  # Gantilah dengan path sesuai dengan lokasi dataset Anda
+    df = pd.read_csv(dataset_path)
+
+    # Tampilkan dataset
+    st.write("Berikut adalah tampilan beberapa baris pertama dari dataset:")
+    st.dataframe(df.head())
 
 def show_preprocessing():
     st.write("Halaman Preprocessing")

@@ -8,7 +8,7 @@ from sklearn.metrics import accuracy_score, classification_report
 
 # Function to load dataset
 def load_dataset():
-    url = "https://example.com/path/to/your/dataset.csv"
+    url = "https://github.com/indyrajanuar/hipertensi/blob/main/datafix.csv"
     df = pd.read_csv(url)
     return df
 

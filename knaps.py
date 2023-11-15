@@ -1,34 +1,36 @@
-
 import streamlit as st
 import pandas as pd
+import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.neural_network import MLPClassifier
+from sklearn.metrics import accuracy_score, classification_report
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 
 # Function to load and preprocess dataset
 def load_and_preprocess_data():
     # Load dataset
-    url = "https://raw.githubusercontent.com/indyrajanuar/hipertensi/main/datafix.csv"
+    url = "url = "https://raw.githubusercontent.com/indyrajanuar/hipertensi/main/datafix.csv""
     df = pd.read_csv(url)
-    
-    # Clean data by removing categorical columns
-    # Assuming 'usia', 'sistole', 'diastole', 'nafas', 'detak_nadi' are non-categorical features
-    df_cleaned = df.drop(columns=['usia', 'sistole', 'diastole', 'nafas', 'detak nadi'])
+
+    # Clean data (handle missing values, outliers, etc.)
+    # Assume the target variable is in the 'target' column
+    df_cleaned = df.dropna()  # Replace with your cleaning process
 
     # Separate features and target
-    X = df_cleaned.drop(columns=['jenis kelamin', 'diagnosa'])
-    y = df_cleaned['diagnosa']
+    X = df_cleaned.drop(columns=['target'])
+    y = df_cleaned['target']
 
-    # Numeric features after removing categorical columns
-    numeric_features = X.columns.tolist()
+    # One-hot encoding for categorical variables
+    categorical_features = ['categorical_column']  # Replace with your categorical column names
+    numeric_features = [col for col in X.columns if col not in categorical_features]
 
     # Create transformers for preprocessing
     numeric_transformer = Pipeline(steps=[
         ('scaler', StandardScaler())
     ])
 
-    categorical_features = ['jenis_kelamin']
     categorical_transformer = Pipeline(steps=[
         ('onehot', OneHotEncoder(handle_unknown='ignore'))
     ])
@@ -43,50 +45,48 @@ def load_and_preprocess_data():
     # Split the data into training and testing sets
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-    # Apply preprocessing to the training set
-    X_train_processed = preprocessor.fit_transform(X_train)
+    return X_train, X_test, y_train, y_test, preprocessor
 
-    # Display the cleaned dataset after removing categorical columns
-    st.subheader("Cleaned Dataset (Categorical Columns Removed and One-Hot Encoded):")
-    st.dataframe(pd.DataFrame(X_train_processed, columns=numeric_features + preprocessor.transformers_[1][1]['onehot'].get_feature_names_out(categorical_features)))
-
-    return X_train, X_test, y_train, y_test, preprocessor, df_cleaned
-
-# ... (function for training and classification)
+# Function to train ERNN model
+def train_ernn(X_train, y_train):
+    # Create and train the ERNN model
+    mlp = MLPClassifier(
+        hidden_layer_sizes=(5,),
+        max_iter=1000,
+        learning_rate_init=0.1,
+        tol=0.0001,
+        random_state=42
+    )
+    
+    mlp.fit(X_train, y_train)
+    return mlp
 
 # Streamlit web app
 def main():
-    st.sidebar.title("Menu")
-    menu = st.sidebar.selectbox("Select Menu", ["Home", "Dataset", "Preprocessing", "Classification"])
+    st.title("Hipertensi Classification with ERNN")
 
-    if menu == "Home":
-        st.title("Home")
-        st.write("Deskripsi mengenai penyakit hipertensi.")
+    # Load and preprocess data
+    X_train, X_test, y_train, y_test, preprocessor = load_and_preprocess_data()
 
-    elif menu == "Dataset":
-        st.title("Dataset")
-        # Load and preprocess data
-        _, _, _, _, _, df_cleaned = load_and_preprocess_data()
+    # Apply preprocessing to the training and testing sets
+    X_train_processed = preprocessor.fit_transform(X_train)
+    X_test_processed = preprocessor.transform(X_test)
 
-        # Display cleaned dataset after removing categorical columns
-        st.dataframe(df_cleaned)
+    # Train ERNN model
+    ernn_model = train_ernn(X_train_processed, y_train)
 
-    elif menu == "Preprocessing":
-        st.title("Preprocessing")
-        # Load and preprocess data
-        _, _, _, _, _, _ = load_and_preprocess_data()
+    # Make predictions on the test set
+    y_pred = ernn_model.predict(X_test_processed)
 
-        # The cleaned dataset after removing categorical columns is displayed within the load_and_preprocess_data function
+    # Evaluate the model
+    accuracy = accuracy_score(y_test, y_pred)
+    report = classification_report(y_test, y_pred)
 
-    elif menu == "Classification":
-        st.title("Classification")
-        # Load and preprocess data
-        X_train, X_test, y_train, y_test, preprocessor, _ = load_and_preprocess_data()
-
-        # Apply preprocessing to the testing set
-        X_test_processed = preprocessor.transform(X_test)
-
-        # ... (classification code)
+    # Display results
+    st.write("Model Evaluation:")
+    st.write("Accuracy:", accuracy)
+    st.write("Classification Report:")
+    st.text(report)
 
 if __name__ == "__main__":
     main()

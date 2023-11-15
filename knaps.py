@@ -4,7 +4,7 @@ def main():
     st.title("Aplikasi Web Statis dengan Streamlit")
 
     # Membuat objek pilihan menu menggunakan st.sidebar.selectbox
-    choose = st.sidebar("Choose", ["Home", "Dataset", "Preprocessing", "Evaluasi", "Klasifikasi", "Help"])
+    choose = st.sidebar.selectbox("Choose", ["Home", "Dataset", "Preprocessing", "Evaluasi", "Klasifikasi", "Help"])
 
     if choose == "Home":
         show_home()

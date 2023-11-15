@@ -1,14 +1,8 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler, OneHotEncoder
-from sklearn.neural_network import MLPClassifier
-from sklearn.metrics import accuracy_score, classification_report
-from sklearn.compose import ColumnTransformer
-from sklearn.pipeline import Pipeline
 
-from streamlit_option_menu import option_menu  #pustaka yang memberikan fungsi tambahan untuk membuat menu pilihan dengan Streamlit
+#from streamlit_option_menu import option_menu  #pustaka yang memberikan fungsi tambahan untuk membuat menu pilihan dengan Streamlit
 with st.sidebar: #Fungsi tersebut menghasilkan objek pilihan menu
     choose = option_menu("Linear Regression (Polynomial)", ["Home", "Dataset", "Prepocessing", "Predict", "Help"],
                              icons=['house', 'table', 'cloud-upload', 'boxes','check2-circle'],

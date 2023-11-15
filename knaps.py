@@ -41,13 +41,38 @@ def show_dataset():
     df = shuffle_dataset(df)
 
     # Tampilkan dataset setelah diacak
-    st.write("Berikut adalah tampilan beberapa baris pertama dari dataset setelah diacak:")
+    #st.write("Berikut adalah tampilan beberapa baris pertama dari dataset setelah diacak:")
     st.dataframe(df)
 
+# Fungsi untuk preprocessing data (menghapus data kategorikal pada fitur tertentu)
+def preprocess_data(df):
+    # Gantilah 'usia', 'sistole', 'diastole', 'nafas', 'detak nadi' dengan fitur yang sesuai dalam dataset Anda
+    numerical_features = ['usia', 'sistole', 'diastole', 'nafas', 'detak nadi']
+    
+    # Menghapus data kategorikal pada fitur tertentu
+    df_cleaned = df.dropna(subset=numerical_features)
+    
+    return df_cleaned
+
+# Fungsi untuk menampilkan halaman preprocessing
 def show_preprocessing():
     st.write("Halaman Preprocessing")
-    # Tambahkan konten sesuai dengan halaman Preprocessing
 
+    # Impor dataset dari file CSV
+    dataset_path = "https://raw.githubusercontent.com/indyrajanuar/hipertensi/main/datafix.csv"  # Gantilah dengan path sesuai dengan lokasi dataset Anda
+    df = pd.read_csv(dataset_path)
+
+    # Menampilkan dataset sebelum preprocessing
+    st.write("Berikut adalah tampilan beberapa baris pertama dari dataset sebelum preprocessing:")
+    st.dataframe(df)
+
+    # Preprocessing data (menghapus data kategorikal pada fitur tertentu)
+    df = preprocess_data(df)
+
+    # Menampilkan dataset setelah preprocessing
+    st.write("Berikut adalah tampilan beberapa baris pertama dari dataset setelah preprocessing:")
+    st.dataframe(df)
+    
 def show_evaluasi():
     st.write("Halaman Evaluasi")
     # Tambahkan konten sesuai dengan halaman Evaluasi

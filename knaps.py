@@ -64,14 +64,20 @@ def show_preprocessing():
 
     # Menampilkan dataset sebelum preprocessing
     st.write("Berikut adalah tampilan beberapa baris pertama dari dataset sebelum preprocessing:")
-    st.dataframe(df)
+    st.dataframe(df.head())
 
     # Preprocessing data (menghapus data kategorikal pada fitur tertentu)
     df_cleaned = preprocess_data(df)
 
     # Menampilkan dataset setelah preprocessing
     st.write("Berikut adalah tampilan beberapa baris pertama dari dataset setelah preprocessing:")
-    st.dataframe(df_cleaned)
+    st.dataframe(df_cleaned.head())
+
+# Fungsi-fungsi lainnya (seperti show_home, show_dataset, dll.) tidak berubah
+
+if __name__ == "__main__":
+    main()
+
     
 def show_evaluasi():
     st.write("Halaman Evaluasi")

@@ -44,25 +44,21 @@ def classify(X_train, X_test, y_train, y_test):
 
 # Streamlit web app
 def main():
-    st.title("Hipertensi Classification App")
-
-    # Create a sidebar menu
+    st.sidebar.title("Menu")
     menu = ["Home", "Import Dataset", "Preprocessing", "Classification"]
     choice = st.sidebar.selectbox("Select Menu", menu)
 
-    # Home page
     if choice == "Home":
+        st.title("Home")
         st.write("Welcome to the Hipertensi Classification App. Use the sidebar to navigate.")
 
-    # Import Dataset page
     elif choice == "Import Dataset":
-        st.subheader("Import Dataset")
+        st.title("Import Dataset")
         df = load_dataset()
         st.dataframe(df)
 
-    # Preprocessing page
     elif choice == "Preprocessing":
-        st.subheader("Preprocessing")
+        st.title("Preprocessing")
         df = load_dataset()
         X_train, X_test, y_train, y_test, scaler = preprocess_data(df)
 
@@ -70,9 +66,8 @@ def main():
         st.write("X_train shape:", X_train.shape)
         st.write("X_test shape:", X_test.shape)
 
-    # Classification page
     elif choice == "Classification":
-        st.subheader("Classification")
+        st.title("Classification")
         df = load_dataset()
         X_train, X_test, y_train, y_test, scaler = preprocess_data(df)
         model, accuracy, report = classify(X_train, X_test, y_train, y_test)
@@ -82,18 +77,14 @@ def main():
         st.write("Classification Report:")
         st.text(report)
 
-        # Input form for prediction
         st.subheader("Make Prediction")
         input_data = []
         for i in range(7):
             input_data.append(st.number_input(f"Input Feature {i+1}"))
 
         input_data = np.array(input_data).reshape(1, -1)
-
-        # Standardize input features
         input_data = scaler.transform(input_data)
 
-        # Make prediction
         prediction = model.predict(input_data)
 
         st.write("Prediction:", prediction[0])

@@ -28,7 +28,7 @@ def show_dataset():
     st.write("Halaman Dataset")
 
     # Impor dataset dari file CSV
-    dataset_path = "path/to/your/dataset.csv"  # Gantilah dengan path sesuai dengan lokasi dataset Anda
+    dataset_path = "https://raw.githubusercontent.com/indyrajanuar/hipertensi/main/datafix.csv"  # Gantilah dengan path sesuai dengan lokasi dataset Anda
     df = pd.read_csv(dataset_path)
 
     # Tampilkan dataset

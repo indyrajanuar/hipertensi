@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import numpy as np
 
 def main():
     st.title("Aplikasi Web Statis dengan Streamlit")
@@ -24,6 +25,11 @@ def show_home():
     st.write("Selamat datang di halaman Home!")
     # Tambahkan konten sesuai dengan halaman Home
 
+# Fungsi untuk mengacak dataset
+def shuffle_dataset(df):
+    return df.sample(frac=1, random_state=42).reset_index(drop=True)
+
+# Fungsi untuk menampilkan dataset dari CSV
 def show_dataset():
     st.write("Halaman Dataset")
 
@@ -31,8 +37,11 @@ def show_dataset():
     dataset_path = "https://raw.githubusercontent.com/indyrajanuar/hipertensi/main/datafix.csv"  # Gantilah dengan path sesuai dengan lokasi dataset Anda
     df = pd.read_csv(dataset_path)
 
-    # Tampilkan dataset
-    st.write("Berikut adalah tampilan beberapa baris pertama dari dataset:")
+    # Mengacak dataset secara otomatis saat halaman dimuat
+    df = shuffle_dataset(df)
+
+    # Tampilkan dataset setelah diacak
+    st.write("Berikut adalah tampilan beberapa baris pertama dari dataset setelah diacak:")
     st.dataframe(df)
 
 def show_preprocessing():

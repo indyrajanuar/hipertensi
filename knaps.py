@@ -45,19 +45,18 @@ def classify(X_train, X_test, y_train, y_test):
 # Streamlit web app
 def main():
     st.sidebar.title("Menu")
-    menu = ["Home", "Import Dataset", "Preprocessing", "Classification"]
-    choice = st.sidebar.selectbox("Select Menu", menu)
+    menu = st.sidebar.selectbox("Select Menu", ["Home", "Import Dataset", "Preprocessing", "Classification"])
 
-    if choice == "Home":
+    if menu == "Home":
         st.title("Home")
-        st.write("Welcome to the Hipertensi Classification App. Use the sidebar to navigate.")
+        st.write("Welcome to the Hipertensi Classification App. Use the menu to navigate.")
 
-    elif choice == "Import Dataset":
+    elif menu == "Import Dataset":
         st.title("Import Dataset")
         df = load_dataset()
         st.dataframe(df)
 
-    elif choice == "Preprocessing":
+    elif menu == "Preprocessing":
         st.title("Preprocessing")
         df = load_dataset()
         X_train, X_test, y_train, y_test, scaler = preprocess_data(df)
@@ -66,7 +65,7 @@ def main():
         st.write("X_train shape:", X_train.shape)
         st.write("X_test shape:", X_test.shape)
 
-    elif choice == "Classification":
+    elif menu == "Classification":
         st.title("Classification")
         df = load_dataset()
         X_train, X_test, y_train, y_test, scaler = preprocess_data(df)

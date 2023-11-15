@@ -19,8 +19,8 @@ def load_and_preprocess_data():
     df_cleaned = df.dropna()  # Replace with your cleaning process
 
     # Separate features and target
-    X = df_cleaned.drop(columns=['target'])
-    y = df_cleaned['target']
+    X = df_cleaned.drop(columns=['diagnosa'])
+    y = df_cleaned['diagnosa']
 
     # One-hot encoding for categorical variables
     categorical_features = ['categorical_column']  # Replace with your categorical column names

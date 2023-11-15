@@ -33,7 +33,7 @@ def show_dataset():
 
     # Tampilkan dataset
     st.write("Berikut adalah tampilan beberapa baris pertama dari dataset:")
-    st.dataframe(df.head())
+    st.dataframe(df)
 
 def show_preprocessing():
     st.write("Halaman Preprocessing")

@@ -12,7 +12,12 @@ from sklearn.pipeline import Pipeline
 def load_and_preprocess_data():
     # Load dataset
     url = "https://github.com/indyrajanuar/hipertensi/blob/main/datafix.csv"
-    df = pd.read_csv(url)
+    
+    try:
+        df = pd.read_csv(url)
+    except Exception as e:
+        st.error(f"Error reading dataset: {e}")
+        return None, None, None, None, None, None
 
     # Clean data (handle missing values, outliers, etc.)
     # Assume the target variable is in the 'target' column

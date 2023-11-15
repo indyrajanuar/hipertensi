@@ -1,57 +1,116 @@
+
 import streamlit as st
 import pandas as pd
 import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.neural_network import MLPClassifier
+from sklearn.metrics import accuracy_score, classification_report
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
 
-#from streamlit_option_menu import option_menu  #pustaka yang memberikan fungsi tambahan untuk membuat menu pilihan dengan Streamlit
-with st.sidebar: #Fungsi tersebut menghasilkan objek pilihan menu
-    choose = option_menu("Linear Regression (Polynomial)", ["Home", "Dataset", "Prepocessing", "Predict", "Help"],
-                             icons=['house', 'table', 'cloud-upload', 'boxes','check2-circle'],
-                             menu_icon="app-indicator", default_index=0,
-                             styles={
-            "container": {"padding":"5!important", "background-color": "10A19D"}, #Mengatur tampilan kontainer (wadah) dari menu pilihan
-            "icon": {"color": "blue", "font-size": "25px"},  #Mengatur tampilan ikon dalam menu pilihan. Properti "color" mengatur warna ikon. Properti "font-size" mengatur ukuran font ikon.
-            "nav-link": {"font-size": "16px", "text-align": "left", "margin":"0px", "--hover-color": "#eee"}, #Mengatur tampilan tautan dalam menu pilihan
-            "nav-link-selected": {"background-color": "#00FFFF"}, #Mengatur tampilan tautan yang dipilih dalam menu pilihan
-        }
-        )
-if choose=='Home':
-    st.markdown('<h1 style = "text-align: center;"> Prediksi Harga Rumah</h1>', unsafe_allow_html = True)
-    logo = Image.open('makam1.jpg')
+# Function to load and preprocess dataset
+def load_and_preprocess_data():
+    # Load dataset
+    url = "https://raw.githubusercontent.com/indyrajanuar/hipertensi/main/datafix.csv"
+    df = pd.read_csv(url)
 
-    st.image(logo, use_column_width=True, caption='Rumah di Jaksel') #mengatur lebar gambar agar sesuai dengan lebar kolom
-    st.write('<p style = "text-align: justify;">Rumah merupakan salah satu kebutuhan pokok manusia, selain sandang dan pangan, rumah juga berfungsi sebagai tempat tinggal dan berfungsi untuk melindungi dari gangguan iklim dan makhluk hidup lainnya. Tak kalah buruknya dengan emas, rumah pun bisa dijadikan sebagai sarana investasi masa depan karena pergerakan harga yang berubah dari waktu ke waktu, dan semakin banyak orang yang membutuhkan hunian selain kedekatan dengan tempat kerja, pusat perkantoran dan pusat bisnis, transportasi. dll tentunya akan cepat mempengaruhi harga rumah tersebut.</p>', unsafe_allow_html = True)
-    st.write('<p style = "text-align: justify;">Dalam proyek ini, kami mengembangkan sebuah sistem untuk memprediksi harga rumah berdasarkan parameter luas tanah dan luas bangunan, dan output yang dihasilkan adalah prediksi harga rumah. Kami menggunakan metode regresi linear dengan fitur ekspansi (expand feature) dan melatih model menggunakan metode Stochastic Gradient Descent. Untuk mengevaluasi model, kami menggunakan metrik MSE, RMSE, dan R (Square).Diharapkan dengan adanya sistem ini, dapat membantu dalam memprediksi harga rumah sesuai dengan luas tanah dan luas bangunan yang diinginkan.</p>', unsafe_allow_html = True)
-    st.write(" ")
-    st.write(" ")
-    st.write(" ")
-    st.write(" ")
-    st.write(" ")
-    st.write(" ")
-    st.write(" ")
-    st.write(" ")
-    st.write(" ")
-    st.write(" ")
-    st.write(" ")
-    st.write(" ")
-    st.write(" ")
-    st.write(" ")
-    st.write("Dr. Indah Agustien Siradjuddin,S.Kom.,M.Kom")
+    # Clean data (handle missing values, outliers, etc.)
+    # Assume the target variable is in the 'target' column
+    df_cleaned = df.dropna()  # Replace with your cleaning process
 
-elif choose=='Dataset':
-    st.markdown('<h1 style = "text-align: center;"> Data Harga Rumah </h1>', unsafe_allow_html = True) #untuk menentukan apakah Streamlit harus mengizinkan HTML dalam teks Markdown
-    df = pd.read_csv('https://raw.githubusercontent.com/indyrajanuar/hipertensi/main/datafix.csv')
-    df
-    st.markdown('<h1 style = "text-align: center;"> Fitur Dataset: </h1><ol type = "1" style = "text-align: justify; background-color: #00FFFF; padding: 30px; border-radius: 20px;"><p>Dataset ini diambil dari kaggle.com</p><li><i><b>HARGA</b></i> = harga dari rumah</li><li><i><b>LT</b></i> = Jumlah Luas Tanah</li><li><i><b>LB</b></i> = Jumlah Luas Bangunan</li><li><i><b>JKT</b></i> = Jumlah Kamar Tidur</li><li><i><b>JKM</b></i> = Jumlah Kamar Mandi</li><li><i><b>GRS</b></i> = Ada / Tidak Ada</li></ol>', unsafe_allow_html = True)
+    # Separate features and target
+    X = df_cleaned.drop(columns=['diagnosa'])
+    y = df_cleaned['diagnosa']
 
-elif choose=='Prepocessing':
-    st.markdown('<h1 style = "text-align: center;"> Prediksi Harga Rumah</h1>', unsafe_allow_html = True)
+    # One-hot encoding for categorical variables
+    categorical_features = ['categorical_column']  # Replace with your categorical column names
+    numeric_features = [col for col in X.columns if col not in categorical_features]
+
+    # Create transformers for preprocessing
+    numeric_transformer = Pipeline(steps=[
+        ('scaler', StandardScaler())
+    ])
+
+    categorical_transformer = Pipeline(steps=[
+        ('onehot', OneHotEncoder(handle_unknown='ignore'))
+    ])
+
+    # Combine transformers using ColumnTransformer
+    preprocessor = ColumnTransformer(
+        transformers=[
+            ('num', numeric_transformer, numeric_features),
+            ('cat', categorical_transformer, categorical_features)
+        ])
+
+    # Split the data into training and testing sets
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+    return X_train, X_test, y_train, y_test, preprocessor, df_cleaned
+
+# Function to train ERNN model
+def train_ernn(X_train, y_train):
+    # Create and train the ERNN model
+    mlp = MLPClassifier(
+        hidden_layer_sizes=(5,),
+        max_iter=1000,
+        learning_rate_init=0.1,
+        tol=0.0001,
+        random_state=42
+    )
     
-elif choose=='Predict':
-    st.markdown('<h1 style = "text-align: center;"> Prediksi Harga Rumah</h1>', unsafe_allow_html = True)
-    
-elif choose == 'Help':
-    st.markdown('<h1 style="text-align: center;"> Panduan : </h1><ol type="1" style="text-align: justify; background-color: #00FFFF; padding: 30px; border-radius: 20px;"><li><i><b>Cara View Dataset</b></i> <ol type="a"><li>Masuk ke sistem</li><li>Pilih menu dataset</li></ol></li><li><i><b>Cara Prediksi Harga</b></i> <ol type="a"><li>Pilih menu predict</li><li>Pilih LT dan LB</li><li>Klik tombol prediksi</li></ol></li></ol>', unsafe_allow_html=True)
+    mlp.fit(X_train, y_train)
+    return mlp
 
-# Menjalankan aplikasi Streamlit
+# Streamlit web app
+def main():
+    st.sidebar.title("Menu")
+    menu = st.sidebar.selectbox("Select Menu", ["Home", "Dataset", "Preprocessing", "Classification"])
+
+    if menu == "Home":
+        st.title("Home")
+        st.write("Deskripsi mengenai penyakit hipertensi.")
+
+    elif menu == "Dataset":
+        st.title("Dataset")
+        # Load and preprocess data
+        _, _, _, _, _, df_cleaned = load_and_preprocess_data()
+
+        # Display dataset
+        st.dataframe(df_cleaned)
+
+    elif menu == "Preprocessing":
+        st.title("Preprocessing")
+        # Load and preprocess data
+        X_train, _, _, _, _, _ = load_and_preprocess_data()
+
+        st.write("Dataset after Preprocessing:")
+        st.write("X_train shape:", X_train.shape)
+
+    elif menu == "Classification":
+        st.title("Classification")
+        # Load and preprocess data
+        X_train, X_test, y_train, y_test, preprocessor, _ = load_and_preprocess_data()
+
+        # Apply preprocessing to the training and testing sets
+        X_train_processed = preprocessor.fit_transform(X_train)
+        X_test_processed = preprocessor.transform(X_test)
+
+        # Train ERNN model
+        ernn_model = train_ernn(X_train_processed, y_train)
+
+        # Make predictions on the test set
+        y_pred = ernn_model.predict(X_test_processed)
+
+        # Evaluate the model
+        accuracy = accuracy_score(y_test, y_pred)
+        report = classification_report(y_test, y_pred)
+
+        # Display results
+        st.write("Model Evaluation:")
+        st.write("Accuracy:", accuracy)
+        st.write("Classification Report:")
+        st.text(report)
+
 if __name__ == "__main__":
     main()

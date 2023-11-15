@@ -73,12 +73,6 @@ def show_preprocessing():
     st.write("Berikut adalah tampilan beberapa baris pertama dari dataset setelah preprocessing:")
     st.dataframe(df_cleaned.head())
 
-# Fungsi-fungsi lainnya (seperti show_home, show_dataset, dll.) tidak berubah
-
-if __name__ == "__main__":
-    main()
-
-    
 def show_evaluasi():
     st.write("Halaman Evaluasi")
     # Tambahkan konten sesuai dengan halaman Evaluasi

@@ -67,11 +67,11 @@ def show_preprocessing():
     st.dataframe(df)
 
     # Preprocessing data (menghapus data kategorikal pada fitur tertentu)
-    df = preprocess_data(df)
+    df_cleaned = preprocess_data(df)
 
     # Menampilkan dataset setelah preprocessing
     st.write("Berikut adalah tampilan beberapa baris pertama dari dataset setelah preprocessing:")
-    st.dataframe(df)
+    st.dataframe(df_cleaned)
     
 def show_evaluasi():
     st.write("Halaman Evaluasi")

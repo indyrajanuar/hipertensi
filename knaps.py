@@ -10,19 +10,14 @@ from sklearn.pipeline import Pipeline
 def load_and_preprocess_data():
     # Load dataset
     url = "https://raw.githubusercontent.com/indyrajanuar/hipertensi/main/datafix.csv"
+    df = pd.read_csv(url)
     
-    try:
-        df = pd.read_csv(url)
-    except Exception as e:
-        st.error(f"Error reading dataset: {e}")
-        return None, None, None, None, None, None
-
     # Clean data by removing categorical columns
     # Assuming 'usia', 'sistole', 'diastole', 'nafas', 'detak_nadi' are non-categorical features
-    df_cleaned = df.drop(columns=['usia', 'sistole', 'diastole', 'nafas', 'detak_nadi'])
+    df_cleaned = df.drop(columns=['usia', 'sistole', 'diastole', 'nafas', 'detak nadi'])
 
     # Separate features and target
-    X = df_cleaned.drop(columns=['jenis_kelamin', 'diagnosa'])
+    X = df_cleaned.drop(columns=['jenis kelamin', 'diagnosa'])
     y = df_cleaned['diagnosa']
 
     # Numeric features after removing categorical columns

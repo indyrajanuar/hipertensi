@@ -1,186 +1,181 @@
-import streamlit as st
-import pandas as pd
-import numpy as np
-#import matplotlib.pyplot as plt
-from PIL import Image
-from collections import OrderedDict
-
-#Metrics
-from sklearn.metrics import make_scorer, accuracy_score,precision_score
-from sklearn.metrics import classification_report
-from sklearn.metrics import confusion_matrix
-from sklearn.metrics import accuracy_score ,precision_score,recall_score,f1_score
-
-#Model Select
-from sklearn.model_selection import KFold,train_test_split,cross_val_score
-from sklearn.ensemble import RandomForestClassifier
+import streamlit as st #import modul Streamlit yang digunakan untuk membangun antarmuka pengguna
+import pandas as pd #import modul pandas yang digunakan untuk analisis data
+import numpy as np #import modul numpy
+import pickle #import modul pickle yang digunakan untuk serialisasi dan deserialisasi objek Python
+from PIL import Image  #import kelas Image dari modul PIL (Python Imaging Library) yang digunakan untuk memanipulasi gambar
+from streamlit_option_menu import option_menu  #pustaka yang memberikan fungsi tambahan untuk membuat menu pilihan dengan Streamlit
+from linear_regression_model import LinearRegression
+from sklearn.preprocessing import PolynomialFeatures
 from sklearn.model_selection import train_test_split
-from sklearn.linear_model import  LogisticRegression
-from sklearn.ensemble import RandomForestClassifier
-from sklearn import linear_model
-from sklearn.linear_model import SGDClassifier
-from sklearn.tree import DecisionTreeClassifier 
-from sklearn import svm
-from sklearn import metrics 
+from sklearn.metrics import mean_absolute_percentage_error #untuk menghitung dan mengukur tingkat kesalahan (eror) prediksi Anda.
 
-st.title(' Aplikasi Web Data Mining')
-st.write("""
-### Klasifikasi tingkat kematian gagal jantung menggunakan Metode Decision tree, Random forest, dan SVM
-""")
-st.write('## 1. Introduction')
-st.write('Gagal Jantung adalah kondisi ketika otot jantung tidak dapat memompa darah sebagaimana mestinya untuk memenuhi kebutuhan tubuh. Darah merupakan cairan terpenting yang beredar ke seluruh tubuh dengan menyuplai oksigen ke seluruh bagian tubuh. Penyakit kardiovaskular (CVDs) adalah penyebab kematian nomor 1 secara global, merenggut sekitar 17,9 juta nyawa setiap tahun, yang merupakan 31% dari semua kematian di seluruh dunia. Ancaman masalah kardiovaskular yang terus-menerus ini telah meningkat karena pilihan gaya hidup yang buruk seiring dengan sikap acuh tak acuh terhadap kesehatan. Dengan sebagian besar orang berjuang dengan masalah mental, kebiasaan seperti penggunaan tembakau, pola makan yang tidak sehat dan obesitas, ketidakaktifan fisik dan penggunaan alkohol yang berbahaya telah dilakukan oleh populasi massal. Oleh karena itu, orang yang memiliki risiko kardiovaskular tinggi memerlukan deteksi dan manajemen dini di mana model pembelajaran mesin dapat sangat membantu!')
+with st.sidebar: #Fungsi tersebut menghasilkan objek pilihan menu
+    choose = option_menu("Linear Regression (Polynomial)", ["Home", "Dataset", "Prepocessing", "Predict", "Help"],
+                             icons=['house', 'table', 'cloud-upload', 'boxes','check2-circle'],
+                             menu_icon="app-indicator", default_index=0,
+                             styles={
+            "container": {"padding":"5!important", "background-color": "10A19D"}, #Mengatur tampilan kontainer (wadah) dari menu pilihan
+            "icon": {"color": "blue", "font-size": "25px"},  #Mengatur tampilan ikon dalam menu pilihan. Properti "color" mengatur warna ikon. Properti "font-size" mengatur ukuran font ikon.
+            "nav-link": {"font-size": "16px", "text-align": "left", "margin":"0px", "--hover-color": "#eee"}, #Mengatur tampilan tautan dalam menu pilihan
+            "nav-link-selected": {"background-color": "#00FFFF"}, #Mengatur tampilan tautan yang dipilih dalam menu pilihan
+        }
+        )
+if choose=='Home':
+    st.markdown('<h1 style = "text-align: center;"> Prediksi Harga Rumah</h1>', unsafe_allow_html = True)
+    logo = Image.open('makam1.jpg')
 
-st.sidebar.write("""
-            ### Pilih Metode yang anda inginkan :"""
-            )
-algoritma=st.sidebar.selectbox(
-    'Pilih', ('Decision Tree','Random Forest','SVM')
-)
+    st.image(logo, use_column_width=True, caption='Rumah di Jaksel') #mengatur lebar gambar agar sesuai dengan lebar kolom
+    st.write('<p style = "text-align: justify;">Rumah merupakan salah satu kebutuhan pokok manusia, selain sandang dan pangan, rumah juga berfungsi sebagai tempat tinggal dan berfungsi untuk melindungi dari gangguan iklim dan makhluk hidup lainnya. Tak kalah buruknya dengan emas, rumah pun bisa dijadikan sebagai sarana investasi masa depan karena pergerakan harga yang berubah dari waktu ke waktu, dan semakin banyak orang yang membutuhkan hunian selain kedekatan dengan tempat kerja, pusat perkantoran dan pusat bisnis, transportasi. dll tentunya akan cepat mempengaruhi harga rumah tersebut.</p>', unsafe_allow_html = True)
+    st.write('<p style = "text-align: justify;">Dalam proyek ini, kami mengembangkan sebuah sistem untuk memprediksi harga rumah berdasarkan parameter luas tanah dan luas bangunan, dan output yang dihasilkan adalah prediksi harga rumah. Kami menggunakan metode regresi linear dengan fitur ekspansi (expand feature) dan melatih model menggunakan metode Stochastic Gradient Descent. Untuk mengevaluasi model, kami menggunakan metrik MSE, RMSE, dan R (Square).Diharapkan dengan adanya sistem ini, dapat membantu dalam memprediksi harga rumah sesuai dengan luas tanah dan luas bangunan yang diinginkan.</p>', unsafe_allow_html = True)
+    st.write(" ")
+    st.write(" ")
+    st.write(" ")
+    st.write(" ")
+    st.write(" ")
+    st.write(" ")
+    st.write(" ")
+    st.write(" ")
+    st.write(" ")
+    st.write(" ")
+    st.write(" ")
+    st.write(" ")
+    st.write(" ")
+    st.write(" ")
+    st.write("Dr. Indah Agustien Siradjuddin,S.Kom.,M.Kom")
 
-st.write('## 2. About Dataset (Heart Failure)')
-data_hf = pd.read_csv("https://raw.githubusercontent.com/ranianuraini/datminweb/main/fetal_health.csv")
-st.write("Dataset Heart Failure : (https://raw.githubusercontent.com/ranianuraini/datminweb/main/fetal_health.csv) ", data_hf)
+elif choose=='Dataset':
+    st.markdown('<h1 style = "text-align: center;"> Data Harga Rumah </h1>', unsafe_allow_html = True) #untuk menentukan apakah Streamlit harus mengizinkan HTML dalam teks Markdown
+    df = pd.read_csv('https://raw.githubusercontent.com/Shintaalya/repo/main/HARGA%20RUMAH%20JAKSEL.csv')
+    df
+    st.markdown('<h1 style = "text-align: center;"> Fitur Dataset: </h1><ol type = "1" style = "text-align: justify; background-color: #00FFFF; padding: 30px; border-radius: 20px;"><p>Dataset ini diambil dari kaggle.com</p><li><i><b>HARGA</b></i> = harga dari rumah</li><li><i><b>LT</b></i> = Jumlah Luas Tanah</li><li><i><b>LB</b></i> = Jumlah Luas Bangunan</li><li><i><b>JKT</b></i> = Jumlah Kamar Tidur</li><li><i><b>JKM</b></i> = Jumlah Kamar Mandi</li><li><i><b>GRS</b></i> = Ada / Tidak Ada</li></ol>', unsafe_allow_html = True)
 
-st.write('Dataset Description :')
-st.write('1. baseline_value: Baseline Fetal Heart Rate (FHR)')
-st.write('2. accelerations: Number of accelerations per second')
-st.write('3. fetal_movement: Number of fetal movements per second')
-st.write('4. uterine_contractions: Number of uterine contractions per second')
-st.write('5. light_decelerations: Number of LDs per second')
-st.write('6. severe_decelerations: Number of SDs per second')
-st.write('7. prolongued_decelerations: Number of PDs per second')
-st.write('8. abnormal_short_term_variability: Percentage of time with abnormal short term variability')
-st.write('9. mean_value_of_short_term_variability: Mean value of short term variability')
-st.write('10. spercentage_of_time_with_abnormal_long_term_variabilityex: Percentage of time with abnormal long term variability')
+elif choose=='Prepocessing':
+    st.markdown('<h1 style = "text-align: center;"> Prediksi Harga Rumah</h1>', unsafe_allow_html = True)
+    st.write("Dari 7 Fitur")
+    logo = Image.open('dataset.png')
+    st.image(logo, caption='')
+    st.write(" ")
+    st.write(" ")
+    st.write(" ")
+    st.write("Diseleksi menjadi 2 Fitur")
+    logo = Image.open('dataset2.png')
+    st.image(logo, caption='')
+    st.write("Berdasarkan garis lurus atau linearnya")
+    logo = Image.open('dataset3.png')
+    st.image(logo, caption='')
+elif choose=='Predict':
+    st.markdown('<h1 style = "text-align: center;"> Prediksi Harga Rumah</h1>', unsafe_allow_html = True)
+    logo = Image.open('eror.png')
+    st.image(logo, caption='')
+    import urllib.request
 
-st.write('Jumlah baris dan kolom :', data_hf.shape)
+    # Mendownload file model.pkl
+    url = 'https://raw.githubusercontent.com/Shintaalya/repo/main/model.pkl'
+    filename = 'model.pkl'  # Nama file yang akan disimpan secara sementara
+    urllib.request.urlretrieve(url, filename)
+    
+    # Load the model
+    with open('model.pkl','rb') as file:
+        model_data = pickle.load(file) #Menggunakan modul pickle, data yang ada di dalam file 'model.pkl' dibaca dan dimuat ke dalam variabel model_data.
+        model = model_data['model'] #Variabel model diisi dengan nilai dari kunci 'model' yang ada di dalam model_data
+        X_train_expanded = model_data['X_train_expanded'] #Variabel X_train_expanded diisi dengan nilai dari kunci 'X_train_expanded' yang ada di dalam model_data.mendapatkan data latihan yang telah diperluas (expanded)
+        y_train_mean = model_data['y_train_mean'] #untuk mendapatkan nilai rata-rata dari data latihan
+        y_train_std = model_data['y_train_std'] #untuk mendapatkan standar deviasi dari data latih
+        best_X_train = model_data['best_X_train'] #untuk mendapatkan data latih terbaik
+        best_y_train = model_data['best_y_train'] #untuk mendapatkan target data latih terbaik
+        coef = model_data['coef']
+        intercept = model_data['intercept']
 
-X=data_hf.iloc[:,0:12].values 
-y=data_hf.iloc[:,12].values
+    # Function to normalize input data
+    def normalize_input_data(data): #memiliki satu parameter data.akan menerima data input yang ingin dinormalisasi
+        normalized_data = (data - np.mean(best_X_train, axis=0)) / np.std(best_X_train, axis=0) 
+        #Normalisasi dengan mengurangi rata-rata dari best_X_train dari setiap nilai dalam data, dan kemudian membaginya dengan standar deviasi dari best_X_train
+        return normalized_data #mengembalikan normalized_data sebagai hasil normalisasi.
+    
+    # Function to expand input features
+    def expand_input_features(data): #data input yang ingin diperluas fiturnya.
+        normalized_data = normalize_input_data(data) #Fungsi ini melakukan normalisasi terhadap data input dengan mengurangi rata-rata dari best_X_train dan membaginya dengan standar deviasi dari best_X_train
+        expanded_data = model.expand_features(normalized_data, degree=2) #Fungsi ini mengembangkan fitur input dengan menggunakan ekspansi polinomial dengan derajat 2.
+        return expanded_data #Hasil ekspansi fitur disimpan dalam variabel expanded_data kemudian expanded_data dikembalikan sebagai hasil dari fungsi
+    
+    # Function to denormalize predicted data
+    def denormalize_data(data): #mengalikan data dengan y_train_std/standar deviasi dari data latih yang digunakan dalam normalisasi
+        denormalized_data = (data * y_train_std) + y_train_mean # hasil perkalian tersebut ditambahkan dengan y_train_mean/nilai rata-rata dari data latih yang digunakan dalam normalisasi.
+        return denormalized_data #mengembalikan data yang telah dinormalisasi ke bentuk semula sebelum normalisasi dilakukan
 
-st.write('Jumlah kelas : ', len(np.unique(y)))
+    def linear_regression_polynomial_formula(coefficients):
+        n = len(coefficients)
+        polynomial = ""
+    
+        for i in range(n):
+            power = n - i - 1
+            coefficient = coefficients[i]
+    
+            if power > 1:
+                term = f"{coefficient} * X^{power}"
+            elif power == 1:
+                term = f"{coefficient} * X"
+            else:
+                term = f"{coefficient}"
+    
+            if coefficient >= 0 and i > 0:
+                polynomial += " + " + term
+            else:
+                polynomial += term
 
-from sklearn.preprocessing import LabelEncoder
-le = LabelEncoder()
-y = le.fit_transform(y)
+        return polynomial
 
+    def main():
+        st.title("Rumus Linear Regression dengan Polynomial")
+        st.write("y = w0 + w1X + w2X^2 + ... + wn*X^n")
+        st.write(coef)
+        st.write(intercept)
+    
+        # Definisikan koefisien-koefisien polynomial dari model Linear Regression
+        coefficients = [2, -1, 3]  # Ganti dengan koefisien-koefisien yang diinginkan
+    
+        result = linear_regression_polynomial_formula(coefficients)
+    
+        # Menampilkan rumus Linear Regression dengan Polynomial
+        st.write(f"y = {result}")
+    
+        # Tambahkan fitur untuk menampilkan rumus/model Linear Regression dengan Polynomial di sini
+    
+    if __name__ == "__main__":
+        main()
 
-#Train and Test split
-X_train,X_test,y_train,y_test=train_test_split(X,y,test_size=0.3,random_state=0)
+    # Streamlit app code
+    def main():
+        st.title('Prediksi Harga Rumah')
+    
+        # Input form #digunakan untuk membuat field input teks di mana pengguna dapat memasukkan nilai
+        input_data_1 = st.text_input('Luas Tanah', '100')
+        input_data_2 = st.text_input('Luas Bangunan', '200')
+    
+        # Check if input values are numeric
+        if not input_data_1.isnumeric() or not input_data_2.isnumeric():
+            st.error('Please enter numeric values for the input features.')
+            return
+        
+        # Convert input values to float
+        input_feature_1 = float(input_data_1)
+        input_feature_2 = float(input_data_2)
+    
+        # Normalize and expand input features
+        input_features = np.array([[input_feature_1, input_feature_2]])
+        expanded_input = expand_input_features(input_features)
+    
+        # Perform prediction
+        normalized_prediction = model.predict(expanded_input)
+        prediction = denormalize_data(normalized_prediction)
+    
+        # Display the prediction
+        st.subheader('Hasil Prediksi')
+        st.write(prediction[0])
+    
+elif choose == 'Help':
+    st.markdown('<h1 style="text-align: center;"> Panduan : </h1><ol type="1" style="text-align: justify; background-color: #00FFFF; padding: 30px; border-radius: 20px;"><li><i><b>Cara View Dataset</b></i> <ol type="a"><li>Masuk ke sistem</li><li>Pilih menu dataset</li></ol></li><li><i><b>Cara Prediksi Harga</b></i> <ol type="a"><li>Pilih menu predict</li><li>Pilih LT dan LB</li><li>Klik tombol prediksi</li></ol></li></ol>', unsafe_allow_html=True)
 
-# Decision Tree
-decision_tree = DecisionTreeClassifier() 
-decision_tree.fit(X_train, y_train)  
-Y_pred = decision_tree.predict(X_test) 
-accuracy_dt=round(accuracy_score(y_test,Y_pred)* 100, 2)
-acc_decision_tree = round(decision_tree.score(X_train, y_train) * 100, 2)
-
-cm = confusion_matrix(y_test, Y_pred)
-accuracy = accuracy_score(y_test,Y_pred)
-precision =precision_score(y_test, Y_pred,average='micro')
-recall =  recall_score(y_test, Y_pred,average='micro')
-f1 = f1_score(y_test,Y_pred,average='micro')
-print('Confusion matrix for DecisionTree\n',cm)
-print('accuracy_DecisionTree: %.3f' %accuracy)
-print('precision_DecisionTree: %.3f' %precision)
-print('recall_DecisionTree: %.3f' %recall)
-print('f1-score_DecisionTree : %.3f' %f1)
-
-# Random Forest
-random_forest = RandomForestClassifier(n_estimators=100)
-random_forest.fit(X_train, y_train)
-Y_prediction = random_forest.predict(X_test)
-accuracy_rf=round(accuracy_score(y_test,Y_prediction)* 100, 2)
-acc_random_forest = round(random_forest.score(X_train, y_train) * 100, 2)
-
-
-cm = confusion_matrix(y_test, Y_prediction)
-accuracy = accuracy_score(y_test,Y_prediction)
-precision =precision_score(y_test, Y_prediction,average='micro')
-recall =  recall_score(y_test, Y_prediction,average='micro')
-f1 = f1_score(y_test,Y_prediction,average='micro')
-print('Confusion matrix for Random Forest\n',cm)
-print('accuracy_random_Forest : %.3f' %accuracy)
-print('precision_random_Forest : %.3f' %precision)
-print('recall_random_Forest : %.3f' %recall)
-print('f1-score_random_Forest : %.3f' %f1)
-
-#SVM
-SVM = svm.SVC(kernel='linear') 
-SVM.fit(X_train, y_train)
-Y_prediction = SVM.predict(X_test)
-accuracy_SVM=round(accuracy_score(y_test,Y_pred)* 100, 2)
-acc_SVM = round(SVM.score(X_train, y_train) * 100, 2)
-
-cm = confusion_matrix(y_test, Y_pred)
-accuracy = accuracy_score(y_test,Y_pred)
-precision =precision_score(y_test, Y_pred,average='micro')
-recall =  recall_score(y_test, Y_pred,average='micro')
-f1 = f1_score(y_test,Y_pred,average='micro')
-print('Confusion matrix for SVM\n',cm)
-print('accuracy_SVM : %.3f' %accuracy)
-print('precision_SVM : %.3f' %precision)
-print('recall_SVM : %.3f' %recall)
-print('f1-score_SVM : %.3f' %f1)
-
-st.write('## 3. Akurasi Metode')
-
-results = pd.DataFrame({
-    'Model': ['Decision Tree','Random Forest','SVM'],
-    'Accuracy_score':[accuracy_dt,
-                      accuracy_rf,accuracy_SVM
-                     ]})
-result_df = results.sort_values(by='Accuracy_score', ascending=False)
-result_df = result_df.reset_index(drop=True)
-result_df.head(9)
-st.write(result_df)
-
-#fig = plt.figure()
-ax = fig.add_axes([0,0,1,1])
-ax.bar(['Decision Tree', 'Random Forest','SVM'],[accuracy_dt, accuracy_rf, accuracy_SVM])
-plt.show()
-st.pyplot(fig)
-
-baseline_value = st.sidebar.number_input("baseline_value =", min_value=106 ,max_value=160)
-accelerations = st.sidebar.number_input("accelerations =", min_value=0, max_value=0.2)
-fetal_movement = st.sidebar.number_input("fetal_movement =", min_value=0 , max_value=0.48)
-uterine_contractions = st.sidebar.number_input("uterine_contractions =", min_value=0, max_value=0.01)
-light_decelerations = st.sidebar.number_input("light_decelerations =", min_value=0, max_value=0.01)
-severe_decelerations = st.sidebar.number_input("severe_decelerations =", min_value=0 ,max_value=0)
-prolongued_decelerations = st.sidebar.number_input("prolongued_decelerations =", min_value=0, max_value=0.01)
-abnormal_short_term_variability = st.sidebar.number_input("abnormal_short_term_variability =", min_value=12, max_value=87)
-mean_value_of_short_term_variability = st.sidebar.number_input("mean_value_of_short_term_variability =", min_value=0.2, max_value=7)
-spercentage_of_time_with_abnormal_long_term_variabilityex = st.sidebar.number_input("spercentage_of_time_with_abnormal_long_term_variabilityex =", min_value=0, max_value=91)
-submit = st.sidebar.button("Submit")
-
-if submit :
-    if algoritma == 'Decision Tree' :
-        X_new = np.array([[baseline_value, accelerations, fetal_movement, uterine_contractions, light_decelerations, severe_decelerations, prolongued_decelerations,
-        abnormal_short_term_variability, mean_value_of_short_term_variability, spercentage_of_time_with_abnormal_long_term_variabilityex]])
-        prediksi = decision_tree.predict(X_new)
-        if prediksi == 1 :
-            st.sidebar.write(""" # Hasil Prediksi :
-             rekiso meninggal tinggi""")
-        else : 
-            st.sidebar.write("""# Hasil Prediksi :
-             rekiso meninggal rendah""")
-    elif algoritma == 'Random Forest' :
-        X_new = np.array([[baseline_value, accelerations, fetal_movement, uterine_contractions, light_decelerations, severe_decelerations, prolongued_decelerations,
-        abnormal_short_term_variability, mean_value_of_short_term_variability, spercentage_of_time_with_abnormal_long_term_variabilityex]])
-        prediksi = random_forest.predict(X_new)
-        if prediksi == 1 :
-            st.sidebar.write("""# Hasil Prediksi :
-            rekiso meninggal tinggi""")
-        else : 
-            st.sidebar.write("""# Hasil Prediksi :
-            rekiso meninggal rendah""")
-    else :
-        X_new = np.array([[baseline_value, accelerations, fetal_movement, uterine_contractions, light_decelerations, severe_decelerations, prolongued_decelerations,
-        abnormal_short_term_variability, mean_value_of_short_term_variability, spercentage_of_time_with_abnormal_long_term_variabilityex]])
-        prediksi = SVM.predict(X_new)
-        if prediksi == 1 :
-            st.sidebar.write("""# Hasil Prediksi :
-            rekiso meninggal tinggi""")
-        else : 
-            st.sidebar.write("""# Hasil Prediksi :
-            rekiso meninggal rendah""")
+# Menjalankan aplikasi Streamlit
+if __name__ == "__main__":
+    main()

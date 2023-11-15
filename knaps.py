@@ -14,7 +14,7 @@ def load_and_preprocess_data():
     url = "https://github.com/indyrajanuar/hipertensi/blob/main/datafix.csv"
     
     try:
-        df = pd.read_csv(url)
+        df = pd.read_csv(url, sep=';')  # Ganti dengan delimiter yang sesuai
     except Exception as e:
         st.error(f"Error reading dataset: {e}")
         return None, None, None, None, None, None

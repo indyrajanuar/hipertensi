@@ -2,91 +2,114 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import accuracy_score, classification_report
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
 
-# Function to load dataset
-def load_dataset():
+# Function to load and preprocess dataset
+def load_and_preprocess_data():
+    # Load dataset
     url = "https://github.com/indyrajanuar/hipertensi/blob/main/datafix.csv"
     df = pd.read_csv(url)
-    return df
 
-# Function for data preprocessing
-def preprocess_data(df):
-    X = df.iloc[:, 1:8]  # Selecting 7 input features
-    y = df.iloc[:, -1]   # Assuming the target variable is in the last column
+    # Clean data (handle missing values, outliers, etc.)
+    # Assume the target variable is in the 'target' column
+    df_cleaned = df.dropna()  # Replace with your cleaning process
 
-    # Splitting the dataset into training and testing sets
+    # Separate features and target
+    X = df_cleaned.drop(columns=['target'])
+    y = df_cleaned['target']
+
+    # One-hot encoding for categorical variables
+    categorical_features = ['categorical_column']  # Replace with your categorical column names
+    numeric_features = [col for col in X.columns if col not in categorical_features]
+
+    # Create transformers for preprocessing
+    numeric_transformer = Pipeline(steps=[
+        ('scaler', StandardScaler())
+    ])
+
+    categorical_transformer = Pipeline(steps=[
+        ('onehot', OneHotEncoder(handle_unknown='ignore'))
+    ])
+
+    # Combine transformers using ColumnTransformer
+    preprocessor = ColumnTransformer(
+        transformers=[
+            ('num', numeric_transformer, numeric_features),
+            ('cat', categorical_transformer, categorical_features)
+        ])
+
+    # Split the data into training and testing sets
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-    # Standardize features by removing the mean and scaling to unit variance
-    scaler = StandardScaler()
-    X_train = scaler.fit_transform(X_train)
-    X_test = scaler.transform(X_test)
+    return X_train, X_test, y_train, y_test, preprocessor, df_cleaned
 
-    return X_train, X_test, y_train, y_test, scaler
-
-# Function for classification
-def classify(X_train, X_test, y_train, y_test):
+# Function to train ERNN model
+def train_ernn(X_train, y_train):
     # Create and train the ERNN model
-    mlp = MLPClassifier(hidden_layer_sizes=(5,), max_iter=1000, learning_rate_init=0.1, tol=0.0001, random_state=42)
+    mlp = MLPClassifier(
+        hidden_layer_sizes=(5,),
+        max_iter=1000,
+        learning_rate_init=0.1,
+        tol=0.0001,
+        random_state=42
+    )
+    
     mlp.fit(X_train, y_train)
-
-    # Make predictions on the test set
-    y_pred = mlp.predict(X_test)
-
-    # Evaluate the model
-    accuracy = accuracy_score(y_test, y_pred)
-    report = classification_report(y_test, y_pred)
-
-    return mlp, accuracy, report
+    return mlp
 
 # Streamlit web app
 def main():
     st.sidebar.title("Menu")
-    menu = st.sidebar.selectbox("Select Menu", ["Home", "Import Dataset", "Preprocessing", "Classification"])
+    menu = st.sidebar.selectbox("Select Menu", ["Home", "Dataset", "Preprocessing", "Classification"])
 
     if menu == "Home":
         st.title("Home")
-        st.write("Welcome to the Hipertensi Classification App. Use the menu to navigate.")
+        st.write("Deskripsi mengenai penyakit hipertensi.")
 
-    elif menu == "Import Dataset":
-        st.title("Import Dataset")
-        df = load_dataset()
-        st.dataframe(df)
+    elif menu == "Dataset":
+        st.title("Dataset")
+        # Load and preprocess data
+        _, _, _, _, _, df_cleaned = load_and_preprocess_data()
+
+        # Display dataset
+        st.dataframe(df_cleaned)
 
     elif menu == "Preprocessing":
         st.title("Preprocessing")
-        df = load_dataset()
-        X_train, X_test, y_train, y_test, scaler = preprocess_data(df)
+        # Load and preprocess data
+        X_train, _, _, _, _, _ = load_and_preprocess_data()
 
         st.write("Dataset after Preprocessing:")
         st.write("X_train shape:", X_train.shape)
-        st.write("X_test shape:", X_test.shape)
 
     elif menu == "Classification":
         st.title("Classification")
-        df = load_dataset()
-        X_train, X_test, y_train, y_test, scaler = preprocess_data(df)
-        model, accuracy, report = classify(X_train, X_test, y_train, y_test)
+        # Load and preprocess data
+        X_train, X_test, y_train, y_test, preprocessor, _ = load_and_preprocess_data()
 
+        # Apply preprocessing to the training and testing sets
+        X_train_processed = preprocessor.fit_transform(X_train)
+        X_test_processed = preprocessor.transform(X_test)
+
+        # Train ERNN model
+        ernn_model = train_ernn(X_train_processed, y_train)
+
+        # Make predictions on the test set
+        y_pred = ernn_model.predict(X_test_processed)
+
+        # Evaluate the model
+        accuracy = accuracy_score(y_test, y_pred)
+        report = classification_report(y_test, y_pred)
+
+        # Display results
         st.write("Model Evaluation:")
         st.write("Accuracy:", accuracy)
         st.write("Classification Report:")
         st.text(report)
-
-        st.subheader("Make Prediction")
-        input_data = []
-        for i in range(7):
-            input_data.append(st.number_input(f"Input Feature {i+1}"))
-
-        input_data = np.array(input_data).reshape(1, -1)
-        input_data = scaler.transform(input_data)
-
-        prediction = model.predict(input_data)
-
-        st.write("Prediction:", prediction[0])
 
 if __name__ == "__main__":
     main()

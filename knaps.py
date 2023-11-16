@@ -70,6 +70,9 @@ def show_dataset():
         st.write("Berikut adalah tampilan beberapa baris pertama dari dataset setelah preprocessing:")
         st.dataframe(df_cleaned.head())
 
+if __name__ == "__main__":
+    main()
+
 def show_evaluasi():
     st.write("Halaman Evaluasi")
     # Tambahkan konten sesuai dengan halaman Evaluasi

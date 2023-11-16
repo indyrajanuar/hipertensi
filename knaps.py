@@ -54,7 +54,7 @@ def preprocess_data(df):
     st.dataframe(df.head())
 
     # Menghapus data kategorikal pada fitur tertentu
-    df_cleaned = df.dropna(subset=numerical_features)
+    df_cleaned = df[numerical_features].dropna()
 
     # Menampilkan dataset setelah preprocessing
     st.write("Berikut adalah tampilan beberapa baris pertama dari dataset setelah preprocessing:")
@@ -65,10 +65,6 @@ def preprocess_data(df):
 # Fungsi untuk menampilkan halaman preprocessing
 def show_preprocessing():
     st.write("Halaman Preprocessing")
-
-    # Impor dataset dari file CSV
-    dataset_path = "https://raw.githubusercontent.com/indyrajanuar/hipertensi/main/datafix.csv"  # Gantilah dengan path sesuai dengan lokasi dataset Anda
-    df = pd.read_csv(dataset_path)
 
     # Preprocessing data (menghapus data kategorikal pada fitur tertentu)
     df_cleaned = preprocess_data(df)

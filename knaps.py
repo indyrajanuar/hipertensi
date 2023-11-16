@@ -44,8 +44,10 @@ def show_dataset():
     #st.write("Berikut adalah tampilan beberapa baris pertama dari dataset setelah diacak:")
     st.dataframe(df)
 
-# Fungsi untuk preprocessing data (menghapus data kategorikal pada fitur tertentu)
-def preprocess_data(df):
+# Fungsi untuk menampilkan halaman preprocessing
+def show_preprocessing():
+    st.write("Halaman Preprocessing")
+
     # Gantilah 'usia', 'sistole', 'diastole', 'nafas', 'detak nadi' dengan fitur yang sesuai dalam dataset Anda
     numerical_features = ['usia', 'sistole', 'diastole', 'nafas', 'detak nadi']
 
@@ -59,12 +61,6 @@ def preprocess_data(df):
     # Menampilkan dataset setelah preprocessing
     st.write("Berikut adalah tampilan beberapa baris pertama dari dataset setelah preprocessing:")
     st.dataframe(df_cleaned.head())
-
-    return df_cleaned
-
-# Fungsi untuk menampilkan halaman preprocessing
-def show_preprocessing():
-    st.write("Halaman Preprocessing")
 
     # Preprocessing data (menghapus data kategorikal pada fitur tertentu)
     df_cleaned = preprocess_data(df)

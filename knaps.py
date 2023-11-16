@@ -44,26 +44,31 @@ def show_dataset():
     #st.write("Berikut adalah tampilan beberapa baris pertama dari dataset setelah diacak:")
     st.dataframe(df)
 
-# Fungsi untuk menampilkan halaman preprocessing
-def show_preprocessing():
-    st.write("Halaman Preprocessing")
-
+# Fungsi untuk preprocessing data (menghapus data kategorikal pada fitur tertentu)
+def preprocess_data(df):
     # Gantilah 'usia', 'sistole', 'diastole', 'nafas', 'detak nadi' dengan fitur yang sesuai dalam dataset Anda
     numerical_features = ['usia', 'sistole', 'diastole', 'nafas', 'detak nadi']
-
-    # Menampilkan dataset sebelum preprocessing
-    st.write("Berikut adalah tampilan beberapa baris pertama dari dataset sebelum preprocessing:")
-    st.dataframe(df.head())
 
     # Menghapus data kategorikal pada fitur tertentu
     df_cleaned = df[numerical_features].dropna()
 
-    # Menampilkan dataset setelah preprocessing
-    st.write("Berikut adalah tampilan beberapa baris pertama dari dataset setelah preprocessing:")
-    st.dataframe(df_cleaned.head())
+    return df_cleaned
 
-    # Preprocessing data (menghapus data kategorikal pada fitur tertentu)
-    df_cleaned = preprocess_data(df)
+# Fungsi untuk menampilkan halaman dataset
+def show_dataset():
+    st.write("Halaman Dataset")
+    
+    df = shuffle_dataset(df)
+
+    # Menampilkan dataset
+    st.write("Berikut adalah tampilan beberapa baris pertama dari dataset:")
+    st.dataframe(df.head())
+
+    # Tombol untuk memicu preprocessing
+    if st.button("Lakukan Preprocessing"):
+        df_cleaned = preprocess_data(df)
+        st.write("Berikut adalah tampilan beberapa baris pertama dari dataset setelah preprocessing:")
+        st.dataframe(df_cleaned.head())
 
 def show_evaluasi():
     st.write("Halaman Evaluasi")

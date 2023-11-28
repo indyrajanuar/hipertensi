@@ -16,9 +16,9 @@ with st.sidebar:
     upload_file = st.sidebar.file_uploader("Masukkan file csv disini", key=1)
 
 if selected == 'Home':
-    st.markdown('<h1 style="text-align: center;"> Website Klasifikasi Hipertensi </h1>', unsafe_allow_html=True)
-    st.markdown('<h3 style="text-align: left;"> Hipertensi </h1>', unsafe_allow_html=True)
-    st.markdown('<h3 style="text-align: left;"> View Data </h1>', unsafe_allow_html=True)
+    st.markdown('<h1 style="text-align: center;"> Website Klasifikasi Hipertensi </h1>')
+    st.markdown('<h3 style="text-align: left;"> Hipertensi </h1>')
+    st.markdown('<h3 style="text-align: left;"> View Data </h1>')
     if upload_file is not None:
         df = pd.read_csv(upload_file)
         st.write("Data yang digunakan yaitu data Penyakit Hipertensi dari UPT Puskesmas Modopuro Mojokerto.")

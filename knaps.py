@@ -2,8 +2,6 @@ import streamlit as st
 from streamlit_option_menu import option_menu
 import pandas as pd
 
-st.set_page_config(page_title="Website Klasifikasi Hipertensi")
-
 with st.sidebar:
     selected = option_menu(
         "Main Menu",
@@ -21,7 +19,8 @@ if selected == 'Home':
     if 'upload_file' in st.session_state:
         uploaded_file = st.session_state.upload_file
         if uploaded_file is not None:
-            df = pd.read_csv(uploaded_file)
+            # Specify the encoding when reading the CSV file
+            df = pd.read_csv(uploaded_file, encoding='utf-8')
             st.write("Uploaded File Content:")
             st.write(df)
 

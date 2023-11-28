@@ -7,7 +7,7 @@ with st.sidebar:
     selected = option_menu("Main Menu", ["Home", "PreProcessing Data", "Klasifikasi ERNN", "Korelasi Data", "Uji Coba"], icons=['house', 'table', 'boxes', 'boxes','check2-circle'], menu_icon="cast", default_index=1, orientation='vertical')
 
 if selected=='Home':
-    st.write("You are at home")
+    st.markdown('<h1 style = "text-align: center;"> Website Klasifikasi Hipertensi </h1>', unsafe_allow_html = True)
 
 elif selected=='PreProcessing Data':
     st.write("You are at home")

@@ -28,7 +28,9 @@ elif selected == 'PreProcessing Data':
     st.write("You are at PreProcessing Data")
     st.markdown('<h3 style="text-align: left;"> Data Asli </h1>', unsafe_allow_html=True)
     st.write("Berikut merupakan data asli yang didapat dari UPT Puskesmas Modopuro Mojokerto.")
-    st.dataframe(df)
+    if upload_file is not None:
+        df = pd.read_csv(upload_file)
+        st.dataframe(df)
 
 elif selected == 'Klasifikasi ERNN':
     st.write("You are at Klasifikasi ERNN")

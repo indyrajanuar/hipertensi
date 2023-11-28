@@ -7,6 +7,9 @@ def clean_data(data, features_to_exclude):
     for feature in features_to_exclude:
         if feature in data.columns:
             data[feature] = pd.to_numeric(data[feature], errors='coerce')
+    
+    # Drop rows with NaN values after converting to numeric
+    data = data.dropna()
 
     return data
 

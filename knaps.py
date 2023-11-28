@@ -34,7 +34,7 @@ elif selected == 'PreProcessing Data':
     if upload_file is not None:
         df = pd.read_csv(upload_file)
         st.dataframe(df)
-    st.markdown('<h3 style="text-align: left;"> Melakukan Cleaning Data </h1>', unsafe_allow_html=True)
+        st.markdown('<h3 style="text-align: left;"> Melakukan Cleaning Data </h1>', unsafe_allow_html=True)
     
     # Button to clean the data
         if st.button("Clean Data"):

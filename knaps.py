@@ -19,6 +19,7 @@ if selected == 'Home':
     st.markdown('<h1 style="text-align: center;"> Website Klasifikasi Hipertensi </h1>', unsafe_allow_html=True)
     if upload_file is not None:
         df = pd.read_csv(upload_file)
+        df = pd.read_excel(upload_file)
         st.dataframe(df)
 
 elif selected == 'PreProcessing Data':

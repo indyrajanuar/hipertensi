@@ -2,88 +2,93 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 
+# Fungsi untuk membaca data dari file CSV
+def read_data(file):
+    data = pd.read_csv(file)
+    return data
+
+# Fungsi untuk preprocessing data (Contoh sederhana)
+def preprocess_data(data):
+    # Lakukan beberapa langkah preprocessing
+    # Misalnya, isi nilai yang hilang dengan rata-rata
+    data.fillna(data.mean(), inplace=True)
+    return data
+
+# Fungsi untuk klasifikasi ERNN (Contoh sederhana)
+def classify_ernn(data):
+    # Lakukan klasifikasi dengan ERNN
+    # Implementasi ERNN dapat disesuaikan dengan kebutuhan
+    # Contoh sederhana, kita akan menggunakan numpy untuk membuat prediksi acak
+    predictions = np.random.randint(0, 2, len(data))
+    return predictions
+
+# Fungsi untuk menghitung korelasi data (Contoh sederhana)
+def calculate_correlation(data):
+    correlation_matrix = data.corr()
+    return correlation_matrix
+
+# Fungsi untuk uji coba (Contoh sederhana)
+def perform_experiment():
+    # Lakukan eksperimen sesuai kebutuhan
+    st.write("Eksperimen berhasil dilakukan!")
+
+# Fungsi untuk menampilkan halaman utama
+def home():
+    st.write("# Selamat Datang di Aplikasi Data Science")
+    st.write("Pilih opsi menu di sidebar untuk melanjutkan.")
+
+# Fungsi utama
 def main():
-    st.title("Aplikasi Web Statis dengan Streamlit")
+    st.sidebar.title("Main Menu")
+    options = ["Home", "Preprocessing Data", "Klasifikasi ERNN", "Korelasi Data", "Uji Coba", "Drag and Drop File"]
+    choice = st.sidebar.selectbox("Pilih Menu", options)
 
-    # Membuat objek pilihan menu menggunakan st.sidebar.selectbox
-    choose = st.sidebar.selectbox("Choose", ["Home", "Dataset", "Preprocessing", "Evaluasi", "Klasifikasi", "Help"])
-
-    if choose == "Home":
-        show_home()
-    elif choose == "Dataset":
-        show_dataset()
-    elif choose == "Preprocessing":
-        show_preprocessing()
-    elif choose == "Evaluasi":
-        show_evaluasi()
-    elif choose == "Klasifikasi":
-        show_klasifikasi()
-    elif choose == "Help":
-        show_help()
-
-def show_home():
-    st.write("Selamat datang di halaman Home!")
-    # Tambahkan konten sesuai dengan halaman Home
-
-# Fungsi untuk mengacak dataset
-def shuffle_dataset(df):
-    return df.sample(frac=1, random_state=42).reset_index(drop=True)
-
-# Fungsi untuk menampilkan dataset dari CSV
-def show_dataset():
-    st.write("Halaman Dataset")
-
-    # Impor dataset dari file CSV
-    dataset_path = "https://raw.githubusercontent.com/indyrajanuar/hipertensi/main/datafix.csv"  # Gantilah dengan path sesuai dengan lokasi dataset Anda
-    df = pd.read_csv(dataset_path)
-
-    # Mengacak dataset secara otomatis saat halaman dimuat
-    df = shuffle_dataset(df)
-
-    # Tampilkan dataset setelah diacak
-    #st.write("Berikut adalah tampilan beberapa baris pertama dari dataset setelah diacak:")
-    st.dataframe(df)
-
-# Fungsi untuk preprocessing data (menghapus data kategorikal pada fitur tertentu)
-def preprocess_data(df):
-    # Gantilah 'usia', 'sistole', 'diastole', 'nafas', 'detak nadi' dengan fitur yang sesuai dalam dataset Anda
-    numerical_features = ['usia', 'sistole', 'diastole', 'nafas', 'detak nadi']
-
-    # Menghapus data kategorikal pada fitur tertentu
-    df_cleaned = df[numerical_features].dropna()
-
-    return df_cleaned
-
-# Fungsi untuk menampilkan halaman dataset
-def show_dataset():
-    st.write("Halaman Dataset")
-    
-    df = shuffle_dataset(df)
-
-    # Menampilkan dataset
-    st.write("Berikut adalah tampilan beberapa baris pertama dari dataset:")
-    st.dataframe(df.head())
-
-    # Tombol untuk memicu preprocessing
-    if st.button("Lakukan Preprocessing"):
-        df_cleaned = preprocess_data(df)
-        st.write("Berikut adalah tampilan beberapa baris pertama dari dataset setelah preprocessing:")
-        st.dataframe(df_cleaned.head())
-
-if __name__ == "__main__":
-    main()
-
-def show_evaluasi():
-    st.write("Halaman Evaluasi")
-    # Tambahkan konten sesuai dengan halaman Evaluasi
-
-def show_klasifikasi():
-    st.write("Halaman Klasifikasi")
-    # Tambahkan konten sesuai dengan halaman Klasifikasi
-
-def show_help():
-    st.write("Halaman Help")
-    # Tambahkan konten sesuai dengan halaman Help
+    if choice == "Home":
+        home()
+    elif choice == "Preprocessing Data":
+        st.subheader("Preprocessing Data")
+        # Tambahkan komponen untuk upload file
+        uploaded_file = st.file_uploader("Upload File CSV", type=["csv"])
+        if uploaded_file is not None:
+            data = read_data(uploaded_file)
+            st.write("Data sebelum preprocessing:")
+            st.write(data.head())
+            st.write("Data setelah preprocessing:")
+            preprocessed_data = preprocess_data(data)
+            st.write(preprocessed_data.head())
+    elif choice == "Klasifikasi ERNN":
+        st.subheader("Klasifikasi ERNN")
+        # Tambahkan komponen untuk upload file
+        uploaded_file = st.file_uploader("Upload File CSV", type=["csv"])
+        if uploaded_file is not None:
+            data = read_data(uploaded_file)
+            st.write("Data:")
+            st.write(data.head())
+            predictions = classify_ernn(data)
+            st.write("Hasil Klasifikasi:")
+            st.write(predictions)
+    elif choice == "Korelasi Data":
+        st.subheader("Korelasi Data")
+        # Tambahkan komponen untuk upload file
+        uploaded_file = st.file_uploader("Upload File CSV", type=["csv"])
+        if uploaded_file is not None:
+            data = read_data(uploaded_file)
+            st.write("Data:")
+            st.write(data.head())
+            correlation_matrix = calculate_correlation(data)
+            st.write("Matriks Korelasi:")
+            st.write(correlation_matrix)
+    elif choice == "Uji Coba":
+        st.subheader("Uji Coba")
+        perform_experiment()
+    elif choice == "Drag and Drop File":
+        st.subheader("Drag and Drop File")
+        # Tambahkan komponen untuk drag and drop file
+        uploaded_file = st.file_uploader("Drop File CSV di sini", type=["csv"])
+        if uploaded_file is not None:
+            data = read_data(uploaded_file)
+            st.write("Data:")
+            st.write(data.head())
 
 if __name__ == "__main__":
     main()

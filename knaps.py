@@ -9,7 +9,9 @@ def clean_data(data):
     # Remove categorical columns for specified features
     for feature in features_to_exclude:
         if feature in data.columns:
-            data = data[data[feature].apply(lambda x: not pd.api.types.is_object_dtype(type(x)))]
+            data[feature] = pd.to_numeric(data[feature], errors='coerce')
+
+    data = data.dropna()
 
     return data
 

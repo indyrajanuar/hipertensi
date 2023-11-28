@@ -2,6 +2,11 @@ import streamlit as st
 from streamlit_option_menu import option_menu
 import pandas as pd
 
+def clean_data(data):
+    # Remove categorical columns during the cleaning process
+    cleaned_data = data.select_dtypes(exclude=['object'])
+    return cleaned_data
+
 with st.sidebar:
     selected = option_menu(
         "Main Menu",
@@ -25,12 +30,17 @@ if selected == 'Home':
         st.dataframe(df)
 
 elif selected == 'PreProcessing Data':
-    st.write("You are at PreProcessing Data")
     st.markdown('<h3 style="text-align: left;"> Data Asli </h1>', unsafe_allow_html=True)
     st.write("Berikut merupakan data asli yang didapat dari UPT Puskesmas Modopuro Mojokerto.")
     if upload_file is not None:
         df = pd.read_csv(upload_file)
         st.dataframe(df)
+    st.markdown('<h3 style="text-align: left;"> Melakukan Cleaning Data </h1>', unsafe_allow_html=True)
+    # Button to clean the data
+        if st.button("Clean Data"):
+            cleaned_data = clean_data(df)
+            st.write("Cleaned Data:")
+            st.dataframe(cleaned_data)
 
 elif selected == 'Klasifikasi ERNN':
     st.write("You are at Klasifikasi ERNN")

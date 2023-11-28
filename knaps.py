@@ -20,7 +20,7 @@ if selected == 'Home':
         uploaded_file = st.session_state.upload_file
         if uploaded_file is not None:
             # Specify the encoding when reading the CSV file
-            df = pd.read_csv(uploaded_file, encoding='utf-8')
+            df = pd.read_csv(uploaded_file, encoding='latin1')
             st.write("Uploaded File Content:")
             st.write(df)
 

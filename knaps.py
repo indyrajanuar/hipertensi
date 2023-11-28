@@ -30,8 +30,6 @@ elif selected == 'PreProcessing Data':
         df = pd.read_csv(upload_file)
         st.dataframe(df)
     st.markdown('<h3 style="text-align: left;"> Melakukan Cleaning Data </h1>', unsafe_allow_html=True)
-    # Button to clean the data
-        if st.button("Clean Data"):
 
 elif selected == 'Klasifikasi ERNN':
     st.write("You are at Klasifikasi ERNN")

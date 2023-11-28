@@ -3,9 +3,14 @@ from streamlit_option_menu import option_menu
 import pandas as pd
 
 def clean_data(data):
-    # Remove categorical columns during the cleaning process
-    cleaned_data = data.select_dtypes(exclude=['object'])
-    return cleaned_data
+    # Specify the features for which to exclude categorical columns
+    features_to_exclude = ['usia', 'sistole', 'diastole', 'nafas', 'detak nadi']
+    
+    # Remove categorical columns for specified features
+    for feature in features_to_exclude:
+        if feature in data.columns:
+            data = data[data[feature].apply(lambda x: not pd.api.types.is_object_dtype(type(x)))]
+    return data
 
 with st.sidebar:
     selected = option_menu(
@@ -39,7 +44,7 @@ elif selected == 'PreProcessing Data':
     # Button to clean the data
         if st.button("Clean Data"):
             cleaned_data = clean_data(df)
-            st.write("Cleaned Data:")
+            st.write("Pada bagian ini dilakukan pembersihan dataset yang tidak memiliki relevansi terhadap faktor risiko pada penyakit hipertensi, seperti menghapus satuan yang tidak diperlukan dan menghapus noise.")
             st.dataframe(cleaned_data)
 
 elif selected == 'Klasifikasi ERNN':

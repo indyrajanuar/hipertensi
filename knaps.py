@@ -2,11 +2,6 @@ import streamlit as st
 from streamlit_option_menu import option_menu
 import pandas as pd
 
-def clean_data(data):
-    # Remove categorical columns during the cleaning process
-    cleaned_data = data.select_dtypes(exclude=['object'])
-    return cleaned_data
-
 with st.sidebar:
     selected = option_menu(
         "Main Menu",
@@ -50,3 +45,8 @@ elif selected == 'Korelasi Data':
 
 elif selected == 'Uji Coba':
     st.write("You are at Uji Coba")
+
+def clean_data(data):
+    # Remove categorical columns during the cleaning process
+    cleaned_data = data.select_dtypes(exclude=['object'])
+    return cleaned_data

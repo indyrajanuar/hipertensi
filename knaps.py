@@ -2,17 +2,11 @@ import streamlit as st
 from streamlit_option_menu import option_menu
 import pandas as pd
 
-def clean_data(data):
-    # Specify the features for which to exclude categorical columns
-    features_to_exclude = ['Umur Tahun', 'Sistole', 'Diastole', 'Nafas', 'Detak Nadi']
-    
-    # Convert specified features to numeric, coercing errors
+def clean_data(data, features_to_exclude):
+    # Remove categorical columns for specified features
     for feature in features_to_exclude:
         if feature in data.columns:
             data[feature] = pd.to_numeric(data[feature], errors='coerce')
-
-    # Drop rows with NaN values after converting to numeric
-    data = data.dropna()
 
     return data
 
@@ -44,10 +38,13 @@ elif selected == 'PreProcessing Data':
         df = pd.read_csv(upload_file)
         st.dataframe(df)
         st.markdown('<h3 style="text-align: left;"> Melakukan Cleaning Data </h1>', unsafe_allow_html=True)
-    
-    # Button to clean the data
+
+        # Specify the features to clean
+        features_to_exclude = ['Umur Tahun', 'Sistole', 'Diastole', 'Nafas', 'Detak Nadi']
+        
+        # Button to clean the data
         if st.button("Clean Data"):
-            cleaned_data = clean_data(df)
+            cleaned_data = clean_data(df, features_to_exclude)
             st.write("Pada bagian ini dilakukan pembersihan dataset yang tidak memiliki relevansi terhadap faktor risiko pada penyakit hipertensi, seperti menghapus satuan yang tidak diperlukan dan menghapus noise.")
             st.dataframe(cleaned_data)
 

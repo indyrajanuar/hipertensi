@@ -3,13 +3,13 @@ from streamlit_option_menu import option_menu
 import pandas as pd
 
 def clean_data(data, features_to_exclude):
-    # Remove categorical columns for specified features
+    # Convert specified features to numeric, coercing errors
     for feature in features_to_exclude:
         if feature in data.columns:
             data[feature] = pd.to_numeric(data[feature], errors='coerce')
-    
+
     # Drop rows with NaN values after converting to numeric
-    data = data.dropna()
+    data = data.dropna(subset=features_to_exclude)
 
     return data
 

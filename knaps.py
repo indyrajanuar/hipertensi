@@ -19,10 +19,13 @@ if selected == 'Home':
     if 'upload_file' in st.session_state:
         uploaded_file = st.session_state.upload_file
         if uploaded_file is not None:
-            # Specify the encoding when reading the CSV file
-            df = pd.read_csv(uploaded_file, encoding='latin1', error_bad_lines=False)
-            st.write("Uploaded File Content:")
-            st.write(df)
+            try:
+                # Try reading the CSV file with 'latin1' encoding
+                df = pd.read_csv(uploaded_file, encoding='latin1')
+                st.write("Uploaded File Content:")
+                st.write(df)
+            except UnicodeDecodeError:
+                st.error("Unable to decode the file. Please check the file encoding and try again.")
 
 elif selected == 'PreProcessing Data':
     st.write("You are at PreProcessing Data")

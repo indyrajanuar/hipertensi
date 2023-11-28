@@ -5,7 +5,6 @@ from streamlit_option_menu import option_menu
 
 with st.sidebar:
     selected = option_menu("Main Menu", ["Home", "PreProcessing Data", "Klasifikasi ERNN", "Korelasi Data", "Uji Coba"], icons=['house', 'table', 'boxes', 'boxes','check2-circle'], menu_icon="cast", default_index=1, orientation='vertical')
-    selected
 
 if selected=='Home':
     st.write("You are at home")
@@ -21,3 +20,6 @@ elif selected=='Korelasi Data':
     
 elif selected=='Uji Coba':
     st.write("You are at home")
+
+with st.sidebar:
+    upload_file = st.sidebar.file_uploader("Choose file", key=1)

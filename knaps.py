@@ -1,5 +1,6 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
+import pandas as pd
 
 st.set_page_config(page_title="Website Klasifikasi Hipertensi")
 
@@ -15,6 +16,14 @@ with st.sidebar:
 
 if selected == 'Home':
     st.markdown('<h1 style="text-align: center;"> Website Klasifikasi Hipertensi </h1>', unsafe_allow_html=True)
+    
+    # Display the uploaded file content
+    if 'upload_file' in st.session_state:
+        uploaded_file = st.session_state.upload_file
+        if uploaded_file is not None:
+            df = pd.read_csv(uploaded_file)
+            st.write("Uploaded File Content:")
+            st.write(df)
 
 elif selected == 'PreProcessing Data':
     st.write("You are at PreProcessing Data")
@@ -30,3 +39,7 @@ elif selected == 'Uji Coba':
 
 with st.sidebar:
     upload_file = st.sidebar.file_uploader("Masukkan file excel atau csv disini", key=1)
+
+    # Save the uploaded file to session state
+    if upload_file is not None:
+        st.session_state.upload_file = upload_file

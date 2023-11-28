@@ -9,8 +9,7 @@ with st.sidebar:
         icons=['house', 'table', 'boxes', 'boxes', 'check2-circle'],
         menu_icon="cast",
         default_index=1,
-        orientation='vertical'
-    )
+        orientation='vertical')
 
 with st.sidebar:
     upload_file = st.sidebar.file_uploader("Masukkan file csv disini", key=1)
@@ -45,8 +44,3 @@ elif selected == 'Korelasi Data':
 
 elif selected == 'Uji Coba':
     st.write("You are at Uji Coba")
-
-def clean_data(data):
-    # Remove categorical columns during the cleaning process
-    cleaned_data = data.select_dtypes(exclude=['object'])
-    return cleaned_data

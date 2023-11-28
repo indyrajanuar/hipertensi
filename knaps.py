@@ -32,9 +32,6 @@ elif selected == 'PreProcessing Data':
     st.markdown('<h3 style="text-align: left;"> Melakukan Cleaning Data </h1>', unsafe_allow_html=True)
     # Button to clean the data
         if st.button("Clean Data"):
-            cleaned_data = clean_data(df)
-            st.write("Cleaned Data:")
-            st.dataframe(cleaned_data)
 
 elif selected == 'Klasifikasi ERNN':
     st.write("You are at Klasifikasi ERNN")

@@ -4,14 +4,12 @@ import pandas as pd
 
 def clean_data(data):
     # Specify the features for which to exclude categorical columns
-    features_to_exclude = ['usia', 'sistole', 'diastole', 'nafas', 'detak nadi']
+    features_to_exclude = ['Umur Tahun', 'Sistole', 'Diastole', 'Nafas', 'Detak Nadi']
     
     # Remove categorical columns for specified features
     for feature in features_to_exclude:
         if feature in data.columns:
-            data[feature] = pd.to_numeric(data[feature], errors='coerce')
-
-    data = data.dropna()
+            data = data[data[feature].apply(lambda x: not pd.api.types.is_object_dtype(type(x)))]
 
     return data
 

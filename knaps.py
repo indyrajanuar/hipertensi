@@ -22,4 +22,4 @@ elif selected=='Uji Coba':
     st.write("You are at home")
 
 with st.sidebar:
-    upload_file = st.sidebar.file_uploader("Choose file", key=1)
+    upload_file = st.sidebar.file_uploader("Masukkan file excel atau csv disini", key=1)

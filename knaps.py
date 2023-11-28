@@ -17,8 +17,11 @@ with st.sidebar:
 
 if selected == 'Home':
     st.markdown('<h1 style="text-align: center;"> Website Klasifikasi Hipertensi </h1>', unsafe_allow_html=True)
+    st.write('<h2> Hipertensi </h2>')
+    st.write('<h2> View Data </h2>')
     if upload_file is not None:
         df = pd.read_csv(upload_file)
+        st.write("Data yang digunakan yaitu data Penyakit Hipertensi dari UPT Puskesmas Modopuro Mojokerto.")
         st.dataframe(df)
 
 elif selected == 'PreProcessing Data':

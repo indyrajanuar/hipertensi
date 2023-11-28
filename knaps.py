@@ -13,10 +13,13 @@ with st.sidebar:
     )
 
 with st.sidebar:
-    upload_file = st.sidebar.file_uploader("Masukkan file excel atau csv disini", key=1)
+    upload_files = st.sidebar.file_uploader("Masukkan file excel atau csv disini", key=1)
 
 if selected == 'Home':
     st.markdown('<h1 style="text-align: center;"> Website Klasifikasi Hipertensi </h1>', unsafe_allow_html=True)
+     for uploaded_file in uploaded_files:
+        df = pd.read_csv(uploaded_file)
+        st.dataframe(df)
 
 elif selected == 'PreProcessing Data':
     st.write("You are at PreProcessing Data")

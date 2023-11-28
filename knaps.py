@@ -6,11 +6,12 @@ def clean_data(data):
     # Specify the features for which to exclude categorical columns
     features_to_exclude = ['Umur Tahun', 'Sistole', 'Diastole', 'Nafas', 'Detak Nadi']
     
-    # Remove categorical columns for specified features
+    # Convert specified features to numeric, coercing errors
     for feature in features_to_exclude:
         if feature in data.columns:
             data[feature] = pd.to_numeric(data[feature], errors='coerce')
 
+    # Drop rows with NaN values after converting to numeric
     data = data.dropna()
 
     return data

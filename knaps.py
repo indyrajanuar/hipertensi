@@ -3,6 +3,7 @@ from streamlit_option_menu import option_menu
 import pandas as pd
 import re
 from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import LabelEncoder
 
 def clean_numeric_data(data, features_to_clean):
     for feature in features_to_clean:
@@ -16,8 +17,14 @@ def remove_non_numeric(value):
     
 def preprocess_data(df, features_to_clean, categorical_features):
     cleaned_data = clean_numeric_data(df, features_to_clean)
-    encoded_data = pd.get_dummies(cleaned_data, columns=categorical_features)
-    return cleaned_data, encoded_data
+    return cleaned_data
+
+def label_encode_data(data, categorical_features):
+    label_encoder = LabelEncoder()
+    for feature in categorical_features:
+        if feature in data.columns:
+            data[feature] = label_encoder.fit_transform(data[feature])
+    return data
 
 with st.sidebar:
     selected = option_menu(
@@ -64,9 +71,9 @@ elif selected == 'PreProcessing Data':
         categorical_features = ['Jenis Kelamin', 'Diagnosa']
         # One-hot encoding
         if not st.session_state.cleaned_data.empty:
-            if st.button("One-Hot Encoding"):
-                encoded_data = pd.get_dummies(st.session_state.cleaned_data, columns=categorical_features)
-                st.write("Pada bagian ini, dilakukan one-hot encoding untuk mengubah variabel kategorikal menjadi representasi biner.")
+            if st.button("Label Encoding"):
+                encoded_data = label_encode_data(st.session_state.cleaned_data, categorical_features)
+                st.write("Label encoding completed.")
                 st.dataframe(encoded_data)
                 
             st.markdown('<h3 style="text-align: left;"> Melakukan Normalisasi Data </h1>', unsafe_allow_html=True)

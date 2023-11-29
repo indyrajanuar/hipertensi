@@ -26,6 +26,11 @@ def label_encode_data(data, categorical_features):
             data[feature] = label_encoder.fit_transform(data[feature])
     return data
 
+def normalize_data(data):
+    scaler = MinMaxScaler()
+    data[data.columns] = scaler.fit_transform(data[data.columns])
+    return data
+
 with st.sidebar:
     selected = option_menu(
         "Main Menu",
@@ -75,6 +80,15 @@ elif selected == 'PreProcessing Data':
                 encoded_data = label_encode_data(st.session_state.cleaned_data, categorical_features)
                 st.write("Label encoding completed.")
                 st.dataframe(encoded_data)
+
+            st.markdown('<h3 style="text-align: left;"> Melakukan Normalisasi Data </h1>', unsafe_allow_html=True)
+            # Min-Max scaling for all features
+            if st.button("Min-Max Scaling (All Features)"):
+                st.write("Before Min-Max Scaling:")
+                st.dataframe(encoded_data)
+                st.session_state.normalized_data = normalize_data(encoded_data.copy())
+                st.write("After Min-Max Scaling:")
+                st.dataframe(st.session_state.normalized_data)
             
 elif selected == 'Klasifikasi ERNN':
     st.write("You are at Klasifikasi ERNN")

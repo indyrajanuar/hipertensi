@@ -2,15 +2,9 @@ import streamlit as st
 from streamlit_option_menu import option_menu
 import pandas as pd
 
-def clean_data(data, features_to_exclude):
-    # Convert specified features to numeric, coercing errors
-    for feature in features_to_exclude:
-        if feature in data.columns:
-            data[feature] = pd.to_numeric(data[feature], errors='coerce')
-
-    # Drop rows with NaN values after converting to numeric
-    data = data.dropna(subset=features_to_exclude)
-
+def clean_data(data, categorical_features_to_remove):
+    # Hapus objek kategorikal pada fitur tertentu
+    data = data.drop(columns=categorical_features_to_remove)
     return data
 
 with st.sidebar:
@@ -42,12 +36,16 @@ elif selected == 'PreProcessing Data':
         st.dataframe(df)
         st.markdown('<h3 style="text-align: left;"> Melakukan Cleaning Data </h1>', unsafe_allow_html=True)
 
-        # Specify the features to clean
-        features_to_exclude = ['Umur Tahun', 'Sistole', 'Diastole', 'Nafas', 'Detak Nadi']
+        # Pilihan fitur kategorikal yang akan dihapus
+        categorical_features_to_remove = st.multiselect(
+            "Umur Tahun", data.columns
+        )
         
         # Button to clean the data
         if st.button("Clean Data"):
-            cleaned_data = clean_data(df, features_to_exclude)
+            # Panggil fungsi preprocessing
+            cleaned_data = clean_data(data, categorical_features_to_remove)
+
             st.write("Pada bagian ini dilakukan pembersihan dataset yang tidak memiliki relevansi terhadap faktor risiko pada penyakit hipertensi, seperti menghapus satuan yang tidak diperlukan dan menghapus noise.")
             st.dataframe(cleaned_data)
 

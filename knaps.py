@@ -19,12 +19,13 @@ def preprocess_data(df, features_to_clean, categorical_features):
     encoded_data = pd.get_dummies(cleaned_data, columns=categorical_features)
     return cleaned_data, encoded_data
 
-# Function to normalize data using Min-Max scaling
 def normalize_data(data, features_to_normalize):
     scaler = MinMaxScaler()
     for feature in features_to_normalize:
         if feature in data.columns:
+            st.write(f"Before Scaling - {feature}: Min={data[feature].min()}, Max={data[feature].max()}")
             data[feature] = scaler.fit_transform(data[[feature]])
+            st.write(f"After Scaling - {feature}: Min={data[feature].min()}, Max={data[feature].max()}")
     return data
 
 with st.sidebar:

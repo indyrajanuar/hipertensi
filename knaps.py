@@ -3,9 +3,6 @@ from streamlit_option_menu import option_menu
 import pandas as pd
 import re
 
-# Initialize cleaned_data globally
-cleaned_data = None
-
 def clean_numeric_data(data, features_to_clean):
     for feature in features_to_clean:
         if feature in data.columns:
@@ -14,10 +11,14 @@ def clean_numeric_data(data, features_to_clean):
     return data
 
 def remove_non_numeric(value):
+    # Remove non-numeric characters using regular expression
     return re.sub(r'[^0-9.]', '', str(value))
 
 def one_hot_encode_data(data, features_to_encode):
     return pd.get_dummies(data, columns=features_to_encode, drop_first=True)
+
+# Placeholder for cleaned data
+cleaned_data = None
 
 with st.sidebar:
     selected = option_menu(
@@ -50,10 +51,8 @@ elif selected == 'PreProcessing Data':
         
         # Specify the features to clean
         features_to_clean = ['Umur Tahun', 'Sistole', 'Diastole', 'Nafas', 'Detak Nadi']
-        
         # Button to clean the data
         if st.button("Clean Data"):
-            global cleaned_data  # Declare cleaned_data as global
             cleaned_data = clean_numeric_data(df, features_to_clean)
             st.write("Pada bagian ini dilakukan pembersihan dataset yang tidak memiliki relevansi terhadap faktor risiko pada penyakit hipertensi, seperti menghapus satuan yang tidak diperlukan dan menghapus noise.")
             st.dataframe(cleaned_data)
@@ -61,7 +60,6 @@ elif selected == 'PreProcessing Data':
         st.markdown('<h3 style="text-align: left;"> Melakukan Transformation Data </h1>', unsafe_allow_html=True)
         # Specify the features to one-hot encode
         features_to_encode = ['Jenis Kelamin', 'Diagnosa']
-        
         # Button to one-hot encode the data
         if cleaned_data is not None and st.button("One-Hot Encode"):
             encoded_data = one_hot_encode_data(cleaned_data, features_to_encode)

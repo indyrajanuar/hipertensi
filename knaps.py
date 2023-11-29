@@ -54,16 +54,14 @@ elif selected == 'PreProcessing Data':
             st.write("Pada bagian ini dilakukan pembersihan dataset yang tidak memiliki relevansi terhadap faktor risiko pada penyakit hipertensi, seperti menghapus satuan yang tidak diperlukan dan menghapus noise.")
             st.dataframe(cleaned_data)
 
+        st.markdown('<h3 style="text-align: left;"> Melakukan Transformation Data </h1>', unsafe_allow_html=True)
         # Specify the features to one-hot encode
         features_to_encode = ['Jenis Kelamin', 'Diagnosa']
         # Button to one-hot encode the data
-        if st.button("One-Hot Encode"):
-            if 'cleaned_data' not in st.session_state:
-                st.warning("Please clean the data first.")
-            else:
-                encoded_data = one_hot_encode_data(st.session_state.cleaned_data, features_to_encode)
-                st.write("One-Hot Encoded Data:")
-                st.dataframe(encoded_data)
+        if cleaned_data is not None and st.button("One-Hot Encode"):
+            encoded_data = one_hot_encode_data(cleaned_data, features_to_encode)
+            st.write("One-Hot Encoded Data:")
+            st.dataframe(encoded_data)
             
 elif selected == 'Klasifikasi ERNN':
     st.write("You are at Klasifikasi ERNN")

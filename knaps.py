@@ -6,9 +6,18 @@ import re
 def clean_numeric_data(data, features_to_clean):
     for feature in features_to_clean:
         if feature in data.columns:
-            data[feature] = pd.to_numeric(data[feature], errors='coerce')
+            data[feature] = data[feature].apply(extract_numeric)
 
     return data
+
+def extract_numeric(value):
+    # Extract numeric values from a string using regular expression
+    numeric_match = re.search(r'\d+(\.\d+)?', str(value))
+    
+    if numeric_match:
+        return float(numeric_match.group())
+    else:
+        return None
 
 with st.sidebar:
     selected = option_menu(

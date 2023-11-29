@@ -19,17 +19,6 @@ def preprocess_data(df, features_to_clean, categorical_features):
     encoded_data = pd.get_dummies(cleaned_data, columns=categorical_features)
     return cleaned_data, encoded_data
 
-def normalize_data(data, features_to_normalize):
-    scaler = MinMaxScaler()
-    for feature in features_to_normalize:
-        if feature in data.columns:
-            st.write(f"Before Scaling - {feature}: Min={data[feature].min()}, Max={data[feature].max()}")
-            data[feature] = scaler.fit_transform(data[[feature]])
-            st.write(f"After Scaling - {feature}: Min={data[feature].min()}, Max={data[feature].max()}")
-        else:
-            st.warning(f"Warning: {feature} not found in DataFrame columns.")
-    return data
-
 with st.sidebar:
     selected = option_menu(
         "Main Menu",
@@ -82,13 +71,7 @@ elif selected == 'PreProcessing Data':
                 
             st.markdown('<h3 style="text-align: left;"> Melakukan Normalisasi Data </h1>', unsafe_allow_html=True)
             # Min-Max scaling
-            features_to_normalize = ['Jenis Kelamin', 'IMT', 'Diagnosa', 'Umur Tahun', 'Sistole', 'Diastole', 'Nafas', 'Detak Nadi']
             if st.button("Min-Max Scaling"):
-                st.write("Before Min-Max Scaling:")
-                st.dataframe(encoded_data[features_to_normalize])
-                st.session_state.normalized_data = normalize_data(encoded_data, features_to_normalize)
-                st.write("After Min-Max Scaling:")
-                st.dataframe(st.session_state.normalized_data[features_to_normalize])
             
 elif selected == 'Klasifikasi ERNN':
     st.write("You are at Klasifikasi ERNN")

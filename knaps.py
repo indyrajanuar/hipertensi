@@ -14,9 +14,6 @@ def remove_non_numeric(value):
     # Remove non-numeric characters using regular expression
     return re.sub(r'[^0-9.]', '', str(value))
 
-def one_hot_encode_data(data, categorical_features):
-    return pd.get_dummies(data, columns=categorical_features, drop_first=True)
-
 # Initialize session_state to store variables between button clicks
 if 'cleaned_data' not in st.session_state:
     st.session_state.cleaned_data = pd.DataFrame()
@@ -67,8 +64,7 @@ elif selected == 'PreProcessing Data':
         if not st.session_state.cleaned_data.empty:
             # Button to perform one-hot encoding
             if st.button("One-Hot Encoding"):
-                # encoded_data = pd.get_dummies(st.session_state.cleaned_data, columns=categorical_features)
-                encoded_data = one_hot_encode_data(st.session_state.cleaned_data, categorical_features)
+                encoded_data = pd.get_dummies(st.session_state.cleaned_data, columns=categorical_features)
                 st.write("Pada bagian ini, dilakukan one-hot encoding untuk mengubah variabel kategorikal menjadi representasi biner.")
                 st.dataframe(encoded_data)
             

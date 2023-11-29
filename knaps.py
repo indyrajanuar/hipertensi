@@ -51,6 +51,9 @@ if selected == 'Home':
 elif selected == 'PreProcessing Data':
     st.markdown('<h3 style="text-align: left;"> Data Asli </h1>', unsafe_allow_html=True)
     st.write("Berikut merupakan data asli yang didapat dari UPT Puskesmas Modopuro Mojokerto.")
+    
+    encoded_data = pd.DataFrame()  # Define encoded_data outside the 'One-Hot Encoding' block
+    
     if upload_file is not None:
         df = pd.read_csv(upload_file)
         st.dataframe(df)

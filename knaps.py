@@ -6,18 +6,13 @@ import re
 def clean_numeric_data(data, features_to_clean):
     for feature in features_to_clean:
         if feature in data.columns:
-            data[feature] = data[feature].apply(extract_numeric)
+            data[feature] = data[feature].apply(remove_non_numeric)
 
     return data
 
-def extract_numeric(value):
-    # Extract numeric values from a string using regular expression
-    numeric_match = re.search(r'\d+(\.\d+)?', str(value))
-    
-    if numeric_match:
-        return float(numeric_match.group())
-    else:
-        return None
+def remove_non_numeric(value):
+    # Remove non-numeric characters using regular expression
+    return re.sub(r'[^0-9.]', '', str(value))
 
 with st.sidebar:
     selected = option_menu(

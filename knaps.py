@@ -67,6 +67,8 @@ elif selected == 'PreProcessing Data':
                 encoded_data = pd.get_dummies(st.session_state.cleaned_data, columns=categorical_features)
                 # Convert one-hot encoded values to 1 and 0 explicitly
                 encoded_data = encoded_data.applymap(lambda x: 1 if x == True else 0)
+                # Concatenate the one-hot encoded features with the remaining columns from cleaned_data
+                encoded_data = pd.concat([st.session_state.cleaned_data.drop(columns=features_for_encoding), encoded_data], axis=1)
                 st.write("Pada bagian ini, dilakukan one-hot encoding untuk mengubah variabel kategorikal menjadi representasi biner.")
                 st.dataframe(encoded_data)
             

@@ -17,8 +17,16 @@ def remove_non_numeric(value):
 def one_hot_encode_data(data, features_to_encode):
     return pd.get_dummies(data, columns=features_to_encode, drop_first=True)
 
+# Define SessionState class
+class SessionState:
+    def __init__(self, **kwargs):
+        self.__dict__.update(kwargs)
+
+# Create an instance of SessionState
+session_state = SessionState(cleaned_data=None)
+
 # Placeholder for cleaned data
-cleaned_data = None
+#cleaned_data = None
 
 with st.sidebar:
     selected = option_menu(
@@ -53,16 +61,22 @@ elif selected == 'PreProcessing Data':
         features_to_clean = ['Umur Tahun', 'Sistole', 'Diastole', 'Nafas', 'Detak Nadi']
         # Button to clean the data
         if st.button("Clean Data"):
-            cleaned_data = clean_numeric_data(df, features_to_clean)
+            #cleaned_data = clean_numeric_data(df, features_to_clean)
+            session_state.cleaned_data = clean_numeric_data(df, features_to_clean)
             st.write("Pada bagian ini dilakukan pembersihan dataset yang tidak memiliki relevansi terhadap faktor risiko pada penyakit hipertensi, seperti menghapus satuan yang tidak diperlukan dan menghapus noise.")
-            st.dataframe(cleaned_data)
+            #st.dataframe(cleaned_data)
+            st.dataframe(session_state.cleaned_data)
 
         st.markdown('<h3 style="text-align: left;"> Melakukan Transformation Data </h1>', unsafe_allow_html=True)
         # Specify the features to one-hot encode
         features_to_encode = ['Jenis Kelamin', 'Diagnosa']
         # Button to one-hot encode the data
-        if cleaned_data is not None and st.button("One-Hot Encode"):
-            encoded_data = one_hot_encode_data(cleaned_data, features_to_encode)
+        #if cleaned_data is not None and st.button("One-Hot Encode"):
+            #encoded_data = one_hot_encode_data(cleaned_data, features_to_encode)
+            #st.write("One-Hot Encoded Data:")
+            #st.dataframe(encoded_data)
+        if session_state.cleaned_data is not None and st.button("One-Hot Encode"):
+            encoded_data = one_hot_encode_data(session_state.cleaned_data, features_to_encode)
             st.write("One-Hot Encoded Data:")
             st.dataframe(encoded_data)
             

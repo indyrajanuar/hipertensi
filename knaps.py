@@ -28,8 +28,9 @@ def label_encode_data(data, categorical_features):
 
 def normalize_data(data):
     scaler = MinMaxScaler()
-    data[data.columns] = scaler.fit_transform(data[data.columns])
-    return data
+    data_array = scaler.fit_transform(data.values)
+    normalized_data = pd.DataFrame(data_array, columns=data.columns)
+    return normalized_data
 
 with st.sidebar:
     selected = option_menu(

@@ -76,7 +76,7 @@ elif selected == 'PreProcessing Data':
                 
             st.markdown('<h3 style="text-align: left;"> Melakukan Normalisasi Data </h1>', unsafe_allow_html=True)
             # Min-Max scaling
-            features_to_normalize = ['Jenis Kelamin', ÍMT', 'Diagnosa', 'Umur Tahun', 'Sistole', 'Diastole', 'Nafas', 'Detak Nadi']
+            features_to_normalize = ['Jenis Kelamin', 'IMT', 'Diagnosa', 'Umur Tahun', 'Sistole', 'Diastole', 'Nafas', 'Detak Nadi']
             if st.button("Min-Max Scaling"):
                 st.session_state.normalized_data = normalize_data(encoded_data, features_to_normalize)
                 st.write("Min-Max scaling completed.")

@@ -27,9 +27,18 @@ def label_encode_data(data, categorical_features):
     return data
 
 def normalize_data(data):
+    if data.empty:
+        st.warning("Cannot perform Min-Max scaling. The DataFrame is empty.")
+        return data
+
+    numeric_columns = data.select_dtypes(include='number')
+    if numeric_columns.empty:
+        st.warning("Cannot perform Min-Max scaling. No numeric columns found in the DataFrame.")
+        return data
+
     scaler = MinMaxScaler()
-    data_array = scaler.fit_transform(data.values)
-    normalized_data = pd.DataFrame(data_array, columns=data.columns)
+    data_array = scaler.fit_transform(numeric_columns.values)
+    normalized_data = pd.DataFrame(data_array, columns=numeric_columns.columns)
     return normalized_data
 
 with st.sidebar:

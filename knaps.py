@@ -68,7 +68,7 @@ elif selected == 'PreProcessing Data':
             # Button to perform one-hot encoding
             if st.button("One-Hot Encoding"):
                 # encoded_data = pd.get_dummies(st.session_state.cleaned_data, columns=categorical_features)
-                encoded_data = one_hot_encode_data(session_state.cleaned_data, features_to_encode)
+                encoded_data = one_hot_encode_data(st.session_state.cleaned_data, features_to_encode)
                 st.write("Pada bagian ini, dilakukan one-hot encoding untuk mengubah variabel kategorikal menjadi representasi biner.")
                 st.dataframe(encoded_data)
             

@@ -58,9 +58,8 @@ elif selected == 'PreProcessing Data':
         # Specify the features to one-hot encode
         features_to_encode = ['Jenis Kelamin', 'Diagnosa']
         # Button to one-hot encode the data
-        # Button to one-hot encode the data
-        if cleaned_data is not None and st.button("One-Hot Encode"):
-            encoded_data = one_hot_encode_data(cleaned_data, features_to_encode)
+        if st.session_state.cleaned_data is not None and st.button("One-Hot Encode"):
+            encoded_data = one_hot_encode_data(st.session_state.cleaned_data, features_to_encode)
             st.write("One-Hot Encoded Data:")
             st.dataframe(encoded_data)
             

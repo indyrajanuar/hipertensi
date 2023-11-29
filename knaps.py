@@ -26,21 +26,6 @@ def label_encode_data(data, categorical_features):
             data[feature] = label_encoder.fit_transform(data[feature])
     return data
 
-def normalize_data(data):
-    if data.empty:
-        st.warning("Cannot perform Min-Max scaling. The DataFrame is empty.")
-        return data
-
-    numeric_columns = data.select_dtypes(include='number')
-    if numeric_columns.empty:
-        st.warning("Cannot perform Min-Max scaling. No numeric columns found in the DataFrame.")
-        return data
-
-    scaler = MinMaxScaler()
-    data_array = scaler.fit_transform(numeric_columns.values)
-    normalized_data = pd.DataFrame(data_array, columns=numeric_columns.columns)
-    return normalized_data
-
 with st.sidebar:
     selected = option_menu(
         "Main Menu",
@@ -96,16 +81,6 @@ elif selected == 'PreProcessing Data':
 
             st.markdown('<h3 style="text-align: left;"> Melakukan Normalisasi Data </h1>', unsafe_allow_html=True)
             # Min-Max scaling for all features
-            if st.button("Min-Max Scaling (All Features)"):
-                st.write("Before Min-Max Scaling:")
-                st.dataframe(encoded_data)
-
-                try:
-                    st.session_state.normalized_data = normalize_data(encoded_data.copy())
-                    st.write("After Min-Max Scaling:")
-                    st.dataframe(st.session_state.normalized_data)
-                except Exception as e:
-                    st.error(f"Error during Min-Max scaling: {e}")
                     
 elif selected == 'Klasifikasi ERNN':
     st.write("You are at Klasifikasi ERNN")

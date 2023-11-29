@@ -1,6 +1,7 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
 import pandas as pd
+import re
 
 def clean_numeric_data(data, features_to_clean):
     for feature in features_to_clean:
@@ -8,6 +9,16 @@ def clean_numeric_data(data, features_to_clean):
             data[feature] = data[feature].apply(extract_numeric)
 
     return data
+
+def extract_numeric(value):
+    # Extract numeric values from a string using regular expression
+    numeric_match = re.search(r'\d+(\.\d+)?', str(value))
+    
+    if numeric_match:
+        return float(numeric_match.group())
+    else:
+        return None
+
 with st.sidebar:
     selected = option_menu(
         "Main Menu",

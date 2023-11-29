@@ -82,9 +82,11 @@ elif selected == 'PreProcessing Data':
             # Min-Max scaling
             features_to_normalize = ['Jenis Kelamin', 'IMT', 'Diagnosa', 'Umur Tahun', 'Sistole', 'Diastole', 'Nafas', 'Detak Nadi']
             if st.button("Min-Max Scaling"):
+                st.write("Before Min-Max Scaling:")
+                st.dataframe(encoded_data[features_to_normalize])
                 st.session_state.normalized_data = normalize_data(encoded_data, features_to_normalize)
-                st.write("Min-Max scaling completed.")
-                st.dataframe(st.session_state.normalized_data)
+                st.write("After Min-Max Scaling:")
+                st.dataframe(st.session_state.normalized_data[features_to_normalize])
             
 elif selected == 'Klasifikasi ERNN':
     st.write("You are at Klasifikasi ERNN")

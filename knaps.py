@@ -26,6 +26,8 @@ def normalize_data(data, features_to_normalize):
             st.write(f"Before Scaling - {feature}: Min={data[feature].min()}, Max={data[feature].max()}")
             data[feature] = scaler.fit_transform(data[[feature]])
             st.write(f"After Scaling - {feature}: Min={data[feature].min()}, Max={data[feature].max()}")
+        else:
+            st.warning(f"Warning: {feature} not found in DataFrame columns.")
     return data
 
 with st.sidebar:

@@ -2,11 +2,12 @@ import streamlit as st
 from streamlit_option_menu import option_menu
 import pandas as pd
 
-def clean_data(data, categorical_features_to_remove):
-    # Hapus objek kategorikal pada fitur tertentu
-    data = data.drop(columns=categorical_features_to_remove)
-    return data
+def clean_numeric_data(data, features_to_clean):
+    for feature in features_to_clean:
+        if feature in data.columns:
+            data[feature] = data[feature].apply(extract_numeric)
 
+    return data
 with st.sidebar:
     selected = option_menu(
         "Main Menu",
@@ -35,17 +36,13 @@ elif selected == 'PreProcessing Data':
         df = pd.read_csv(upload_file)
         st.dataframe(df)
         st.markdown('<h3 style="text-align: left;"> Melakukan Cleaning Data </h1>', unsafe_allow_html=True)
-
-        # Pilihan fitur kategorikal yang akan dihapus
-        categorical_features_to_remove = st.multiselect(
-            "Umur Tahun", data.columns
-        )
         
+        # Specify the features to clean
+        features_to_clean = ['umur tahun', 'sistole', 'diastole', 'nafas', 'detak nadi']
+
         # Button to clean the data
         if st.button("Clean Data"):
-            # Panggil fungsi preprocessing
-            cleaned_data = clean_data(data, categorical_features_to_remove)
-
+            cleaned_data = clean_numeric_data(df, features_to_clean)
             st.write("Pada bagian ini dilakukan pembersihan dataset yang tidak memiliki relevansi terhadap faktor risiko pada penyakit hipertensi, seperti menghapus satuan yang tidak diperlukan dan menghapus noise.")
             st.dataframe(cleaned_data)
 

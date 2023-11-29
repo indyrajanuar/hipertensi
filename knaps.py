@@ -13,10 +13,15 @@ def clean_numeric_data(data, features_to_clean):
 def remove_non_numeric(value):
     # Remove non-numeric characters using regular expression
     return re.sub(r'[^0-9.]', '', str(value))
-
+    
+def preprocess_data(df, features_to_clean, categorical_features):
+    cleaned_data = clean_numeric_data(df, features_to_clean)
+    encoded_data = pd.get_dummies(cleaned_data, columns=categorical_features)
+    return cleaned_data, encoded_data
+    
 # Initialize session_state to store variables between button clicks
-if 'cleaned_data' not in st.session_state:
-    st.session_state.cleaned_data = pd.DataFrame()
+# if 'cleaned_data' not in st.session_state:
+    # st.session_state.cleaned_data = pd.DataFrame()
 
 with st.sidebar:
     selected = option_menu(
@@ -51,21 +56,18 @@ elif selected == 'PreProcessing Data':
         features_to_clean = ['Umur Tahun', 'Sistole', 'Diastole', 'Nafas', 'Detak Nadi']
         # Button to clean the data
         if st.button("Clean Data"):
-            # cleaned_data = clean_numeric_data(df, features_to_clean)
             st.session_state.cleaned_data = clean_numeric_data(df, features_to_clean)
             st.write("Pada bagian ini dilakukan pembersihan dataset yang tidak memiliki relevansi terhadap faktor risiko pada penyakit hipertensi, seperti menghapus satuan yang tidak diperlukan dan menghapus noise.")
-            # st.dataframe(cleaned_data)
             st.dataframe(st.session_state.cleaned_data)
 
         st.markdown('<h3 style="text-align: left;"> Melakukan Transformation Data </h1>', unsafe_allow_html=True)
         # Specify the categorical features for one-hot encoding
         categorical_features = ['Jenis Kelamin', 'Diagnosa']
-        # Check if cleaned_data is not empty before performing one-hot encoding
+        # One-hot encoding
         if not st.session_state.cleaned_data.empty:
-            # Button to perform one-hot encoding
             if st.button("One-Hot Encoding"):
                 encoded_data = pd.get_dummies(st.session_state.cleaned_data, columns=categorical_features)
-                st.write("Pada bagian ini, dilakukan one-hot encoding untuk mengubah variabel kategorikal menjadi representasi biner.")
+                st.write("One-hot encoding completed.")
                 st.dataframe(encoded_data)
             
 elif selected == 'Klasifikasi ERNN':

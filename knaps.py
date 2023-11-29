@@ -52,6 +52,13 @@ elif selected == 'PreProcessing Data':
             st.dataframe(cleaned_data)
 
         st.markdown('<h3 style="text-align: left;"> Melakukan Transformation Data </h1>', unsafe_allow_html=True)
+        # Specify the categorical features for one-hot encoding
+        categorical_features = ['Jenis Kelamin', 'Diagnosa']
+        # Button to perform one-hot encoding
+        if st.button("One-Hot Encoding"):
+            encoded_data = pd.get_dummies(cleaned_data, columns=categorical_features)
+            st.write("Pada bagian ini, dilakukan one-hot encoding untuk mengubah variabel kategorikal menjadi representasi biner.")
+            st.dataframe(encoded_data)
             
 elif selected == 'Klasifikasi ERNN':
     st.write("You are at Klasifikasi ERNN")

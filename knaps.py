@@ -38,7 +38,7 @@ elif selected == 'PreProcessing Data':
         st.markdown('<h3 style="text-align: left;"> Melakukan Cleaning Data </h1>', unsafe_allow_html=True)
         
         # Specify the features to clean
-        features_to_clean = ['umur tahun', 'sistole', 'diastole', 'nafas', 'detak nadi']
+        features_to_clean = ['Umur Tahun', 'Sistole', 'Diastole', 'Nafas', 'Detak Nadi']
 
         # Button to clean the data
         if st.button("Clean Data"):

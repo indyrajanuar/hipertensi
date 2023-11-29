@@ -2,12 +2,12 @@ import streamlit as st
 from streamlit_option_menu import option_menu
 import pandas as pd
 import re
+from sklearn.preprocessing import MinMaxScaler
 
 def clean_numeric_data(data, features_to_clean):
     for feature in features_to_clean:
         if feature in data.columns:
             data[feature] = data[feature].apply(remove_non_numeric)
-
     return data
 
 def remove_non_numeric(value):
@@ -18,10 +18,14 @@ def preprocess_data(df, features_to_clean, categorical_features):
     cleaned_data = clean_numeric_data(df, features_to_clean)
     encoded_data = pd.get_dummies(cleaned_data, columns=categorical_features)
     return cleaned_data, encoded_data
-    
-# Initialize session_state to store variables between button clicks
-# if 'cleaned_data' not in st.session_state:
-    # st.session_state.cleaned_data = pd.DataFrame()
+
+# Function to normalize data using Min-Max scaling
+def normalize_data(data, features_to_normalize):
+    scaler = MinMaxScaler()
+    for feature in features_to_normalize:
+        if feature in data.columns:
+            data[feature] = scaler.fit_transform(data[[feature]])
+    return data
 
 with st.sidebar:
     selected = option_menu(
@@ -67,8 +71,16 @@ elif selected == 'PreProcessing Data':
         if not st.session_state.cleaned_data.empty:
             if st.button("One-Hot Encoding"):
                 encoded_data = pd.get_dummies(st.session_state.cleaned_data, columns=categorical_features)
-                st.write("One-hot encoding completed.")
+                st.write("Pada bagian ini, dilakukan one-hot encoding untuk mengubah variabel kategorikal menjadi representasi biner.")
                 st.dataframe(encoded_data)
+                
+            st.markdown('<h3 style="text-align: left;"> Melakukan Normalisasi Data </h1>', unsafe_allow_html=True)
+            # Min-Max scaling
+            features_to_normalize = ['Jenis Kelamin', ÍMT', 'Diagnosa', 'Umur Tahun', 'Sistole', 'Diastole', 'Nafas', 'Detak Nadi']
+            if st.button("Min-Max Scaling"):
+                st.session_state.normalized_data = normalize_data(encoded_data, features_to_normalize)
+                st.write("Min-Max scaling completed.")
+                st.dataframe(st.session_state.normalized_data)
             
 elif selected == 'Klasifikasi ERNN':
     st.write("You are at Klasifikasi ERNN")

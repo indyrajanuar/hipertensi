@@ -14,7 +14,7 @@ def remove_non_numeric(value):
     # Remove non-numeric characters using regular expression
     return re.sub(r'[^0-9.]', '', str(value))
 
-def one_hot_encode_data(data, features_to_encode):
+def one_hot_encode_data(data, categorical_features):
     return pd.get_dummies(data, columns=categorical_features, drop_first=True)
 
 # Initialize session_state to store variables between button clicks

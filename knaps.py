@@ -25,8 +25,9 @@ class SessionState:
 # Create an instance of SessionState
 session_state = SessionState(cleaned_data=None)
 
-# Placeholder for cleaned data
-#cleaned_data = None
+# Initialize cleaned_data globally
+if 'cleaned_data' not in st.session_state:
+    st.session_state.cleaned_data = None
 
 with st.sidebar:
     selected = option_menu(
@@ -75,8 +76,9 @@ elif selected == 'PreProcessing Data':
             #encoded_data = one_hot_encode_data(cleaned_data, features_to_encode)
             #st.write("One-Hot Encoded Data:")
             #st.dataframe(encoded_data)
-        if session_state.cleaned_data is not None and st.button("One-Hot Encode"):
-            encoded_data = one_hot_encode_data(session_state.cleaned_data, features_to_encode)
+        # Button to one-hot encode the data
+        if st.session_state.cleaned_data is not None and st.button("One-Hot Encode"):
+            encoded_data = one_hot_encode_data(st.session_state.cleaned_data, features_to_encode)
             st.write("One-Hot Encoded Data:")
             st.dataframe(encoded_data)
             

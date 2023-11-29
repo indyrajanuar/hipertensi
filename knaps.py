@@ -14,9 +14,6 @@ def remove_non_numeric(value):
     # Remove non-numeric characters using regular expression
     return re.sub(r'[^0-9.]', '', str(value))
 
-def one_hot_encode_data(data, features_to_encode):
-    return pd.get_dummies(data, columns=features_to_encode, drop_first=True)
-
 with st.sidebar:
     selected = option_menu(
         "Main Menu",
@@ -55,13 +52,6 @@ elif selected == 'PreProcessing Data':
             st.dataframe(cleaned_data)
 
         st.markdown('<h3 style="text-align: left;"> Melakukan Transformation Data </h1>', unsafe_allow_html=True)
-        # Specify the features to one-hot encode
-        features_to_encode = ['Jenis Kelamin', 'Diagnosa']
-        # Button to one-hot encode the data
-        if cleaned_data is not None and st.button("One-Hot Encode"):
-            encoded_data = one_hot_encode_data(cleaned_data, features_to_encode)
-            st.write("One-Hot Encoded Data:")
-            st.dataframe(encoded_data)
             
 elif selected == 'Klasifikasi ERNN':
     st.write("You are at Klasifikasi ERNN")

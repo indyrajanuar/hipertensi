@@ -2,6 +2,7 @@ import streamlit as st
 from streamlit_option_menu import option_menu
 import pandas as pd
 from sklearn.preprocessing import OneHotEncoder, MinMaxScaler
+from tensorflow.keras.models import load_model  # Import load_model function
 
 def preprocess_data(data):
     # Replace commas with dots and convert numerical columns to floats
@@ -67,8 +68,14 @@ elif selected == 'PreProcessing Data':
                 st.dataframe(normalized_data)
 
 elif selected == 'Klasifikasi ERNN':
-    st.write("Berikut merupakan hasil klasifikasi yang di dapat dari pemodelan  Elman Recurrent Neural Network (ERNN)")
+    st.write("Berikut merupakan hasil klasifikasi yang di dapat dari pemodelan Elman Recurrent Neural Network (ERNN)")
     
+    # Add file uploader for model
+    model_file = st.file_uploader("Upload Model File", type=['h5'])
+
+    if model_file is not None:
+        model = load_model(model-final)
+        st.write("Model loaded successfully.")
 
 elif selected == 'Klasifikasi ERNN + Bagging':
     st.write("You are at Korelasi Data")

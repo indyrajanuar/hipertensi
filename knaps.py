@@ -26,7 +26,11 @@ if selected == 'Home':
 elif selected == 'PreProcessing Data':
     st.markdown('<h3 style="text-align: left;"> Data Asli </h1>', unsafe_allow_html=True)
     st.write("Berikut merupakan data asli yang didapat dari UPT Puskesmas Modopuro Mojokerto.")
-                    
+
+    if upload_file is not None:
+        df = pd.read_csv(upload_file)
+        st.dataframe(df)
+        st.markdown('<h3 style="text-align: left;"> Melakukan Transformation Data </h1>', unsafe_allow_html=True)
 elif selected == 'Klasifikasi ERNN':
     st.write("You are at Klasifikasi ERNN")
 

@@ -1,6 +1,7 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
 import pandas as pd
+from sklearn.preprocessing import OneHotEncoder
 
 def preprocess_data(data): 
     # One-hot encoding for 'Jenis Kelamin'

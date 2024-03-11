@@ -4,6 +4,10 @@ import pandas as pd
 from sklearn.preprocessing import OneHotEncoder, MinMaxScaler
 
 def preprocess_data(data):
+    # Replace commas with dots and convert numerical columns to floats
+    numerical_columns = ['Umur Tahun', 'Sistole', 'Diastole', 'Nafas', 'Detak Nadi']
+    data[numerical_columns] = data[numerical_columns].replace({',': '.'}, regex=True).astype(float)
+    
     # One-hot encoding for 'Jenis Kelamin'
     one_hot_encoder = OneHotEncoder(sparse=False)
     encoded_features = pd.DataFrame(one_hot_encoder.fit_transform(data[['Jenis Kelamin']]))

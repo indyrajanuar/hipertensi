@@ -69,6 +69,34 @@ elif selected == 'PreProcessing Data':
 elif selected == 'Klasifikasi ERNN':
     st.write("Berikut merupakan hasil klasifikasi yang di dapat dari pemodelan  Elman Recurrent Neural Network (ERNN)")
     
+    # Load the trained model
+    model = keras.models.load_model("your_model.h5")  # Provide the correct path to your saved model
+
+    # Perform prediction
+    y_pred = model.predict(x_test)
+    y_pred = (y_pred > 0.5)  # Thresholding predictions
+
+    # Convert predictions to binary
+    y_pred_binary = np.round(y_pred)
+
+    # Evaluate model
+    from sklearn.metrics import confusion_matrix, classification_report
+
+    cm = confusion_matrix(y_test, y_pred_binary)
+
+    # Plotting confusion matrix
+    import seaborn as sns
+    import matplotlib.pyplot as plt
+
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
+    plt.xlabel('Predicted')
+    plt.ylabel('True')
+    plt.title('Confusion Matrix')
+    st.pyplot()
+
+    # Display classification report
+    st.write("Classification Report:")
+    st.write(classification_report(y_test, y_pred_binary))
 
 elif selected == 'Klasifikasi ERNN + Bagging':
     st.write("You are at Korelasi Data")

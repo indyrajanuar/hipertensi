@@ -5,9 +5,9 @@ from sklearn.preprocessing import OneHotEncoder
 
 def preprocess_data(data): 
     # One-hot encoding for 'Jenis Kelamin'
-    one_hot_encoder = OneHotEncoder(sparse=False)  # Specify sparse=False
-    encoded_features = pd.DataFrame(one_hot_encoder.fit_transform(data[['Jenis Kelamin']]))
-    encoded_features.columns = one_hot_encoder.get_feature_names_out(['Jenis Kelamin'])
+    one_hot_encoder = OneHotEncoder()
+    encoded_features = one_hot_encoder.fit_transform(data[['Jenis Kelamin']])
+    encoded_features = pd.DataFrame(encoded_features, columns=one_hot_encoder.get_feature_names_out(['Jenis Kelamin']))
     data = pd.concat([data.drop('Jenis Kelamin', axis=1), encoded_features], axis=1)
 
     return data

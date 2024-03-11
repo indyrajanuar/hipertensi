@@ -1,6 +1,7 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
 import pandas as pd
+from sklearn.preprocessing import LabelEncoder
 
 def label_encode_data(data, categorical_features):
     label_encoder = LabelEncoder()
@@ -47,9 +48,6 @@ elif selected == 'PreProcessing Data':
                 encoded_data = label_encode_data(st.session_state.cleaned_data, categorical_features)
                 st.write("Label encoding completed.")
                 st.dataframe(encoded_data)
-                st.write(encoded_data.shape)
-                st.write(encoded_data.dtypes)
-                st.write(encoded_data.isnull().sum())
                 
 elif selected == 'Klasifikasi ERNN':
     st.write("You are at Klasifikasi ERNN")

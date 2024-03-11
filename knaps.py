@@ -19,7 +19,6 @@ with st.sidebar:
         default_index=1,
         orientation='vertical')
 
-with st.sidebar:
     upload_file = st.sidebar.file_uploader("Masukkan file excel disini", key=1)
 
 if selected == 'Home':
@@ -40,14 +39,14 @@ elif selected == 'PreProcessing Data':
         st.dataframe(df)
         st.markdown('<h3 style="text-align: left;"> Melakukan Transformation Data </h1>', unsafe_allow_html=True)
 
-        # Specify the categorical features for one-hot encoding
+        # Specify the categorical features for label encoding
         categorical_features = ['Jenis Kelamin', 'Diagnosa']
-        # One-hot encoding
-         if st.button("Label Encoding"):
+        
+        if st.button("Label Encoding"):
             encoded_data = label_encode_data(df, categorical_features)
             st.write("Label encoding completed.")
             st.dataframe(encoded_data)
-                
+
 elif selected == 'Klasifikasi ERNN':
     st.write("You are at Klasifikasi ERNN")
 

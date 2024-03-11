@@ -1,13 +1,15 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
 import pandas as pd
-from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import OneHotEncoder
 
-def label_encode_data(data, categorical_features):
-    label_encoder = LabelEncoder()
-    for feature in categorical_features:
-        if feature in data.columns:
-            data[feature] = label_encoder.fit_transform(data[feature])
+def preprocess_data(data):
+    # One-hot encoding for 'Jenis Kelamin'
+    data = pd.get_dummies(data, columns=['Jenis Kelamin'], drop_first=True)
+    
+    # Encode 'Diagnosa' column
+    data['Diagnosa'] = data['Diagnosa'].map({'YA': 1, 'TIDAK': 0})
+    
     return data
 
 with st.sidebar:
@@ -39,13 +41,10 @@ elif selected == 'PreProcessing Data':
         st.dataframe(df)
         st.markdown('<h3 style="text-align: left;"> Melakukan Transformation Data </h1>', unsafe_allow_html=True)
 
-        # Specify the categorical features for label encoding
-        categorical_features = ['Jenis Kelamin', 'Diagnosa']
-        
-        if st.button("Label Encoding"):
-            encoded_data = label_encode_data(df, categorical_features)
-            st.write("Label encoding completed.")
-            st.dataframe(encoded_data)
+        if st.button("Preprocess Data"):
+            preprocessed_data = preprocess_data(df)
+            st.write("Preprocessing completed.")
+            st.dataframe(preprocessed_data)
 
 elif selected == 'Klasifikasi ERNN':
     st.write("You are at Klasifikasi ERNN")

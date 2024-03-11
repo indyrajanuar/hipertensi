@@ -21,14 +21,20 @@ with st.sidebar:
         orientation='vertical')
 
 with st.sidebar:
-    upload_file = st.sidebar.file_uploader("Masukkan file csv disini", key=1)
+    upload_file = st.sidebar.file_uploader("Masukkan file excel disini", key=1)
 
 if selected == 'Home':
     st.markdown('<h1 style="text-align: center;"> Website Klasifikasi Hipertensi </h1>', unsafe_allow_html=True)
     st.markdown('<h3 style="text-align: left;"> Hipertensi </h1>', unsafe_allow_html=True)
     st.markdown('<h3 style="text-align: left;"> View Data </h1>', unsafe_allow_html=True)
     if upload_file is not None:
-        df = pd.read_excel(upload_file)
+        try:
+            df = pd.read_excel(upload_file, encoding='utf-8')
+        except UnicodeDecodeError:
+            try:
+                df = pd.read_excel(upload_file, encoding='latin1')
+            except UnicodeDecodeError:
+                df = pd.read_excel(upload_file, encoding='cp1252')
         st.write("Data yang digunakan yaitu data Penyakit Hipertensi dari UPT Puskesmas Modopuro Mojokerto.")
         st.dataframe(df)
 
@@ -39,7 +45,13 @@ elif selected == 'PreProcessing Data':
     encoded_data = pd.DataFrame()  # Define encoded_data outside the 'One-Hot Encoding' block
     
     if upload_file is not None:
-        df = pd.read_excel(upload_file)
+        try:
+            df = pd.read_excel(upload_file, encoding='utf-8')
+        except UnicodeDecodeError:
+            try:
+                df = pd.read_excel(upload_file, encoding='latin1')
+            except UnicodeDecodeError:
+                df = pd.read_excel(upload_file, encoding='cp1252')
         st.dataframe(df)
 
         st.markdown('<h3 style="text-align: left;"> Melakukan Transformation Data </h1>', unsafe_allow_html=True)

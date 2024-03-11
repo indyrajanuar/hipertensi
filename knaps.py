@@ -12,8 +12,11 @@ def preprocess_data(data):
     # Transform 'Diagnosa' feature to binary values
     data['Diagnosa'] = data['Diagnosa'].map({'YA': 1, 'TIDAK': 0})
     
+    # Drop the original 'Jenis Kelamin' and 'Diagnosa' features
+    data = data.drop(['Jenis Kelamin', 'Diagnosa'], axis=1)
+    
     # Concatenate encoded 'Jenis Kelamin' and transformed 'Diagnosa' with original data
-    data = pd.concat([data.drop('Jenis Kelamin', axis=1), encoded_gender, data['Diagnosa']], axis=1)
+    data = pd.concat([data, encoded_gender], axis=1)
 
     return data
     

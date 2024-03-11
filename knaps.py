@@ -33,7 +33,7 @@ with st.sidebar:
         default_index=1,
         orientation='vertical')
 
-    upload_file = st.sidebar.file_uploader("Masukkan file excel disini", key=1)
+    upload_file = st.sidebar.file_uploader("Masukkan file csv disini", key=1)
 
 if selected == 'Home':
     st.markdown('<h1 style="text-align: center;"> Website Klasifikasi Hipertensi </h1>', unsafe_allow_html=True)

@@ -1,20 +1,23 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
 import pandas as pd
-from sklearn.preprocessing import OneHotEncoder
+from sklearn.preprocessing import OneHotEncoder, MinMaxScaler
 
 def preprocess_data(data):
+    # One-hot encoding for 'Jenis Kelamin'
+    one_hot_encoder = OneHotEncoder(sparse=False)
+    encoded_features = pd.DataFrame(one_hot_encoder.fit_transform(data[['Jenis Kelamin']]))
+    encoded_features.columns = one_hot_encoder.get_feature_names_out(['Jenis Kelamin'])
+    data = pd.concat([data.drop('Jenis Kelamin', axis=1), encoded_features], axis=1)
+    
     # Transform 'Diagnosa' feature to '1' for 'YA' and '0' for 'TIDAK'
     data['Diagnosa'] = data['Diagnosa'].map({'YA': 1, 'TIDAK': 0})
     
-    # One-hot encoding for 'Jenis Kelamin'
-    one_hot_encoder = OneHotEncoder(sparse=False)
-    encoded_features = one_hot_encoder.fit_transform(data[['Jenis Kelamin']])
-    encoded_features_df = pd.DataFrame(encoded_features, columns=one_hot_encoder.get_feature_names_out(['Jenis Kelamin']))
-    
-    # Concatenate the encoded features with the original dataframe
-    data = pd.concat([data.drop('Jenis Kelamin', axis=1), encoded_features_df], axis=1)
-    
+    return data
+
+def normalize_data(data):
+    scaler = MinMaxScaler()
+    data[data.columns] = scaler.fit_transform(data[data.columns])
     return data
 
 with st.sidebar:
@@ -50,6 +53,12 @@ elif selected == 'PreProcessing Data':
             preprocessed_data = preprocess_data(df)
             st.write("Preprocessing completed.")
             st.dataframe(preprocessed_data)
+
+        st.markdown('<h3 style="text-align: left;"> Melakukan Normalisasi Data </h1>', unsafe_allow_html=True)
+        if st.button("Normalize Data"):
+            normalized_data = normalize_data(preprocessed_data.copy())
+            st.write("Normalization completed.")
+            st.dataframe(normalized_data)
 
 elif selected == 'Klasifikasi ERNN':
     st.write("You are at Klasifikasi ERNN")

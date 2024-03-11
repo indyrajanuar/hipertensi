@@ -2,22 +2,7 @@ import streamlit as st
 from streamlit_option_menu import option_menu
 import pandas as pd
 import re
-from sklearn.preprocessing import MinMaxScaler
 from sklearn.preprocessing import LabelEncoder
-
-def clean_numeric_data(data, features_to_clean):
-    for feature in features_to_clean:
-        if feature in data.columns:
-            data[feature] = data[feature].apply(remove_non_numeric)
-    return data
-
-def remove_non_numeric(value):
-    # Remove non-numeric characters using regular expression
-    return re.sub(r'[^0-9.]', '', str(value))
-    
-def preprocess_data(df, features_to_clean, categorical_features):
-    cleaned_data = clean_numeric_data(df, features_to_clean)
-    return cleaned_data
 
 def label_encode_data(data, categorical_features):
     label_encoder = LabelEncoder()
@@ -56,31 +41,21 @@ elif selected == 'PreProcessing Data':
     if upload_file is not None:
         df = pd.read_csv(upload_file)
         st.dataframe(df)
-        st.markdown('<h3 style="text-align: left;"> Melakukan Cleaning Data </h1>', unsafe_allow_html=True)
-        
-        # Specify the features to clean
-        features_to_clean = ['Umur Tahun', 'Sistole', 'Diastole', 'Nafas', 'Detak Nadi']
-        # Button to clean the data
-        if st.button("Clean Data"):
-            st.session_state.cleaned_data = clean_numeric_data(df, features_to_clean)
-            st.write("Pada bagian ini dilakukan pembersihan dataset yang tidak memiliki relevansi terhadap faktor risiko pada penyakit hipertensi, seperti menghapus satuan yang tidak diperlukan dan menghapus noise.")
-            st.dataframe(st.session_state.cleaned_data)
 
         st.markdown('<h3 style="text-align: left;"> Melakukan Transformation Data </h1>', unsafe_allow_html=True)
-        # Specify the categorical features for one-hot encoding
+        # Specify the categorical features for label encoding
         categorical_features = ['Jenis Kelamin', 'Diagnosa']
-        # One-hot encoding
-        if not st.session_state.cleaned_data.empty:
-            if st.button("Label Encoding"):
-                encoded_data = label_encode_data(st.session_state.cleaned_data, categorical_features)
-                st.write("Label encoding completed.")
-                st.dataframe(encoded_data)
-                st.write(encoded_data.shape)
-                st.write(encoded_data.dtypes)
-                st.write(encoded_data.isnull().sum())
+        
+        if st.button("Label Encoding"):
+            encoded_data = label_encode_data(df, categorical_features)
+            st.write("Label encoding completed.")
+            st.dataframe(encoded_data)
+            st.write(encoded_data.shape)
+            st.write(encoded_data.dtypes)
+            st.write(encoded_data.isnull().sum())
 
-            st.markdown('<h3 style="text-align: left;"> Melakukan Normalisasi Data </h1>', unsafe_allow_html=True)
-            # Min-Max scaling for all features
+        st.markdown('<h3 style="text-align: left;"> Melakukan Normalisasi Data </h1>', unsafe_allow_html=True)
+        # Min-Max scaling for all features
                     
 elif selected == 'Klasifikasi ERNN':
     st.write("You are at Klasifikasi ERNN")

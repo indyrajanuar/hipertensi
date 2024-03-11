@@ -24,6 +24,11 @@ def normalize_data(data):
     data[data.columns] = scaler.fit_transform(data[data.columns])
     return data
 
+def predict_with_ernn(data):
+    model = load_model('model-final.h5')  # Memuat model yang telah disimpan
+    predictions = model.predict(data)  # Melakukan prediksi pada data
+    return predictions
+
 with st.sidebar:
     selected = option_menu(
         "Main Menu",
@@ -68,7 +73,12 @@ elif selected == 'PreProcessing Data':
 
 elif selected == 'Klasifikasi ERNN':
     st.write("Berikut merupakan hasil klasifikasi yang di dapat dari pemodelan  Elman Recurrent Neural Network (ERNN)")
-
+    if 'preprocessed_data' in st.session_state:  
+        # Melakukan prediksi jika data telah diproses sebelumnya
+        predictions = predict_with_ernn(st.session_state.preprocessed_data.copy())
+        st.write("Hasil Prediksi:")
+        st.write(predictions)
+        
 elif selected == 'Klasifikasi ERNN + Bagging':
     st.write("You are at Korelasi Data")
 

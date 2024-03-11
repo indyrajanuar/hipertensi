@@ -4,6 +4,9 @@ import pandas as pd
 from sklearn.preprocessing import OneHotEncoder, MinMaxScaler
 
 def preprocess_data(data): 
+    # Replace commas with dots and convert numerical columns to floats
+    numerical_columns = ['IMT']
+    data[numerical_columns] = data[numerical_columns].replace({',': '.'}, regex=True).astype(float)
     # One-hot encoding for 'Jenis Kelamin'
     one_hot_encoder = OneHotEncoder()
     encoded_gender = one_hot_encoder.fit_transform(data[['Jenis Kelamin']].values.reshape(-1, 1))

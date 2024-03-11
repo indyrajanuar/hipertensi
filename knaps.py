@@ -3,11 +3,16 @@ from streamlit_option_menu import option_menu
 import pandas as pd
 from sklearn.preprocessing import OneHotEncoder
 
-def one_hot_encode_data(data, categorical_features):
+def preprocess_data(data):
+    # One-hot encoding for 'Jenis Kelamin'
     one_hot_encoder = OneHotEncoder(sparse=False)
-    encoded_features = pd.DataFrame(one_hot_encoder.fit_transform(data[categorical_features]))
-    encoded_features.columns = one_hot_encoder.get_feature_names_out(categorical_features)
-    data = pd.concat([data.drop(categorical_features, axis=1), encoded_features], axis=1)
+    encoded_features = pd.DataFrame(one_hot_encoder.fit_transform(data[['Jenis Kelamin']]))
+    encoded_features.columns = one_hot_encoder.get_feature_names_out(['Jenis Kelamin'])
+    data = pd.concat([data.drop('Jenis Kelamin', axis=1), encoded_features], axis=1)
+    
+    # Transform 'Diagnosa' feature to '1' for 'YA' and '0' for 'TIDAK'
+    data['Diagnosa'] = data['Diagnosa'].map({'YA': 1, 'TIDAK': 0})
+    
     return data
 
 with st.sidebar:
@@ -39,13 +44,10 @@ elif selected == 'PreProcessing Data':
         st.dataframe(df)
         st.markdown('<h3 style="text-align: left;"> Melakukan Transformation Data </h1>', unsafe_allow_html=True)
 
-        # Specify the categorical features for one-hot encoding
-        categorical_features = ['Jenis Kelamin']
-        
-        if st.button("One-Hot Encoding"):
-            encoded_data = one_hot_encode_data(df, categorical_features)
-            st.write("One-hot encoding completed.")
-            st.dataframe(encoded_data)
+        if st.button("Preprocess Data"):
+            preprocessed_data = preprocess_data(df)
+            st.write("Preprocessing completed.")
+            st.dataframe(preprocessed_data)
 
 elif selected == 'Klasifikasi ERNN':
     st.write("You are at Klasifikasi ERNN")

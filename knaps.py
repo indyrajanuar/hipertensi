@@ -2,10 +2,6 @@ import streamlit as st
 from streamlit_option_menu import option_menu
 import pandas as pd
 from sklearn.preprocessing import OneHotEncoder, MinMaxScaler
-from tensorflow.keras.models import load_model
-import seaborn as sns
-import matplotlib.pyplot as plt
-from sklearn.metrics import confusion_matrix 
 
 def preprocess_data(data): 
     # Replace commas with dots and convert numerical columns to floats
@@ -27,22 +23,7 @@ def normalize_data(data):
     scaler = MinMaxScaler()
     normalized_data = pd.DataFrame(scaler.fit_transform(data), columns=data.columns)
     return normalized_data
-
-def classify_with_ernn(data):
-    # Load the pre-trained ERNN model
-    model = load_model('model-final.h5')
-    # Perform inference
-    predictions = model.predict(data)
-    return predictions
-
-def plot_confusion_matrix(y_true, y_pred):
-    cm = confusion_matrix(y_true, y_pred)
-    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
-    plt.xlabel('Predicted')
-    plt.ylabel('True')
-    plt.title('Confusion Matrix')
-    st.pyplot()
-
+    
 with st.sidebar:
     selected = option_menu(
         "Main Menu",
@@ -85,20 +66,9 @@ elif selected == 'PreProcessing Data':
                 st.dataframe(normalized_data)
 
 elif selected == 'Klasifikasi ERNN':
-    st.write("Berikut merupakan hasil klasifikasi yang di dapat dari pemodelan Elman Recurrent Neural Network (ERNN)")
+    st.write("Berikut merupakan hasil klasifikasi yang di dapat dari pemodelan  Elman Recurrent Neural Network (ERNN)")
 
-    if 'normalized_data' in st.session_state:
-        if st.button("Classify with ERNN"):
-            predictions = classify_with_ernn(st.session_state.normalized_data)
-            st.write("Classification completed.")
-            st.write("Predictions:")
-            st.write(predictions)
-
-            # Plot confusion matrix
-            y_test = # Assuming you have your ground truth labels
-            plot_confusion_matrix(y_test, predictions.argmax(axis=1))
-
-elif selected == 'ERNN + Bagging':
+elif selected == 'Klasifikasi ERNN + Bagging':
     st.write("You are at Korelasi Data")
 
 elif selected == 'Uji Coba':

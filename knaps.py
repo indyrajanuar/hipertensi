@@ -4,14 +4,16 @@ import pandas as pd
 from sklearn.preprocessing import OneHotEncoder
 
 def preprocess_data(data):
-    # One-hot encoding for 'Jenis Kelamin'
-    one_hot_encoder = OneHotEncoder(sparse=False)
-    encoded_features = pd.DataFrame(one_hot_encoder.fit_transform(data[['Jenis Kelamin']]))
-    encoded_features.columns = one_hot_encoder.get_feature_names_out(['Jenis Kelamin'])
-    data = pd.concat([data.drop('Jenis Kelamin', axis=1), encoded_features], axis=1)
-    
     # Transform 'Diagnosa' feature to '1' for 'YA' and '0' for 'TIDAK'
     data['Diagnosa'] = data['Diagnosa'].map({'YA': 1, 'TIDAK': 0})
+    
+    # One-hot encoding for 'Jenis Kelamin'
+    one_hot_encoder = OneHotEncoder(sparse=False)
+    encoded_features = one_hot_encoder.fit_transform(data[['Jenis Kelamin']])
+    encoded_features_df = pd.DataFrame(encoded_features, columns=one_hot_encoder.get_feature_names_out(['Jenis Kelamin']))
+    
+    # Concatenate the encoded features with the original dataframe
+    data = pd.concat([data.drop('Jenis Kelamin', axis=1), encoded_features_df], axis=1)
     
     return data
 

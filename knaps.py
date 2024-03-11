@@ -69,7 +69,7 @@ elif selected == 'PreProcessing Data':
 elif selected == 'Klasifikasi ERNN':
     st.write("You are at Klasifikasi ERNN")
 
-elif selected == 'Korelasi Data':
+elif selected == 'Klasifikasi ERNN + Bagging':
     st.write("You are at Korelasi Data")
 
 elif selected == 'Uji Coba':

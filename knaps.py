@@ -31,8 +31,6 @@ elif selected == 'PreProcessing Data':
         st.dataframe(df)
         st.markdown('<h3 style="text-align: left;"> Melakukan Transformation Data </h1>', unsafe_allow_html=True)
 
-        if st.button("Preprocess Data"):
-
 elif selected == 'Klasifikasi ERNN':
     st.write("Berikut merupakan hasil klasifikasi yang di dapat dari pemodelan  Elman Recurrent Neural Network (ERNN)")
 

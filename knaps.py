@@ -13,7 +13,7 @@ def preprocess_data(data):
     data['Diagnosa'] = data['Diagnosa'].map({'YA': 1, 'TIDAK': 0})
     
     # Concatenate encoded 'Jenis Kelamin' and transformed 'Diagnosa' with original data
-    data = pd.concat([data.drop('Jenis Kelamin', axis=1), encoded_gender, data['Diagnosa']], axis=1)
+    data = pd.concat([data.drop(['Jenis Kelamin', 'Diagnosa'], axis=1), encoded_gender], axis=1)
 
     return data
     
@@ -45,9 +45,9 @@ elif selected == 'PreProcessing Data':
         df = pd.read_csv(upload_file)
         st.dataframe(df)
         st.markdown('<h3 style="text-align: left;"> Melakukan Transformation Data </h1>', unsafe_allow_html=True)
-        if st.button("Preprocess Data"):  # Check if button is clicked
+        if st.button("Transformation Data"):  # Check if button is clicked
             preprocessed_data = preprocess_data(df)
-            st.write("Preprocessing completed.")
+            st.write("Transformation completed.")
             st.dataframe(preprocessed_data)
             
 elif selected == 'Klasifikasi ERNN':

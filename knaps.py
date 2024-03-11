@@ -53,12 +53,14 @@ elif selected == 'PreProcessing Data':
             preprocessed_data = preprocess_data(df)
             st.write("Preprocessing completed.")
             st.dataframe(preprocessed_data)
+            st.session_state.preprocessed_data = preprocessed_data  # Store preprocessed data in session state
 
         st.markdown('<h3 style="text-align: left;"> Melakukan Normalisasi Data </h1>', unsafe_allow_html=True)
-        if st.button("Normalize Data"):
-            normalized_data = normalize_data(preprocessed_data.copy())
-            st.write("Normalization completed.")
-            st.dataframe(normalized_data)
+        if 'preprocessed_data' in st.session_state:  # Check if preprocessed_data exists in session state
+            if st.button("Normalize Data"):
+                normalized_data = normalize_data(st.session_state.preprocessed_data.copy())
+                st.write("Normalization completed.")
+                st.dataframe(normalized_data)
 
 elif selected == 'Klasifikasi ERNN':
     st.write("You are at Klasifikasi ERNN")

@@ -5,7 +5,7 @@ from sklearn.preprocessing import OneHotEncoder, MinMaxScaler
 
 def preprocess_data(data):
     # Replace commas with dots and convert numerical columns to floats
-    numerical_columns = ['Umur Tahun', 'Sistole', 'Diastole', 'Nafas', 'Detak Nadi']
+    numerical_columns = ['IMT']
     data[numerical_columns] = data[numerical_columns].replace({',': '.'}, regex=True).astype(float)
     
     # One-hot encoding for 'Jenis Kelamin'

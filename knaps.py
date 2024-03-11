@@ -1,5 +1,4 @@
 import streamlit as st
-from streamlit_option_menu import option_menu
 import pandas as pd
 from sklearn.preprocessing import OneHotEncoder, MinMaxScaler
 
@@ -25,15 +24,12 @@ def normalize_data(data):
     return data
 
 with st.sidebar:
-    selected = option_menu(
+    selected = st.selectbox(
         "Main Menu",
         ["Home", "PreProcessing Data", "Klasifikasi ERNN", "Klasifikasi ERNN + Bagging", "Uji Coba"],
-        icons=['house', 'table', 'boxes', 'boxes', 'check2-circle'],
-        menu_icon="cast",
-        default_index=1,
-        orientation='vertical')
+        index=1)
 
-    upload_file = st.sidebar.file_uploader("Masukkan file csv disini", key=1)
+    upload_file = st.file_uploader("Masukkan file csv disini", key=1)
 
 if selected == 'Home':
     st.markdown('<h1 style="text-align: center;"> Website Klasifikasi Hipertensi </h1>', unsafe_allow_html=True)

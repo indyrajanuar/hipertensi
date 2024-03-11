@@ -43,11 +43,10 @@ elif selected == 'PreProcessing Data':
         # Specify the categorical features for one-hot encoding
         categorical_features = ['Jenis Kelamin', 'Diagnosa']
         # One-hot encoding
-        if not st.session_state.cleaned_data.empty:
-            if st.button("Label Encoding"):
-                encoded_data = label_encode_data(st.session_state.cleaned_data, categorical_features)
-                st.write("Label encoding completed.")
-                st.dataframe(encoded_data)
+         if st.button("Label Encoding"):
+            encoded_data = label_encode_data(df, categorical_features)
+            st.write("Label encoding completed.")
+            st.dataframe(encoded_data)
                 
 elif selected == 'Klasifikasi ERNN':
     st.write("You are at Klasifikasi ERNN")

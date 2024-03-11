@@ -70,7 +70,7 @@ elif selected == 'Klasifikasi ERNN':
     st.write("Berikut merupakan hasil klasifikasi yang di dapat dari pemodelan  Elman Recurrent Neural Network (ERNN)")
     
     # Load the trained model
-    model = keras.models.load_model("your_model.h5")  # Provide the correct path to your saved model
+    model = keras.models.load_model("model-final.h5")  # Provide the correct path to your saved model
 
     # Perform prediction
     y_pred = model.predict(x_test)

@@ -2,6 +2,15 @@ import streamlit as st
 from streamlit_option_menu import option_menu
 import pandas as pd
 
+def preprocess_data(data): 
+    # One-hot encoding for 'Jenis Kelamin'
+    one_hot_encoder = OneHotEncoder(sparse=False)
+    encoded_features = pd.DataFrame(one_hot_encoder.fit_transform(data[['Jenis Kelamin']]))
+    encoded_features.columns = one_hot_encoder.get_feature_names_out(['Jenis Kelamin'])
+    data = pd.concat([data.drop('Jenis Kelamin', axis=1), encoded_features], axis=1)
+
+    return data
+    
 with st.sidebar:
     selected = option_menu(
         "Main Menu",
@@ -30,14 +39,10 @@ elif selected == 'PreProcessing Data':
         df = pd.read_csv(upload_file)
         st.dataframe(df)
         st.markdown('<h3 style="text-align: left;"> Melakukan Transformation Data </h1>', unsafe_allow_html=True)
-
-        # Perform one-hot encoding for the 'Jenis Kelamin' feature
-        if 'Jenis Kelamin' in df.columns:
-            df_encoded = pd.get_dummies(df, columns=['Jenis Kelamin'], prefix=['Gender'])
-            st.markdown('<h3 style="text-align: left;"> Data Setelah One-Hot Encoding </h3>', unsafe_allow_html=True)
-            st.dataframe(df_encoded)
-        else:
-            st.write("Fitur 'Jenis Kelamin' tidak ditemukan dalam data.")
+        if st.button("Preprocess Data"):
+            preprocessed_data = preprocess_data(df)
+            st.write("Preprocessing completed.")
+            st.dataframe(preprocessed_data)
             
 elif selected == 'Klasifikasi ERNN':
     st.write("Berikut merupakan hasil klasifikasi yang di dapat dari pemodelan  Elman Recurrent Neural Network (ERNN)")

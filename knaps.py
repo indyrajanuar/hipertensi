@@ -5,7 +5,7 @@ import pandas as pd
 with st.sidebar:
     selected = option_menu(
         "Main Menu",
-        ["Home", "PreProcessing Data", "Klasifikasi ERNN", "Klasifikasi ERNN + Bagging", "Uji Coba"],
+        ["Home", "PreProcessing Data", "Klasifikasi ERNN", "ERNN + Bagging", "Uji Coba"],
         icons=['house', 'table', 'boxes', 'boxes', 'check2-circle'],
         menu_icon="cast",
         default_index=1,
@@ -31,6 +31,14 @@ elif selected == 'PreProcessing Data':
         st.dataframe(df)
         st.markdown('<h3 style="text-align: left;"> Melakukan Transformation Data </h1>', unsafe_allow_html=True)
 
+        # Perform one-hot encoding for the 'Jenis Kelamin' feature
+        if 'Jenis Kelamin' in df.columns:
+            df_encoded = pd.get_dummies(df, columns=['Jenis Kelamin'], prefix=['Gender'])
+            st.markdown('<h3 style="text-align: left;"> Data Setelah One-Hot Encoding </h3>', unsafe_allow_html=True)
+            st.dataframe(df_encoded)
+        else:
+            st.write("Fitur 'Jenis Kelamin' tidak ditemukan dalam data.")
+            
 elif selected == 'Klasifikasi ERNN':
     st.write("Berikut merupakan hasil klasifikasi yang di dapat dari pemodelan  Elman Recurrent Neural Network (ERNN)")
 

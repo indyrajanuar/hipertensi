@@ -5,7 +5,7 @@ from sklearn.preprocessing import OneHotEncoder
 
 def preprocess_data(data): 
     # One-hot encoding for 'Jenis Kelamin'
-    one_hot_encoder = OneHotEncoder()
+    one_hot_encoder = OneHotEncoder(sparse=False)  # Specify sparse=False
     encoded_features = pd.DataFrame(one_hot_encoder.fit_transform(data[['Jenis Kelamin']]))
     encoded_features.columns = one_hot_encoder.get_feature_names_out(['Jenis Kelamin'])
     data = pd.concat([data.drop('Jenis Kelamin', axis=1), encoded_features], axis=1)
@@ -40,7 +40,7 @@ elif selected == 'PreProcessing Data':
         df = pd.read_csv(upload_file)
         st.dataframe(df)
         st.markdown('<h3 style="text-align: left;"> Melakukan Transformation Data </h1>', unsafe_allow_html=True)
-        if st.button("Preprocess Data"):
+        if st.button("Preprocess Data"):  # Check if button is clicked
             preprocessed_data = preprocess_data(df)
             st.write("Preprocessing completed.")
             st.dataframe(preprocessed_data)

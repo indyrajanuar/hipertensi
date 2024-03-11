@@ -67,7 +67,8 @@ elif selected == 'PreProcessing Data':
                 st.dataframe(normalized_data)
 
 elif selected == 'Klasifikasi ERNN':
-    st.write("You are at Klasifikasi ERNN")
+    st.write("Berikut merupakan hasil klasifikasi yang di dapat dari pemodelan  Elman Recurrent Neural Network (ERNN)")
+    
 
 elif selected == 'Klasifikasi ERNN + Bagging':
     st.write("You are at Korelasi Data")

@@ -28,7 +28,7 @@ if selected == 'Home':
     st.markdown('<h3 style="text-align: left;"> Hipertensi </h1>', unsafe_allow_html=True)
     st.markdown('<h3 style="text-align: left;"> View Data </h1>', unsafe_allow_html=True)
     if upload_file is not None:
-        df = pd.read_excel(upload_file)
+        df = pd.read_csv(upload_file)
         st.write("Data yang digunakan yaitu data Penyakit Hipertensi dari UPT Puskesmas Modopuro Mojokerto.")
         st.dataframe(df)
 

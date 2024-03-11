@@ -27,7 +27,7 @@ def normalize_data(data):
 with st.sidebar:
     selected = option_menu(
         "Main Menu",
-        ["Home", "PreProcessing Data", "Klasifikasi ERNN", "Korelasi Data", "Uji Coba"],
+        ["Home", "PreProcessing Data", "Klasifikasi ERNN", "Klasifikasi ERNN + Bagging", "Uji Coba"],
         icons=['house', 'table', 'boxes', 'boxes', 'check2-circle'],
         menu_icon="cast",
         default_index=1,

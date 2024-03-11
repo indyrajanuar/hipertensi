@@ -3,6 +3,9 @@ from streamlit_option_menu import option_menu
 import pandas as pd
 from sklearn.preprocessing import OneHotEncoder, MinMaxScaler
 from tensorflow.keras.models import load_model  # Import load_model function
+import subprocess
+# Install TensorFlow using pip
+subprocess.check_call(["pip", "install", "-r", "requirements.txt"])
 
 def preprocess_data(data):
     # Replace commas with dots and convert numerical columns to floats
@@ -74,7 +77,7 @@ elif selected == 'Klasifikasi ERNN':
     model_file = st.file_uploader("Upload Model File", type=['h5'])
 
     if model_file is not None:
-        model = load_model(model-final)
+        model = load_model(model_file)
         st.write("Model loaded successfully.")
 
 elif selected == 'Klasifikasi ERNN + Bagging':

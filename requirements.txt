@@ -4,4 +4,3 @@ scikit_learn
 streamlit
 streamlit-option-menu
 tensorflow
-seaborn

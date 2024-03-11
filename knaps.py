@@ -9,8 +9,7 @@ def preprocess_data(data):
     encoded_gender = one_hot_encoder.fit_transform(data[['Jenis Kelamin']].values.reshape(-1, 1))
     encoded_gender = pd.DataFrame(encoded_gender.toarray(), columns=one_hot_encoder.get_feature_names_out(['Jenis Kelamin']))
     
-    # Concatenate encoded 'Jenis Kelamin' and transformed 'Diagnosa' with original data
-    data = pd.concat([data.drop(['Jenis Kelamin', 'Diagnosa'], axis=1), encoded_gender], axis=1)
+    data = pd.concat([data.drop('Jenis Kelamin', axis=1), encoded_features], axis=1)
     
     # Transform 'Diagnosa' feature to binary values
     data['Diagnosa'] = data['Diagnosa'].map({'YA': 1, 'TIDAK': 0})

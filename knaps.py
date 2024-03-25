@@ -25,7 +25,7 @@ def normalize_data(data):
     return normalized_data
 
 def load_model(filepath):
-    model = tf.keras.models.load_model(filepath)
+    model = tf.keras.models.load_model(model-final.h5)
     return model
 
 def display_evaluation_metrics(model, X_test, y_test):

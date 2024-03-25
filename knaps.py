@@ -138,12 +138,22 @@ elif selected == 'PreProcessing Data':
                 st.dataframe(normalized_data)
 
 elif selected == 'Klasifikasi ERNN':
-    st.write("Berikut merupakan hasil klasifikasi yang di dapat dari pemodelan  Elman Recurrent Neural Network (ERNN)")
+    st.write("Berikut merupakan hasil klasifikasi yang di dapat dari pemodelan Elman Recurrent Neural Network (ERNN)")
+
     if upload_file is not None:
         df = pd.read_csv(upload_file)
         preprocessed_data = preprocess_data(df)
         y_true, y_pred = classify_MLP(preprocessed_data)
-        display_metrics(y_true, y_pred)
+
+        # Display confusion matrix
+        st.subheader("Confusion Matrix")
+        cm = confusion_matrix(y_true, y_pred)
+        st.write(cm)
+
+        # Display classification report
+        st.subheader("Classification Report")
+        report = classification_report(y_true, y_pred)
+        st.write(report)
 
 elif selected == 'Klasifikasi ERNN + Bagging':
     st.write("You are at Korelasi Data")

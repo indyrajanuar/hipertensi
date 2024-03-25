@@ -33,23 +33,28 @@ def normalize_data(data):
 
 # Function for classification using MLP (Multilayer Perceptron)
 def classify_MLP(data):
-    # split data fitur, target
-    x = data.drop('Diagnosa', axis=1)
-    y = data['Diagnosa']
+    kolom_X = ['Umur Tahun', 'IMT', 'Sistole', 'Diastole', 'Nafas', 'Detak Nadi', 'Jenis Kelamin_L', 'Jenis Kelamin_P']
+    kolom_y = ['Diagnosa']
+    x = data[kolom_X]
+    y = data[kolom_y]
     
-    #membagi data training dan testing
+    # Split data into training and testing sets
     x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=0)
     
-    #ERNN 
+    # Convert target data to numpy array and reshape
+    y_train = np.array(y_train).reshape(-1,)
+    y_test = np.array(y_test).reshape(-1,)
+
     kf = KFold(n_splits=5)
     fold_n = 1
-    X = np.array(x_train)
-    Y = np.array(y_train)
     max_error = 0.001
-    for index, (train_idx, val_idx) in enumerate(kf.split(X)):
+
+    for index, (train_idx, val_idx) in enumerate(kf.split(x_train)):
         print("######## FOLD - {} ########".format(fold_n))
-        x_train, x_val = X[train_idx], X[val_idx]
-        y_train, y_val = Y[train_idx], Y[val_idx]
+
+        x_train_fold, x_val_fold = x_train.iloc[train_idx], x_train.iloc[val_idx]
+        y_train_fold, y_val_fold = y_train[train_idx], y_train[val_idx]
+
         model = keras.models.Sequential()
         model.add(keras.layers.Dense(6, activation='sigmoid', input_shape=(8,)))  # Hidden layer with 6 neurons
         model.add(keras.layers.Dense(6, activation='sigmoid'))  # Context layer with 6 neurons
@@ -59,46 +64,43 @@ def classify_MLP(data):
                       optimizer=keras.optimizers.Adam(learning_rate=0.1),  # Learning rate set to 0.1
                       metrics=[keras.metrics.BinaryAccuracy()])
 
-        history = model.fit(x_train, y_train, validation_data=(x_val, y_val),
+        history = model.fit(x_train_fold, y_train_fold, validation_data=(x_val_fold, y_val_fold),
                             batch_size=32, epochs=200)
-        
-        last_val_loss = history.history['val_loss'][-1]
-        
-        if last_val_loss < max_error:
-            print("Maksimum error terpenuhi maka training dihentikan.")
-            break
-            
-        fold_n += 1
-        
-    #Evaluasi performa model terhadap data train
-    model.evaluate(x_train, y_train)
-    
-    y_pred = model.predict(x_test) #melakukan prediksi data test dengan menggunakan model yang sudah ditraining sebelumnya
-    # Memprediksi data uji dengan menggunakan fungsi threshold
-    threshold = 0.5
-    y_pred = (y_pred > 0.5).astype(int)
-    
-    #Evaluasi performa model terhadap data uji
-    model.evaluate(x_test, y_test)
 
-# Function to display confusion matrix and classification report
-def display_metrics(y_test, y_pred):
-    st.subheader("Confusion Matrix:")
-    # Confusion Matrix
+        last_val_loss = history.history['val_loss'][-1]
+
+        if last_val_loss < max_error:
+            print("Maximum error condition met, stopping training.")
+            break
+
+        model.save("model_fold_{}.h5".format(index + 1))
+        fold_n += 1
+
+    # Predict using the trained model on the test data
+    y_pred = model.predict(x_test)
+    y_pred = (y_pred > 0.5).astype(int)
+
+    # Evaluate model performance on test data
+    eval_result = model.evaluate(x_test, y_test)
+    print("Evaluation Result:", eval_result)
+
+    # Generate confusion matrix
     cm = confusion_matrix(y_test, y_pred)
-    # Plotting
-    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')  # Visualizing confusion matrix as heatmap
+
+    # Plot confusion matrix
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
     plt.xlabel('Predicted')
     plt.ylabel('True')
     plt.title('Confusion Matrix')
     plt.show()
-    st.write(cm)
 
-    st.subheader("Classification Report:")
-    # Confusion Matrix
-    cr = classification_report(y_test, y_pred)
-    st.write(cr)
-    
+    # Generate classification report
+    report = classification_report(y_test, y_pred)
+    print("Classification Report:")
+    print(report)
+
+    return y_test, y_pred
+
 with st.sidebar:
     selected = option_menu(
         "Main Menu",

@@ -145,8 +145,8 @@ elif selected == 'Klasifikasi ERNN':
     if upload_file is not None:
         df = pd.read_csv(upload_file)
         preprocessed_data = preprocess_data(df)
-        y_true, y_pred = classify_MLP(preprocessed_data)
-        display_metrics(y_true, y_pred)
+        y_test, y_pred = classify_MLP(preprocessed_data)
+        display_metrics(y_test, y_pred)
 
 elif selected == 'Klasifikasi ERNN + Bagging':
     st.write("You are at Korelasi Data")

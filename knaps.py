@@ -79,23 +79,6 @@ def classify_MLP(data):
 
     return y_test, y_pred
 
-def display_metrics(y_true, y_pred):
-    # Generate confusion matrix
-    cm = confusion_matrix(y_true, y_pred)
-
-    # Plot confusion matrix
-    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
-    plt.xlabel('Predicted')
-    plt.ylabel('True')
-    plt.title('Confusion Matrix')
-    plt.show()
-
-    # Generate classification report
-    with np.errstate(divide='ignore', invalid='ignore'):  # Suppress division by zero warning
-        report = classification_report(y_true, y_pred, zero_division=0)
-    print("Classification Report:")
-    print(report)
-
 with st.sidebar:
     selected = option_menu(
         "Main Menu",
@@ -145,21 +128,22 @@ elif selected == 'Klasifikasi ERNN':
         preprocessed_data = preprocess_data(df)
         y_true, y_pred = classify_MLP(preprocessed_data)
 
-        # Display confusion matrix
-        st.subheader("Confusion Matrix")
+        # Generate confusion matrix
         cm = confusion_matrix(y_true, y_pred)
 
         # Plot confusion matrix
+        plt.figure(figsize=(8, 6))
         sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
         plt.xlabel('Predicted')
         plt.ylabel('True')
         plt.title('Confusion Matrix')
         st.pyplot()
 
-        # Display classification report
-        st.subheader("Classification Report")
-        report = classification_report(y_true, y_pred)
-        st.write(report)
+        # Generate classification report
+        with np.errstate(divide='ignore', invalid='ignore'):  # Suppress division by zero warning
+            report = classification_report(y_true, y_pred, zero_division=0)
+        st.text("Classification Report:")
+        st.text(report)
 
 elif selected == 'Klasifikasi ERNN + Bagging':
     st.write("You are at Korelasi Data")

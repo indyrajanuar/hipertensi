@@ -137,7 +137,8 @@ elif selected == 'Klasifikasi ERNN':
         plt.xlabel('Predicted')
         plt.ylabel('True')
         plt.title('Confusion Matrix')
-        st.pyplot()
+        #st.pyplot()
+        st.pyplot(plt.gcf())  # Pass the current figure to st.pyplot()
 
         # Generate classification report
         with np.errstate(divide='ignore', invalid='ignore'):  # Suppress division by zero warning

@@ -90,7 +90,7 @@ elif selected == 'PreProcessing Data':
 
 elif selected == 'Klasifikasi ERNN':
     st.write("Berikut merupakan hasil klasifikasi yang di dapat dari pemodelan  Elman Recurrent Neural Network (ERNN)")
-     if upload_file is not None:
+    if upload_file is not None:
         df = pd.read_csv(upload_file)
         preprocessed_data = preprocess_data(df)
         y_true, y_pred = classify_MLP(preprocessed_data)

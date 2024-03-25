@@ -33,10 +33,8 @@ def normalize_data(data):
 
 # Function for classification using MLP (Multilayer Perceptron)
 def classify_MLP(data):
-    kolom_X = ['Umur', 'IMT', 'Sistole', 'Diastole', 'Nafas', 'Detak Nadi', 'Jenis Kelamin_L', 'Jenis Kelamin_P']
-    kolom_y = ['Diagnosa']
-    x = data[kolom_X]
-    y = data[kolom_y]
+    x = data.drop('Diagnosa', axis=1)
+    y = data['Diagnosa']
     
     # Split data into training and testing sets
     x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=0)

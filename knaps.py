@@ -77,7 +77,8 @@ elif selected == 'PreProcessing Data':
                 st.dataframe(normalized_data)
 
 elif selected == 'Klasifikasi ERNN':
-    st.write("Berikut merupakan hasil klasifikasi yang di dapat dari pemodelan  Elman Recurrent Neural Network (ERNN)")
+    # Klasifikasi ERNN section
+    st.write("Berikut merupakan hasil klasifikasi yang di dapat dari pemodelan Elman Recurrent Neural Network (ERNN) menggunakan data yang sudah dinormalisasi.")
     if 'normalized_data' in st.session_state:
         model_url = "https://raw.githubusercontent.com/indyrajanuar/hipertensi/main/model-final.h5"
         model = load_model_from_github(model_url)

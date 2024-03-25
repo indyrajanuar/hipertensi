@@ -68,10 +68,7 @@ def classify_MLP(data):
             print("Maksimum error terpenuhi maka training dihentikan.")
             break
             
-        model.save("model_fold_{}.h5".format(index + 1))
         fold_n += 1
-
-        print("Processing Time: %s seconds" % (time.time() - start_time))
         
     #Evaluasi performa model terhadap data train
     model.evaluate(x_train, y_train)

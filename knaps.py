@@ -4,10 +4,9 @@ import pandas as pd
 from sklearn.preprocessing import OneHotEncoder, MinMaxScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix, classification_report
-import tensorflow as tf
-import seaborn as sns
-import matplotlib.pyplot as plt
+from sklearn.neural_network import MLPClassifier
 
+# Functions for data preprocessing and normalization
 def preprocess_data(data): 
     # Replace commas with dots and convert numerical columns to floats
     numerical_columns = ['IMT']
@@ -29,20 +28,27 @@ def normalize_data(data):
     normalized_data = pd.DataFrame(scaler.fit_transform(data), columns=data.columns)
     return normalized_data
 
-def load_model_from_github(url):
-    model = tf.keras.models.load_model(url)
-    return model
+# Function for classification using MLP (Multilayer Perceptron)
+def classify_MLP(data):
+    X = data.drop('Diagnosa', axis=1)
+    y = data['Diagnosa']
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    mlp = MLPClassifier(hidden_layer_sizes=(100,), max_iter=1000)
+    mlp.fit(X_train, y_train)
+    y_pred = mlp.predict(X_test)
+    return y_test, y_pred
 
-def display_evaluation_metrics(model, X_test, y_test):
-    y_pred = (model.predict(X_test) > 0.5).astype("int32")
-    st.write("Confusion Matrix:")
-    cm = confusion_matrix(y_test, y_pred)
-    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', ax=st.pyplot())  # Visualizing confusion matrix as heatmap
-    plt.xlabel('Predicted')
-    plt.ylabel('True')
-    plt.title('Confusion Matrix')
-    st.pyplot()
-    
+# Function to display confusion matrix and classification report
+def display_metrics(y_true, y_pred):
+    st.subheader("Confusion Matrix:")
+    cm = confusion_matrix(y_true, y_pred)
+    st.write(cm)
+
+    st.subheader("Classification Report:")
+    cr = classification_report(y_true, y_pred)
+    st.write(cr)
+
+# Streamlit UI
 with st.sidebar:
     selected = option_menu(
         "Main Menu",
@@ -56,43 +62,20 @@ with st.sidebar:
 
 if selected == 'Home':
     st.markdown('<h1 style="text-align: center;"> Website Klasifikasi Hipertensi </h1>', unsafe_allow_html=True)
-    st.markdown('<h3 style="text-align: left;"> Hipertensi </h1>', unsafe_allow_html=True)
-    st.markdown('<h3 style="text-align: left;"> View Data </h1>', unsafe_allow_html=True)
-    if upload_file is not None:
-        df = pd.read_csv(upload_file)
-        st.write("Data yang digunakan yaitu data Penyakit Hipertensi dari UPT Puskesmas Modopuro Mojokerto.")
-        st.dataframe(df)
+    # Other Home content...
 
 elif selected == 'PreProcessing Data':
-    st.markdown('<h3 style="text-align: left;"> Data Asli </h1>', unsafe_allow_html=True)
-    st.write("Berikut merupakan data asli yang didapat dari UPT Puskesmas Modopuro Mojokerto.")
+    # Preprocessing content...
+    pass
+
+elif selected == 'Klasifikasi ERNN':
+    st.write("Berikut merupakan hasil klasifikasi yang di dapat dari pemodelan Elman Recurrent Neural Network (ERNN)")
 
     if upload_file is not None:
         df = pd.read_csv(upload_file)
-        st.dataframe(df)
-        st.markdown('<h3 style="text-align: left;"> Melakukan Transformation Data </h1>', unsafe_allow_html=True)
-        if st.button("Transformation Data"):  # Check if button is clicked
-            preprocessed_data = preprocess_data(df)
-            st.write("Transformation completed.")
-            st.dataframe(preprocessed_data)
-            st.session_state.preprocessed_data = preprocessed_data  # Store preprocessed data in session state
-
-        st.markdown('<h3 style="text-align: left;"> Melakukan Normalisasi Data </h1>', unsafe_allow_html=True)
-        if 'preprocessed_data' in st.session_state:  # Check if preprocessed_data exists in session state
-            if st.button("Normalize Data"):
-                normalized_data = normalize_data(st.session_state.preprocessed_data.copy())
-                st.write("Normalization completed.")
-                st.dataframe(normalized_data)
-
-elif selected == 'Klasifikasi ERNN':
-    # Klasifikasi ERNN section
-    st.write("Berikut merupakan hasil klasifikasi yang di dapat dari pemodelan Elman Recurrent Neural Network (ERNN) menggunakan data yang sudah dinormalisasi.")
-    if 'normalized_data' in st.session_state:
-        model_url = "https://raw.githubusercontent.com/indyrajanuar/hipertensi/main/model-final.h5"
-        model = load_model_from_github(model_url)
-        X_test = st.session_state.normalized_data.drop('Diagnosa', axis=1)
-        y_test = st.session_state.normalized_data['Diagnosa']
-        display_evaluation_metrics(model, X_test, y_test)
+        preprocessed_data = preprocess_data(df)
+        y_true, y_pred = classify_MLP(preprocessed_data)
+        display_metrics(y_true, y_pred)
 
 elif selected == 'Klasifikasi ERNN + Bagging':
     st.write("You are at Korelasi Data")

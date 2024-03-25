@@ -2,6 +2,11 @@ import streamlit as st
 from streamlit_option_menu import option_menu
 import pandas as pd
 from sklearn.preprocessing import OneHotEncoder, MinMaxScaler
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import confusion_matrix, classification_report
+import tensorflow as tf
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 def preprocess_data(data): 
     # Replace commas with dots and convert numerical columns to floats

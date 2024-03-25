@@ -33,7 +33,7 @@ def normalize_data(data):
 
 # Function for classification using MLP (Multilayer Perceptron)
 def classify_MLP(data):
-    kolom_X = ['Umur Tahun', 'IMT', 'Sistole', 'Diastole', 'Nafas', 'Detak Nadi', 'Jenis Kelamin_L', 'Jenis Kelamin_P']
+    kolom_X = ['Umur', 'IMT', 'Sistole', 'Diastole', 'Nafas', 'Detak Nadi', 'Jenis Kelamin_L', 'Jenis Kelamin_P']
     kolom_y = ['Diagnosa']
     x = data[kolom_X]
     y = data[kolom_y]

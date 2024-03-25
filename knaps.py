@@ -6,7 +6,6 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix, classification_report
 from sklearn.neural_network import MLPClassifier
 
-# Functions for data preprocessing and normalization
 def preprocess_data(data): 
     # Replace commas with dots and convert numerical columns to floats
     numerical_columns = ['IMT']
@@ -47,8 +46,7 @@ def display_metrics(y_true, y_pred):
     st.subheader("Classification Report:")
     cr = classification_report(y_true, y_pred)
     st.write(cr)
-
-# Streamlit UI
+    
 with st.sidebar:
     selected = option_menu(
         "Main Menu",
@@ -62,16 +60,37 @@ with st.sidebar:
 
 if selected == 'Home':
     st.markdown('<h1 style="text-align: center;"> Website Klasifikasi Hipertensi </h1>', unsafe_allow_html=True)
-    # Other Home content...
+    st.markdown('<h3 style="text-align: left;"> Hipertensi </h1>', unsafe_allow_html=True)
+    st.markdown('<h3 style="text-align: left;"> View Data </h1>', unsafe_allow_html=True)
+    if upload_file is not None:
+        df = pd.read_csv(upload_file)
+        st.write("Data yang digunakan yaitu data Penyakit Hipertensi dari UPT Puskesmas Modopuro Mojokerto.")
+        st.dataframe(df)
 
 elif selected == 'PreProcessing Data':
-    # Preprocessing content...
-    pass
-
-elif selected == 'Klasifikasi ERNN':
-    st.write("Berikut merupakan hasil klasifikasi yang di dapat dari pemodelan Elman Recurrent Neural Network (ERNN)")
+    st.markdown('<h3 style="text-align: left;"> Data Asli </h1>', unsafe_allow_html=True)
+    st.write("Berikut merupakan data asli yang didapat dari UPT Puskesmas Modopuro Mojokerto.")
 
     if upload_file is not None:
+        df = pd.read_csv(upload_file)
+        st.dataframe(df)
+        st.markdown('<h3 style="text-align: left;"> Melakukan Transformation Data </h1>', unsafe_allow_html=True)
+        if st.button("Transformation Data"):  # Check if button is clicked
+            preprocessed_data = preprocess_data(df)
+            st.write("Transformation completed.")
+            st.dataframe(preprocessed_data)
+            st.session_state.preprocessed_data = preprocessed_data  # Store preprocessed data in session state
+
+        st.markdown('<h3 style="text-align: left;"> Melakukan Normalisasi Data </h1>', unsafe_allow_html=True)
+        if 'preprocessed_data' in st.session_state:  # Check if preprocessed_data exists in session state
+            if st.button("Normalize Data"):
+                normalized_data = normalize_data(st.session_state.preprocessed_data.copy())
+                st.write("Normalization completed.")
+                st.dataframe(normalized_data)
+
+elif selected == 'Klasifikasi ERNN':
+    st.write("Berikut merupakan hasil klasifikasi yang di dapat dari pemodelan  Elman Recurrent Neural Network (ERNN)")
+     if upload_file is not None:
         df = pd.read_csv(upload_file)
         preprocessed_data = preprocess_data(df)
         y_true, y_pred = classify_MLP(preprocessed_data)

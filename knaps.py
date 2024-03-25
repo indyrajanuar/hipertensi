@@ -33,8 +33,11 @@ def normalize_data(data):
 
 # Function for classification using MLP (Multilayer Perceptron)
 def classify_MLP(data):
-    x = data.drop('Diagnosa', axis=1)
-    y = data['Diagnosa']
+    # split data fitur, target
+    kolom_X = ['Umur', 'IMT', 'Sistole', 'Diastole', 'Nafas', 'Detak Nadi', 'Jenis Kelamin_L', 'Jenis Kelamin_P']
+    kolom_y = ['Diagnosa']
+    x = df[kolom_X]
+    y = df[kolom_y]
     
     # Split data into training and testing sets
     x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=0)
@@ -125,9 +128,10 @@ elif selected == 'Klasifikasi ERNN':
 
     if upload_file is not None:
         df = pd.read_csv(upload_file)
-        preprocessed_data = preprocess_data(df)
-        y_true, y_pred = classify_MLP(preprocessed_data)
-
+        if 'preprocessed_data' in st.session_state:  # Check if preprocessed_data exists in session state
+            normalized_data = normalize_data(st.session_state.preprocessed_data.copy())
+            y_true, y_pred = classify_MLP(normalized_data)
+            
         # Generate confusion matrix
         cm = confusion_matrix(y_true, y_pred)
 

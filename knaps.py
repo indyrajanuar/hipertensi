@@ -24,8 +24,8 @@ def normalize_data(data):
     normalized_data = pd.DataFrame(scaler.fit_transform(data), columns=data.columns)
     return normalized_data
 
-def load_model(filepath):
-    model = tf.keras.models.load_model(model-final.h5)
+def load_model_from_github(url):
+    model = tf.keras.models.load_model(url)
     return model
 
 def display_evaluation_metrics(model, X_test, y_test):
@@ -79,7 +79,8 @@ elif selected == 'PreProcessing Data':
 elif selected == 'Klasifikasi ERNN':
     st.write("Berikut merupakan hasil klasifikasi yang di dapat dari pemodelan  Elman Recurrent Neural Network (ERNN)")
     if 'normalized_data' in st.session_state:
-        model = load_model("model-final.h5")
+        model_url = "https://raw.githubusercontent.com/indyrajanuar/hipertensi/main/model-final.h5"
+        model = load_model_from_github(model_url)
         X_test = st.session_state.normalized_data.drop('Diagnosa', axis=1)
         y_test = st.session_state.normalized_data['Diagnosa']
         display_evaluation_metrics(model, X_test, y_test)

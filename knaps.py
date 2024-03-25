@@ -120,7 +120,7 @@ elif selected == 'PreProcessing Data':
                 st.write("Normalization completed.")
                 st.dataframe(normalized_data)
 
-elif selected == 'Klasifikasi ERNN':
+if selected == 'Klasifikasi ERNN':
     st.write("Berikut merupakan hasil klasifikasi yang di dapat dari pemodelan Elman Recurrent Neural Network (ERNN)")
 
     if upload_file is not None:
@@ -137,7 +137,7 @@ elif selected == 'Klasifikasi ERNN':
         plt.xlabel('Predicted')
         plt.ylabel('True')
         plt.title('Confusion Matrix')
-        st.pyplot()
+        st.pyplot(plt.gcf())  # Pass the current figure to st.pyplot()
 
         # Generate classification report
         with np.errstate(divide='ignore', invalid='ignore'):  # Suppress division by zero warning

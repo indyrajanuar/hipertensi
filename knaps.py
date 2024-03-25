@@ -155,10 +155,8 @@ elif selected == 'Klasifikasi ERNN':
         precision = float(lines[2].split()[1]) * 100
         recall = float(lines[3].split()[1]) * 100
 
-        # Display the metrics
-        st.write(f"Accuracy: {accuracy:.2f}%")
-        st.write(f"Precision: {precision:.2f}%")
-        st.write(f"Recall: {recall:.2f}%")
+        # Display the metrics horizontally with bold and italicized formatting
+        st.markdown("**_Accuracy:_** {:.2f}% | **_Precision:_** {:.2f}% | **_Recall:_** {:.2f}% | **_Loss:_** {:.4f}".format(accuracy, precision, recall, loss))
 
 elif selected == 'Klasifikasi ERNN + Bagging':
     st.write("You are at Korelasi Data")

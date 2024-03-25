@@ -155,9 +155,10 @@ elif selected == 'Klasifikasi ERNN':
         precision = float(lines[2].split()[1]) * 100
         recall = float(lines[3].split()[1]) * 100
 
-        # Display the metrics horizontally with bold and italicized formatting
-        st.markdown("<div style='text-align: center;'> **Akurasi** **Presisi** **Recall** </div>")
-        st.markdown("<div style='text-align: center;'> {:.2f}% {:.2f}% {:.2f}% </div>".format(accuracy, precision, recall,  unsafe_allow_html=True))
+        # Display the metrics
+        st.markdown("**_Accuracy:_** {:.2f}%".format(accuracy))
+        st.markdown("**_Precision:_** {:.2f}%".format(precision))
+        st.markdown("**_Recall:_** {:.2f}%".format(recall))
 
 
 elif selected == 'Klasifikasi ERNN + Bagging':

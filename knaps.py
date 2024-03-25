@@ -4,7 +4,11 @@ import pandas as pd
 from sklearn.preprocessing import OneHotEncoder, MinMaxScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix, classification_report
-from sklearn.neural_network import MLPClassifier
+import numpy as np
+import keras
+from sklearn.model_selection import KFold
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 def preprocess_data(data): 
     # Replace commas with dots and convert numerical columns to floats
@@ -29,22 +33,70 @@ def normalize_data(data):
 
 # Function for classification using MLP (Multilayer Perceptron)
 def classify_MLP(data):
-    X = data.drop('Diagnosa', axis=1)
-    y = data['Diagnosa']
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-    mlp = MLPClassifier(hidden_layer_sizes=(100,), max_iter=1000)
-    mlp.fit(X_train, y_train)
-    y_pred = mlp.predict(X_test)
-    return y_test, y_pred
+    # split data fitur, target
+    kolom_X = ['Umur Tahun', 'IMT', 'Sistole', 'Diastole', 'Nafas', 'Detak Nadi', 'Jenis Kelamin_L', 'Jenis Kelamin_P']
+    kolom_y = ['Diagnosa']
+    x = df[kolom_X]
+    y = df[kolom_y]
+    #membagi data training dan testing
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=0)
+    #ERNN 
+    kf = KFold(n_splits=5)
+    fold_n = 1
+    X = np.array(x_train)
+    Y = np.array(y_train)
+    max_error = 0.001
+    for index, (train_idx, val_idx) in enumerate(kf.split(X)):
+        print("######## FOLD - {} ########".format(fold_n))
+        x_train, x_val = X[train_idx], X[val_idx]
+        y_train, y_val = Y[train_idx], Y[val_idx]
+        model = keras.models.Sequential()
+        model.add(keras.layers.Dense(6, activation='sigmoid', input_shape=(8,)))  # Hidden layer with 6 neurons
+        model.add(keras.layers.Dense(6, activation='sigmoid'))  # Context layer with 6 neurons
+        model.add(keras.layers.Dense(1, activation='sigmoid'))
+
+        model.compile(loss='mean_squared_error',
+                      optimizer=keras.optimizers.Adam(learning_rate=0.1),  # Learning rate set to 0.1
+                      metrics=[keras.metrics.BinaryAccuracy()])
+
+        history = model.fit(x_train, y_train, validation_data=(x_val, y_val),
+                            batch_size=32, epochs=200)
+        
+        last_val_loss = history.history['val_loss'][-1]
+        
+        if last_val_loss < max_error:
+            print("Maksimum error terpenuhi maka training dihentikan.")
+            break
+            
+        model.save("model_fold_{}.h5".format(index + 1))
+        fold_n += 1
+
+        print("Processing Time: %s seconds" % (time.time() - start_time))
+    #Evaluasi performa model terhadap data train
+    model.evaluate(x_train, y_train)
+    y_pred = model.predict(x_test) #melakukan prediksi data test dengan menggunakan model yang sudah ditraining sebelumnya
+    # Memprediksi data uji dengan menggunakan fungsi threshold
+    threshold = 0.5
+    y_pred = (y_pred > 0.5).astype(int)
+    #Evaluasi performa model terhadap data uji
+    model.evaluate(x_test, y_test)
 
 # Function to display confusion matrix and classification report
-def display_metrics(y_true, y_pred):
+def display_metrics(y_test, y_pred):
     st.subheader("Confusion Matrix:")
-    cm = confusion_matrix(y_true, y_pred)
+    # Confusion Matrix
+    cm = confusion_matrix(y_test, y_pred)
+    # Plotting
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')  # Visualizing confusion matrix as heatmap
+    plt.xlabel('Predicted')
+    plt.ylabel('True')
+    plt.title('Confusion Matrix')
+    plt.show()
     st.write(cm)
 
     st.subheader("Classification Report:")
-    cr = classification_report(y_true, y_pred)
+    # Confusion Matrix
+    cr = classification_report(y_test, y_pred)
     st.write(cr)
     
 with st.sidebar:

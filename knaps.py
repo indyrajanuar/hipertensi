@@ -31,9 +31,12 @@ def load_model_from_github(url):
 def display_evaluation_metrics(model, X_test, y_test):
     y_pred = (model.predict(X_test) > 0.5).astype("int32")
     st.write("Confusion Matrix:")
-    st.write(confusion_matrix(y_test, y_pred))
-    st.write("Classification Report:")
-    st.write(classification_report(y_test, y_pred))
+    cm = confusion_matrix(y_test, y_pred)
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', ax=st.pyplot())  # Visualizing confusion matrix as heatmap
+    plt.xlabel('Predicted')
+    plt.ylabel('True')
+    plt.title('Confusion Matrix')
+    st.pyplot()
     
 with st.sidebar:
     selected = option_menu(

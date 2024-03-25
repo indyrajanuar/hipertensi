@@ -142,11 +142,24 @@ elif selected == 'Klasifikasi ERNN':
         #st.pyplot()
         st.pyplot(plt.gcf())  # Pass the current figure to st.pyplot()
 
+        # Extract metrics from the classification report
+        lines = report.split('\n')
+        accuracy = float(lines[5].split()[1]) * 100
+        precision = float(lines[2].split()[1]) * 100
+        recall = float(lines[3].split()[1]) * 100
+        loss = float(history.history['loss'][-1])
+
+        # Display the metrics
+        st.write(f"Accuracy: {accuracy:.2f}%")
+        st.write(f"Precision: {precision:.2f}%")
+        st.write(f"Recall: {recall:.2f}%")
+        st.write(f"Loss: {loss:.4f}")
+
         # Generate classification report
-        with np.errstate(divide='ignore', invalid='ignore'):  # Suppress division by zero warning
-            report = classification_report(y_true, y_pred, zero_division=0)
-        st.text("Classification Report:")
-        st.text(report)
+        #with np.errstate(divide='ignore', invalid='ignore'):  # Suppress division by zero warning
+        #    report = classification_report(y_true, y_pred, zero_division=0)
+        #st.text("Classification Report:")
+        #st.text(report)
 
 elif selected == 'Klasifikasi ERNN + Bagging':
     st.write("You are at Korelasi Data")

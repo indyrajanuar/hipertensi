@@ -148,7 +148,13 @@ elif selected == 'Klasifikasi ERNN':
         # Display confusion matrix
         st.subheader("Confusion Matrix")
         cm = confusion_matrix(y_true, y_pred)
-        st.write(cm)
+
+        # Plot confusion matrix
+        sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
+        plt.xlabel('Predicted')
+        plt.ylabel('True')
+        plt.title('Confusion Matrix')
+        plt.show()
 
         # Display classification report
         st.subheader("Classification Report")

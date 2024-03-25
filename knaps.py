@@ -70,20 +70,18 @@ def classify_MLP(data):
         if last_val_loss < max_error:
             print("Maximum error condition met, stopping training.")
             break
-
-        model.save("model_fold_{}.h5".format(index + 1))
+            
         fold_n += 1
 
     # Predict using the trained model on the test data
     y_pred = model.predict(x_test)
     y_pred = (y_pred > 0.5).astype(int)
 
-    # Evaluate model performance on test data
-    eval_result = model.evaluate(x_test, y_test)
-    print("Evaluation Result:", eval_result)
+    return y_test, y_pred
 
+def display_metrics(y_true, y_pred):
     # Generate confusion matrix
-    cm = confusion_matrix(y_test, y_pred)
+    cm = confusion_matrix(y_true, y_pred)
 
     # Plot confusion matrix
     sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
@@ -93,11 +91,9 @@ def classify_MLP(data):
     plt.show()
 
     # Generate classification report
-    report = classification_report(y_test, y_pred)
+    report = classification_report(y_true, y_pred)
     print("Classification Report:")
     print(report)
-
-    return y_test, y_pred
 
 with st.sidebar:
     selected = option_menu(
@@ -145,8 +141,8 @@ elif selected == 'Klasifikasi ERNN':
     if upload_file is not None:
         df = pd.read_csv(upload_file)
         preprocessed_data = preprocess_data(df)
-        y_test, y_pred = classify_MLP(preprocessed_data)
-        display_metrics(y_test, y_pred)
+        y_true, y_pred = classify_MLP(preprocessed_data)
+        display_metrics(y_true, y_pred)
 
 elif selected == 'Klasifikasi ERNN + Bagging':
     st.write("You are at Korelasi Data")

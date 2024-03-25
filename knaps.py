@@ -120,7 +120,7 @@ elif selected == 'PreProcessing Data':
                 st.write("Normalization completed.")
                 st.dataframe(normalized_data)
 
-if selected == 'Klasifikasi ERNN':
+elif selected == 'Klasifikasi ERNN':
     st.write("Berikut merupakan hasil klasifikasi yang di dapat dari pemodelan Elman Recurrent Neural Network (ERNN)")
 
     if upload_file is not None:

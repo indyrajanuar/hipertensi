@@ -34,12 +34,12 @@ def normalize_data(data):
 # Function for classification using MLP (Multilayer Perceptron)
 def classify_MLP(data):
     # split data fitur, target
-    kolom_X = ['Umur Tahun', 'IMT', 'Sistole', 'Diastole', 'Nafas', 'Detak Nadi', 'Jenis Kelamin_L', 'Jenis Kelamin_P']
-    kolom_y = ['Diagnosa']
-    x = df[kolom_X]
-    y = df[kolom_y]
+    x = data.drop('Diagnosa', axis=1)
+    y = data['Diagnosa']
+    
     #membagi data training dan testing
     x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=0)
+    
     #ERNN 
     kf = KFold(n_splits=5)
     fold_n = 1
@@ -72,12 +72,15 @@ def classify_MLP(data):
         fold_n += 1
 
         print("Processing Time: %s seconds" % (time.time() - start_time))
+        
     #Evaluasi performa model terhadap data train
     model.evaluate(x_train, y_train)
+    
     y_pred = model.predict(x_test) #melakukan prediksi data test dengan menggunakan model yang sudah ditraining sebelumnya
     # Memprediksi data uji dengan menggunakan fungsi threshold
     threshold = 0.5
     y_pred = (y_pred > 0.5).astype(int)
+    
     #Evaluasi performa model terhadap data uji
     model.evaluate(x_test, y_test)
 

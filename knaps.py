@@ -156,7 +156,9 @@ elif selected == 'Klasifikasi ERNN':
         recall = float(lines[3].split()[1]) * 100
 
         # Display the metrics horizontally with bold and italicized formatting
-        st.markdown("**_Accuracy:_** {:.2f}% | **_Precision:_** {:.2f}% | **_Recall:_** {:.2f}%".format(accuracy, precision, recall))
+        st.markdown("**Akurasi:** {:.2f}%  **Presisi:** {:.2f}%  **Recall:** {:.2f}%".format(accuracy, precision, recall))
+        st.markdown("{:.2f}% {:.2f}% {:.2f}%".format(accuracy, precision, recall))
+
 
 elif selected == 'Klasifikasi ERNN + Bagging':
     st.write("You are at Korelasi Data")

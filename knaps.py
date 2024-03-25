@@ -154,7 +154,7 @@ elif selected == 'Klasifikasi ERNN':
         plt.xlabel('Predicted')
         plt.ylabel('True')
         plt.title('Confusion Matrix')
-        plt.show()
+        st.pyplot()
 
         # Display classification report
         st.subheader("Classification Report")

@@ -9,10 +9,16 @@ import keras
 from sklearn.model_selection import KFold
 import seaborn as sns
 import matplotlib.pyplot as plt
+import requests
+from io import BytesIO
 
-# Load the saved model
-saved_model_path = "https://raw.githubusercontent.com/indyrajanuar/hipertensi/main/model-final.h5"
-model = keras.models.load_model(saved_model_path)
+# Download the model file from the URL
+model_url = "https://raw.githubusercontent.com/indyrajanuar/hipertensi/main/model-final.h5"
+response = requests.get(model_url)
+response.raise_for_status()
+
+# Load the model from the downloaded content
+model = keras.models.load_model(BytesIO(response.content))
 
 def preprocess_data(data): 
     # Replace commas with dots and convert numerical columns to floats

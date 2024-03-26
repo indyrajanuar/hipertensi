@@ -156,17 +156,11 @@ elif selected == 'Klasifikasi ERNN':
         recall = float(lines[3].split()[1]) * 100
 
         # Display the metrics
-        html_header = '<h5 style="text-align: center;"> Accuracy &emsp;&emsp;&emsp;&emsp; Precision &emsp;&emsp;&emsp;&emsp; Recall </h5>'
-        html_values = f'<div style="text-align: center;">{accuracy:.2f}% &emsp;&emsp;&emsp;&emsp; {precision:.2f}% &emsp;&emsp;&emsp;&emsp; {recall:.2f}%</div>'
+        html_header = '<h5 style="text-align: center; word-spacing: 3em;"> Accuracy Precision Recall </h5>'
+        html_values = f'<div style="text-align: center; word-spacing: 3em;">{accuracy:.2f}% {precision:.2f}% {recall:.2f}%</div>'
 
         st.markdown(html_header, unsafe_allow_html=True)
         st.markdown(html_values, unsafe_allow_html=True)
-        #st.markdown('<h5 style="text-align: center;"> Accuracy &emsp;&emsp;&emsp;&emsp; Precision &emsp;&emsp;&emsp;&emsp; Recall </h5>', unsafe_allow_html=True)
-        #st.markdown('<div style="text-align: center;"> ("{:.2f}%".format(accuracy)) ("{:.2f}%".format(precision)) ("{:.2f}%".format(recall)) </div>', unsafe_allow_html=True)
-        #st.markdown("**_Accuracy:_** {:.2f}%".format(accuracy))
-        #st.markdown("**_Precision:_** {:.2f}%".format(precision))
-        #st.markdown("**_Recall:_** {:.2f}%".format(recall))
-
 
 elif selected == 'Klasifikasi ERNN + Bagging':
     st.write("You are at Korelasi Data")

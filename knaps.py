@@ -156,11 +156,28 @@ elif selected == 'Klasifikasi ERNN':
         recall = float(lines[3].split()[1]) * 100
 
         # Display the metrics
-        html_header = '<h5 style="text-align: center; word-spacing: 5.1em"> Accuracy Precision Recall </h5>'
-        html_values = f'<div style="text-align: center; word-spacing: 7.5em;">{accuracy:.2f}% {precision:.2f}% {recall:.2f}%</div>'
+        html_code = """
+        <table border="1">
+            <tr>
+                <td>Baris ke 1 - Kolom ke 1</td>
+                <td>Baris ke 1 - Kolom ke 2</td>
+                <td>Baris ke 1 - Kolom ke 3</td>
+            </tr>
+            <tr>
+                <td>Baris ke 2 - Kolom ke 1</td>
+                <td>Baris ke 2 - Kolom ke 2</td>
+                <td>Baris ke 2 - Kolom ke 3</td>
+            </tr>
+        </table>
+        """
+        
+        st.markdown(html_code, unsafe_allow_html=True)
 
-        st.markdown(html_header, unsafe_allow_html=True)
-        st.markdown(html_values, unsafe_allow_html=True)
+        #html_header = '<h5 style="text-align: center; word-spacing: 5.1em"> Accuracy Precision Recall </h5>'
+        #html_values = f'<div style="text-align: center; word-spacing: 7.5em;">{accuracy:.2f}% {precision:.2f}% {recall:.2f}%</div>'
+
+        #st.markdown(html_header, unsafe_allow_html=True)
+        #st.markdown(html_values, unsafe_allow_html=True)
 
 elif selected == 'Klasifikasi ERNN + Bagging':
     st.write("You are at Korelasi Data")

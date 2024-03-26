@@ -173,12 +173,12 @@ elif selected == 'Klasifikasi ERNN':
                 <td><h5>Recall</h5></td>
             </tr>
             <tr>
-                <td>{accuracy:.2f}%</td>
-                <td>{precision:.2f}%</td>
-                <td>{recall:.2f}%</td>
+                <td>{}</td>
+                <td>{}</td>
+                <td>{}</td>
             </tr>
         </table>
-        """
+        """.format("{:.2f}%".format(accuracy), "{:.2f}%".format(precision), "{:.2f}%".format(recall))
         
         st.markdown(html_code, unsafe_allow_html=True)
 

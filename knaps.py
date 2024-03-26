@@ -10,15 +10,20 @@ from sklearn.model_selection import KFold
 import seaborn as sns
 import matplotlib.pyplot as plt
 import requests
-from io import BytesIO
+from tempfile import NamedTemporaryFile
 
 # Download the model file from the URL
 model_url = "https://raw.githubusercontent.com/indyrajanuar/hipertensi/main/model-final.h5"
 response = requests.get(model_url)
 response.raise_for_status()
 
-# Load the model from the downloaded content
-model = keras.models.load_model(BytesIO(response.content))
+# Save the downloaded content to a temporary file
+with NamedTemporaryFile(delete=False, suffix='.h5') as temp_file:
+    temp_file.write(response.content)
+    temp_file_path = temp_file.name
+
+# Load the model from the temporary file
+model = keras.models.load_model(temp_file_path)
 
 def preprocess_data(data): 
     # Replace commas with dots and convert numerical columns to floats

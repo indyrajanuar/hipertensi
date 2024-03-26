@@ -162,6 +162,9 @@ elif selected == 'Klasifikasi ERNN':
                 margin-left: auto;
                 margin-right: auto;
             }
+            td {
+                text-align: center;
+            }
         </style>
         <table border="0">
             <tr>

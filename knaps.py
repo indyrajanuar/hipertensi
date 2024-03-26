@@ -156,20 +156,20 @@ elif selected == 'Klasifikasi ERNN':
         recall = float(lines[3].split()[1]) * 100
 
         # Display the metrics
-        html_code = """
-        <table border="0">
+        html_code = f"""
+        <table style="margin: auto;">
             <tr>
-                <td><h5>Accuracy</h5></td>
-                <td><h5>Precision</h5></td>
-                <td><h5>Recall</h5></td>
+                <td style="text-align: center;"><h5>Accuracy</h5></td>
+                <td style="text-align: center;"><h5>Precision</h5></td>
+                <td style="text-align: center;"><h5>Recall</h5></td>
             </tr>
             <tr>
-                <td>{:.2f}%</td>
-                <td>{:.2f}%</td>
-                <td>{:.2f}%</td>
+                <td style="text-align: center;">{accuracy:.2f}%</td>
+                <td style="text-align: center;">{precision:.2f}%</td>
+                <td style="text-align: center;">{recall:.2f}%</td>
             </tr>
         </table>
-        """.format(accuracy, precision, recall)
+        """
         
         st.markdown(html_code, unsafe_allow_html=True)
 

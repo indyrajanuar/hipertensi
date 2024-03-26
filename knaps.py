@@ -25,8 +25,12 @@ with NamedTemporaryFile(delete=False, suffix='.h5') as temp_file:
 # Load the model from the temporary file
 model = keras.models.load_model(temp_file_path)
 
+# Explicitly specify optimizer and loss function
+optimizer = keras.optimizers.Adam(learning_rate=0.1)
+loss = 'mean_squared_error'
+
 # Compile the loaded model
-model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+model.compile(optimizer=optimizer, loss=loss, metrics=['accuracy'])
 
 def preprocess_data(data): 
     # Replace commas with dots and convert numerical columns to floats

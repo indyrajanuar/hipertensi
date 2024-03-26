@@ -159,10 +159,7 @@ elif selected == 'Klasifikasi ERNN':
         html_code = """
         <style>
             table {
-                margin-left: auto;
-                margin-right: auto;
-            }
-            td {
+                margin: auto;
                 text-align: center;
             }
         </style>
@@ -173,12 +170,12 @@ elif selected == 'Klasifikasi ERNN':
                 <td><h5>Recall</h5></td>
             </tr>
             <tr>
-                <td>{}</td>
-                <td>{}</td>
-                <td>{}</td>
+                <td>{:.2f}%</td>
+                <td>{:.2f}%</td>
+                <td>{:.2f}%</td>
             </tr>
         </table>
-        """.format("{:.2f}%".format(accuracy), "{:.2f}%".format(precision), "{:.2f}%".format(recall))
+        """.format(accuracy, precision, recall)
         
         st.markdown(html_code, unsafe_allow_html=True)
 

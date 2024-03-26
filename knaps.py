@@ -158,12 +158,12 @@ elif selected == 'Klasifikasi ERNN':
         # Display the metrics
         html_code = """
         <style>
-        table {
-        margin-left: auto;
-        margin-right: auto;
-        }
+            table {
+                margin-left: auto;
+                margin-right: auto;
+            }
         </style>
-        <table border="1">
+        <table border="0">
             <tr>
                 <td><h5>Accuracy</h5></td>
                 <td><h5>Precision</h5></td>

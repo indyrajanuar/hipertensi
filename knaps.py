@@ -10,6 +10,10 @@ from sklearn.model_selection import KFold
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+# Load the saved model
+saved_model_path = "https://raw.githubusercontent.com/indyrajanuar/hipertensi/main/model-final.h5"
+model = keras.models.load_model(saved_model_path)
+
 def preprocess_data(data): 
     # Replace commas with dots and convert numerical columns to floats
     numerical_columns = ['IMT']
@@ -186,43 +190,35 @@ def main():
     elif selected == 'Uji Coba':
         st.title("Uji Coba")
         st.write("Masukkan nilai untuk pengujian:")
-
+    
         # Input fields
         age = st.number_input("Umur", min_value=0, max_value=150, step=1, value=30)
         bmi = st.number_input("IMT", min_value=0.0, max_value=100.0, step=0.1, value=25.0)
-        systole = st.number_input("Sistole", min_value=0, max_value=300, step=1, value=120)
-        diastole = st.number_input("Diastole", min_value=0, max_value=200, step=1, value=80)
-        breaths = st.number_input("Nafas", min_value=0, max_value=100, step=1, value=16)
-        heart_rate = st.number_input("Detak Nadi", min_value=0, max_value=300, step=1, value=70)
-        gender = st.selectbox("Jenis Kelamin", ["Laki-laki", "Perempuan"])
-
-        # Convert gender to binary
-        gender_binary = 1 if gender == "Perempuan" else 0
-
+        # Add input fields for other features as needed
+    
         # Button for testing
         if st.button("Hasil Uji Coba"):
             # Prepare input data for testing
             input_data = pd.DataFrame({
                 "Umur": [age],
                 "IMT": [bmi],
-                "Sistole": [systole],
-                "Diastole": [diastole],
-                "Nafas": [breaths],
-                "Detak Nadi": [heart_rate],
-                "Jenis Kelamin": [gender_binary]
+                # Add other features here
             })
-
+    
             # Preprocess and normalize input data
             processed_data = preprocess_data(input_data)
-            normalized_data = normalize_data(processed_data)
-
+            scaler = MinMaxScaler()
+            normalized_data = scaler.fit_transform(processed_data)
+    
             # Perform classification
-            y_pred = classify_MLP(normalized_data)
-
+            y_pred = model.predict(normalized_data)
+            # Assuming the output is binary, you may need to threshold the predictions
+            y_pred_binary = (y_pred > 0.5).astype(int)
+    
             # Display result
             st.write("Hasil klasifikasi:")
-            st.write(y_pred)
-
-
-if __name__ == "__main__":
-    main()
+            st.write(y_pred_binary)
+    
+    
+    if __name__ == "__main__":
+        main()

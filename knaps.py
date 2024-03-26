@@ -25,6 +25,9 @@ with NamedTemporaryFile(delete=False, suffix='.h5') as temp_file:
 # Load the model from the temporary file
 model = keras.models.load_model(temp_file_path)
 
+# Compile the loaded model
+model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+
 def preprocess_data(data): 
     # Replace commas with dots and convert numerical columns to floats
     numerical_columns = ['IMT']

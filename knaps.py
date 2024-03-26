@@ -157,7 +157,7 @@ elif selected == 'Klasifikasi ERNN':
 
         # Display the metrics
         html_header = '<h5 style="text-align: center; word-spacing: 5em"> Accuracy Precision Recall </h5>'
-        html_values = f'<div style="text-align: center; word-spacing: 7.5em;">{accuracy:.2f}% &emsp;&emsp;&emsp;&emsp;&emsp; {precision:.2f}% &emsp;&emsp;&emsp;&emsp;&emsp; {recall:.2f}%</div>'
+        html_values = f'<div style="text-align: center; word-spacing: 7.5em;">{accuracy:.2f}% &emsp; {precision:.2f}% &emsp; {recall:.2f}%</div>'
 
         st.markdown(html_header, unsafe_allow_html=True)
         st.markdown(html_values, unsafe_allow_html=True)

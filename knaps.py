@@ -156,7 +156,7 @@ elif selected == 'Klasifikasi ERNN':
         recall = float(lines[3].split()[1]) * 100
 
         # Display the metrics
-        st.markdown('<h5 style="text-align: center;"> Accuracy Precision Recall </h5>', unsafe_allow_html=True)
+        st.markdown('<h5 style="text-align: center;"> Accuracy &emsp;&emsp; Precision &emsp;&emsp; Recall </h5>', unsafe_allow_html=True)
         st.markdown('<div style="text-align: center;"> ("{:.2f}%".format(accuracy)) ("{:.2f}%".format(precision)) ("{:.2f}%".format(recall)) </div>', unsafe_allow_html=True)
         #st.markdown("**_Accuracy:_** {:.2f}%".format(accuracy))
         #st.markdown("**_Precision:_** {:.2f}%".format(precision))

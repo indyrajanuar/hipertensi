@@ -202,7 +202,11 @@ def main():
             input_data = pd.DataFrame({
                 "Umur": [age],
                 "IMT": [bmi],
-                # Add other features here
+                "Sistole": [systole],
+                "Diastole": [diastole],
+                "Nafas": [breaths],
+                "Detak Nadi": [heart_rate],
+                "Jenis Kelamin": [gender_binary]
             })
     
             # Preprocess and normalize input data

@@ -80,107 +80,149 @@ def classify_MLP(data):
 
     return y_test, y_pred
 
-with st.sidebar:
-    selected = option_menu(
-        "Main Menu",
-        ["Home", "PreProcessing Data", "Klasifikasi ERNN", "ERNN + Bagging", "Uji Coba"],
-        icons=['house', 'table', 'boxes', 'boxes', 'check2-circle'],
-        menu_icon="cast",
-        default_index=1,
-        orientation='vertical')
-
-    upload_file = st.sidebar.file_uploader("Masukkan file csv disini", key=1)
-
-if selected == 'Home':
-    st.markdown('<h1 style="text-align: center;"> Website Klasifikasi Hipertensi </h1>', unsafe_allow_html=True)
-    st.markdown('<h3 style="text-align: left;"> Hipertensi </h1>', unsafe_allow_html=True)
-    st.markdown('<h3 style="text-align: left;"> View Data </h1>', unsafe_allow_html=True)
-    if upload_file is not None:
-        df = pd.read_csv(upload_file)
-        st.write("Data yang digunakan yaitu data Penyakit Hipertensi dari UPT Puskesmas Modopuro Mojokerto.")
-        st.dataframe(df)
-
-elif selected == 'PreProcessing Data':
-    st.markdown('<h3 style="text-align: left;"> Data Asli </h1>', unsafe_allow_html=True)
-    st.write("Berikut merupakan data asli yang didapat dari UPT Puskesmas Modopuro Mojokerto.")
-
-    if upload_file is not None:
-        df = pd.read_csv(upload_file)
-        st.dataframe(df)
-        st.markdown('<h3 style="text-align: left;"> Melakukan Transformation Data </h1>', unsafe_allow_html=True)
-        if st.button("Transformation Data"):  # Check if button is clicked
-            preprocessed_data = preprocess_data(df)
-            st.write("Transformation completed.")
-            st.dataframe(preprocessed_data)
-            st.session_state.preprocessed_data = preprocessed_data  # Store preprocessed data in session state
-
-        st.markdown('<h3 style="text-align: left;"> Melakukan Normalisasi Data </h1>', unsafe_allow_html=True)
-        if 'preprocessed_data' in st.session_state:  # Check if preprocessed_data exists in session state
-            if st.button("Normalize Data"):
+def main():
+    with st.sidebar:
+        selected = option_menu(
+            "Main Menu",
+            ["Home", "PreProcessing Data", "Klasifikasi ERNN", "ERNN + Bagging", "Uji Coba"],
+            icons=['house', 'table', 'boxes', 'boxes', 'check2-circle'],
+            menu_icon="cast",
+            default_index=1,
+            orientation='vertical')
+    
+        upload_file = st.sidebar.file_uploader("Masukkan file csv disini", key=1)
+    
+    if selected == 'Home':
+        st.markdown('<h1 style="text-align: center;"> Website Klasifikasi Hipertensi </h1>', unsafe_allow_html=True)
+        st.markdown('<h3 style="text-align: left;"> Hipertensi </h1>', unsafe_allow_html=True)
+        st.markdown('<h3 style="text-align: left;"> View Data </h1>', unsafe_allow_html=True)
+        if upload_file is not None:
+            df = pd.read_csv(upload_file)
+            st.write("Data yang digunakan yaitu data Penyakit Hipertensi dari UPT Puskesmas Modopuro Mojokerto.")
+            st.dataframe(df)
+    
+    elif selected == 'PreProcessing Data':
+        st.markdown('<h3 style="text-align: left;"> Data Asli </h1>', unsafe_allow_html=True)
+        st.write("Berikut merupakan data asli yang didapat dari UPT Puskesmas Modopuro Mojokerto.")
+    
+        if upload_file is not None:
+            df = pd.read_csv(upload_file)
+            st.dataframe(df)
+            st.markdown('<h3 style="text-align: left;"> Melakukan Transformation Data </h1>', unsafe_allow_html=True)
+            if st.button("Transformation Data"):  # Check if button is clicked
+                preprocessed_data = preprocess_data(df)
+                st.write("Transformation completed.")
+                st.dataframe(preprocessed_data)
+                st.session_state.preprocessed_data = preprocessed_data  # Store preprocessed data in session state
+    
+            st.markdown('<h3 style="text-align: left;"> Melakukan Normalisasi Data </h1>', unsafe_allow_html=True)
+            if 'preprocessed_data' in st.session_state:  # Check if preprocessed_data exists in session state
+                if st.button("Normalize Data"):
+                    normalized_data = normalize_data(st.session_state.preprocessed_data.copy())
+                    st.write("Normalization completed.")
+                    st.dataframe(normalized_data)
+    
+    elif selected == 'Klasifikasi ERNN':
+        st.write("Berikut merupakan hasil klasifikasi yang di dapat dari pemodelan Elman Recurrent Neural Network (ERNN)")
+    
+        if upload_file is not None:
+            df = pd.read_csv(upload_file)
+            if 'preprocessed_data' in st.session_state:  # Check if preprocessed_data exists in session state
                 normalized_data = normalize_data(st.session_state.preprocessed_data.copy())
-                st.write("Normalization completed.")
-                st.dataframe(normalized_data)
-
-elif selected == 'Klasifikasi ERNN':
-    st.write("Berikut merupakan hasil klasifikasi yang di dapat dari pemodelan Elman Recurrent Neural Network (ERNN)")
-
-    if upload_file is not None:
-        df = pd.read_csv(upload_file)
-        if 'preprocessed_data' in st.session_state:  # Check if preprocessed_data exists in session state
-            normalized_data = normalize_data(st.session_state.preprocessed_data.copy())
-            y_true, y_pred = classify_MLP(normalized_data)
+                y_true, y_pred = classify_MLP(normalized_data)
+                
+            # Generate confusion matrix
+            cm = confusion_matrix(y_true, y_pred)
+    
+            # Plot confusion matrix
+            plt.figure(figsize=(8, 6))
+            sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
+            plt.xlabel('Predicted')
+            plt.ylabel('True')
+            plt.title('Confusion Matrix')
+            #st.pyplot()
+            st.pyplot(plt.gcf())  # Pass the current figure to st.pyplot()
+    
+            # Clear the current plot to avoid displaying it multiple times
+            plt.clf()
+    
+            # Generate classification report
+            with np.errstate(divide='ignore', invalid='ignore'):  # Suppress division by zero warning
+                report = classification_report(y_true, y_pred, zero_division=0)
+    
+            # Extract metrics from the classification report
+            lines = report.split('\n')
+            accuracy = float(lines[5].split()[1]) * 100
+            precision = float(lines[2].split()[1]) * 100
+            recall = float(lines[3].split()[1]) * 100
+    
+            # Display the metrics
+            html_code = f"""
+            <table style="margin: auto;">
+                <tr>
+                    <td style="text-align: center;"><h5>Accuracy</h5></td>
+                    <td style="text-align: center;"><h5>Precision</h5></td>
+                    <td style="text-align: center;"><h5>Recall</h5></td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;">{accuracy:.2f}%</td>
+                    <td style="text-align: center;">{precision:.2f}%</td>
+                    <td style="text-align: center;">{recall:.2f}%</td>
+                </tr>
+            </table>
+            """
             
-        # Generate confusion matrix
-        cm = confusion_matrix(y_true, y_pred)
+            st.markdown(html_code, unsafe_allow_html=True)
+    
+            #html_header = '<h5 style="text-align: center; word-spacing: 5.1em"> Accuracy Precision Recall </h5>'
+            #html_values = f'<div style="text-align: center; word-spacing: 7.5em;">{accuracy:.2f}% {precision:.2f}% {recall:.2f}%</div>'
+    
+            #st.markdown(html_header, unsafe_allow_html=True)
+            #st.markdown(html_values, unsafe_allow_html=True)
+    
+    elif selected == 'Klasifikasi ERNN + Bagging':
+        st.write("You are at Korelasi Data")
+    
+    elif selected == 'Uji Coba':
+        st.title("Uji Coba")
+        st.write("Masukkan nilai untuk pengujian:")
 
-        # Plot confusion matrix
-        plt.figure(figsize=(8, 6))
-        sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
-        plt.xlabel('Predicted')
-        plt.ylabel('True')
-        plt.title('Confusion Matrix')
-        #st.pyplot()
-        st.pyplot(plt.gcf())  # Pass the current figure to st.pyplot()
+        # Input fields
+        age = st.number_input("Umur", min_value=0, max_value=150, step=1, value=30)
+        bmi = st.number_input("IMT", min_value=0.0, max_value=100.0, step=0.1, value=25.0)
+        systole = st.number_input("Sistole", min_value=0, max_value=300, step=1, value=120)
+        diastole = st.number_input("Diastole", min_value=0, max_value=200, step=1, value=80)
+        breaths = st.number_input("Nafas", min_value=0, max_value=100, step=1, value=16)
+        heart_rate = st.number_input("Detak Nadi", min_value=0, max_value=300, step=1, value=70)
+        gender = st.selectbox("Jenis Kelamin", ["Laki-laki", "Perempuan"])
 
-        # Clear the current plot to avoid displaying it multiple times
-        plt.clf()
+        # Convert gender to binary
+        gender_binary = 1 if gender == "Perempuan" else 0
 
-        # Generate classification report
-        with np.errstate(divide='ignore', invalid='ignore'):  # Suppress division by zero warning
-            report = classification_report(y_true, y_pred, zero_division=0)
+        # Button for testing
+        if st.button("Hasil Uji Coba"):
+            # Prepare input data for testing
+            input_data = pd.DataFrame({
+                "Umur": [age],
+                "IMT": [bmi],
+                "Sistole": [systole],
+                "Diastole": [diastole],
+                "Nafas": [breaths],
+                "Detak Nadi": [heart_rate],
+                "Jenis Kelamin": [gender_binary]
+            })
 
-        # Extract metrics from the classification report
-        lines = report.split('\n')
-        accuracy = float(lines[5].split()[1]) * 100
-        precision = float(lines[2].split()[1]) * 100
-        recall = float(lines[3].split()[1]) * 100
+            # Preprocess and normalize input data
+            processed_data = preprocess_data(input_data)
+            normalized_data = normalize_data(processed_data)
 
-        # Display the metrics
-        html_code = f"""
-        <table style="margin: auto;">
-            <tr>
-                <td style="text-align: center;"><h5>Accuracy</h5></td>
-                <td style="text-align: center;"><h5>Precision</h5></td>
-                <td style="text-align: center;"><h5>Recall</h5></td>
-            </tr>
-            <tr>
-                <td style="text-align: center;">{accuracy:.2f}%</td>
-                <td style="text-align: center;">{precision:.2f}%</td>
-                <td style="text-align: center;">{recall:.2f}%</td>
-            </tr>
-        </table>
-        """
-        
-        st.markdown(html_code, unsafe_allow_html=True)
+            # Perform classification
+            y_pred = classify_MLP(normalized_data)
 
-        #html_header = '<h5 style="text-align: center; word-spacing: 5.1em"> Accuracy Precision Recall </h5>'
-        #html_values = f'<div style="text-align: center; word-spacing: 7.5em;">{accuracy:.2f}% {precision:.2f}% {recall:.2f}%</div>'
+            # Display result
+            st.write("Hasil klasifikasi:")
+            st.write(y_pred)
 
-        #st.markdown(html_header, unsafe_allow_html=True)
-        #st.markdown(html_values, unsafe_allow_html=True)
 
-elif selected == 'Klasifikasi ERNN + Bagging':
-    st.write("You are at Korelasi Data")
-
-elif selected == 'Uji Coba':
-    st.write("You are at Uji Coba")
+if __name__ == "__main__":
+    main()

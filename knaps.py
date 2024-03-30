@@ -212,7 +212,8 @@ def main():
                 "Diastole": [diastole],
                 "Nafas": [breaths],
                 "Detak Nadi": [heart_rate],
-                "Jenis Kelamin": [gender_binary]
+                "Jenis Kelamin": [gender_binary],
+                "Diagnosa": [0]  # Placeholder value
             })
     
             # Preprocess and normalize input data

@@ -238,12 +238,6 @@ def main():
                         true_label = "TIDAK"
                     st.write("Hasil klasifikasi:")
                     st.write("Data termasuk dalam kategori 'Diagnosa':", true_label)
-                    if loss is not None:
-                        st.write("Loss:", loss)
-                    else:
-                        st.write("Loss was not calculated during training.")
-
-    
     
 if __name__ == "__main__":
     main()

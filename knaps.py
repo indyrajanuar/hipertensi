@@ -160,13 +160,13 @@ def main():
             html_code = f"""
             <table style="margin: auto;">
                 <tr>
-                    <td style="text-align: center;"><h5>Loss</h5></td>
+                    #<td style="text-align: center;"><h5>Loss</h5></td>
                     <td style="text-align: center;"><h5>Accuracy</h5></td>
                     <td style="text-align: center;"><h5>Precision</h5></td>
                     <td style="text-align: center;"><h5>Recall</h5></td>
                 </tr>
                 <tr>
-                    <td style="text-align: center;">{loss:.4f}</td>
+                    #<td style="text-align: center;">{loss:.4f}</td>
                     <td style="text-align: center;">{accuracy:.2f}%</td>
                     <td style="text-align: center;">{precision:.2f}%</td>
                     <td style="text-align: center;">{recall:.2f}%</td>

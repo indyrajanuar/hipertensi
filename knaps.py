@@ -11,10 +11,6 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 def preprocess_data(data): 
-    # Drop 'Diagnosa' column if exists
-    if 'Diagnosa' in data.columns:
-        data = data.drop('Diagnosa', axis=1)
-        
     # Replace commas with dots and convert numerical columns to floats
     numerical_columns = ['IMT']
     data[numerical_columns] = data[numerical_columns].replace({',': '.'}, regex=True).astype(float)
@@ -219,7 +215,8 @@ def main():
                 "Diastole": [diastole],
                 "Nafas": [breaths],
                 "Detak Nadi": [heart_rate],
-                "Jenis Kelamin": [gender_binary]
+                "Jenis Kelamin": [gender_binary],
+                "Diagnosa": [0]  # Placeholder value
             })
     
             # Preprocess and normalize input data

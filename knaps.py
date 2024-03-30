@@ -78,7 +78,13 @@ def classify_MLP(data):
     y_pred = model.predict(x_test)
     y_pred = (y_pred > 0.5).astype(int)
 
-    return y_test, y_pred
+    #return y_test, y_pred
+    # Calculate loss if applicable
+    loss = None  # Placeholder for loss value
+    if 'val_loss' in history.history:
+        loss = history.history['val_loss'][-1]
+
+    return y_test, y_pred, loss
 
 def main():
     with st.sidebar:

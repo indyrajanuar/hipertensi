@@ -129,7 +129,8 @@ def main():
             df = pd.read_csv(upload_file)
             if 'preprocessed_data' in st.session_state:  # Check if preprocessed_data exists in session state
                 normalized_data = normalize_data(st.session_state.preprocessed_data.copy())
-                y_true, y_pred = classify_MLP(normalized_data)
+                #y_true, y_pred = classify_MLP(normalized_data)
+                y_true, y_pred, loss = classify_MLP(normalized_data)  # Assuming classify_MLP also returns loss
                 
             # Generate confusion matrix
             cm = confusion_matrix(y_true, y_pred)
@@ -175,12 +176,6 @@ def main():
             """
             
             st.markdown(html_code, unsafe_allow_html=True)
-    
-            #html_header = '<h5 style="text-align: center; word-spacing: 5.1em"> Accuracy Precision Recall </h5>'
-            #html_values = f'<div style="text-align: center; word-spacing: 7.5em;">{accuracy:.2f}% {precision:.2f}% {recall:.2f}%</div>'
-    
-            #st.markdown(html_header, unsafe_allow_html=True)
-            #st.markdown(html_values, unsafe_allow_html=True)
     
     elif selected == 'Klasifikasi ERNN + Bagging':
         st.write("You are at Korelasi Data")

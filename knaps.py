@@ -9,6 +9,13 @@ import keras
 from sklearn.model_selection import KFold
 import seaborn as sns
 import matplotlib.pyplot as plt
+from sklearn.impute import SimpleImputer
+
+# Buat objek imputer dengan strategi pengisian nilai NaN menggunakan rata-rata kolom
+imputer = SimpleImputer(strategy='mean')
+
+# Transformasikan data menggunakan imputer
+data = imputer.fit_transform(data)
 
 def preprocess_data(data): 
     # Replace commas with dots and convert numerical columns to floats

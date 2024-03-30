@@ -4,23 +4,23 @@ import pandas as pd
 from sklearn.preprocessing import OneHotEncoder, MinMaxScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix, classification_report
+from sklearn.impute import SimpleImputer
 import numpy as np
 import keras
 from sklearn.model_selection import KFold
 import seaborn as sns
 import matplotlib.pyplot as plt
-from sklearn.impute import SimpleImputer
-
-# Buat objek imputer dengan strategi pengisian nilai NaN menggunakan rata-rata kolom
-imputer = SimpleImputer(strategy='mean')
-
-# Transformasikan data menggunakan imputer
-data = imputer.fit_transform(data)
 
 def preprocess_data(data): 
     # Replace commas with dots and convert numerical columns to floats
     numerical_columns = ['IMT']
     data[numerical_columns] = data[numerical_columns].replace({',': '.'}, regex=True).astype(float)
+    
+    # Handle missing values using SimpleImputer
+    imputer = SimpleImputer(strategy='mean')
+    data = imputer.fit_transform(data)
+    data = pd.DataFrame(data, columns=data.columns)
+    
     # One-hot encoding for 'Jenis Kelamin'
     one_hot_encoder = OneHotEncoder()
     encoded_gender = one_hot_encoder.fit_transform(data[['Jenis Kelamin']].values.reshape(-1, 1))
@@ -46,7 +46,7 @@ def classify_MLP(data):
 
     # Check if the dataset has sufficient samples for splitting
     if len(data) < 2:
-        return None, None, "Insufficient data for classification"
+        return None, None, None, "Insufficient data for classification"
     
     # Split data into training and testing sets
     x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=0)
@@ -148,50 +148,50 @@ def main():
                 #y_true, y_pred = classify_MLP(normalized_data)
                 y_true, y_pred, loss = classify_MLP(normalized_data)  # Assuming classify_MLP also returns loss
                 
-                # Generate confusion matrix
-                cm = confusion_matrix(y_true, y_pred)
-        
-                # Plot confusion matrix
-                plt.figure(figsize=(8, 6))
-                sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
-                plt.xlabel('Predicted')
-                plt.ylabel('True')
-                plt.title('Confusion Matrix')
-                #st.pyplot()
-                st.pyplot(plt.gcf())  # Pass the current figure to st.pyplot()
-        
-                # Clear the current plot to avoid displaying it multiple times
-                plt.clf()
-        
-                # Generate classification report
-                with np.errstate(divide='ignore', invalid='ignore'):  # Suppress division by zero warning
-                    report = classification_report(y_true, y_pred, zero_division=0)
-        
-                # Extract metrics from the classification report
-                lines = report.split('\n')
-                accuracy = float(lines[5].split()[1]) * 100
-                precision = float(lines[2].split()[1]) * 100
-                recall = float(lines[3].split()[1]) * 100
-        
-                # Display the metrics
-                html_code = f"""
-                <table style="margin: auto;">
-                    <tr>
-                        <td style="text-align: center;"><h5>Loss</h5></td>
-                        <td style="text-align: center;"><h5>Accuracy</h5></td>
-                        <td style="text-align: center;"><h5>Precision</h5></td>
-                        <td style="text-align: center;"><h5>Recall</h5></td>
-                    </tr>
-                    <tr>
-                        <td style="text-align: center;">{loss:.4f}</td>
-                        <td style="text-align: center;">{accuracy:.2f}%</td>
-                        <td style="text-align: center;">{precision:.2f}%</td>
-                        <td style="text-align: center;">{recall:.2f}%</td>
-                    </tr>
-                </table>
-                """
-                
-                st.markdown(html_code, unsafe_allow_html=True)
+            # Generate confusion matrix
+            cm = confusion_matrix(y_true, y_pred)
+    
+            # Plot confusion matrix
+            plt.figure(figsize=(8, 6))
+            sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
+            plt.xlabel('Predicted')
+            plt.ylabel('True')
+            plt.title('Confusion Matrix')
+            #st.pyplot()
+            st.pyplot(plt.gcf())  # Pass the current figure to st.pyplot()
+    
+            # Clear the current plot to avoid displaying it multiple times
+            plt.clf()
+    
+            # Generate classification report
+            with np.errstate(divide='ignore', invalid='ignore'):  # Suppress division by zero warning
+                report = classification_report(y_true, y_pred, zero_division=0)
+    
+            # Extract metrics from the classification report
+            lines = report.split('\n')
+            accuracy = float(lines[5].split()[1]) * 100
+            precision = float(lines[2].split()[1]) * 100
+            recall = float(lines[3].split()[1]) * 100
+    
+            # Display the metrics
+            html_code = f"""
+            <table style="margin: auto;">
+                <tr>
+                    <td style="text-align: center;"><h5>Loss</h5></td>
+                    <td style="text-align: center;"><h5>Accuracy</h5></td>
+                    <td style="text-align: center;"><h5>Precision</h5></td>
+                    <td style="text-align: center;"><h5>Recall</h5></td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;">{loss:.4f}</td>
+                    <td style="text-align: center;">{accuracy:.2f}%</td>
+                    <td style="text-align: center;">{precision:.2f}%</td>
+                    <td style="text-align: center;">{recall:.2f}%</td>
+                </tr>
+            </table>
+            """
+            
+            st.markdown(html_code, unsafe_allow_html=True)
     
     elif selected == 'Klasifikasi ERNN + Bagging':
         st.write("You are at Korelasi Data")

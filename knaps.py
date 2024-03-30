@@ -230,17 +230,19 @@ def main():
             if result is None:
                 st.write("Insufficient data for classification")
             else:
-                y_true, y_pred, loss, _ = result
-                if y_true[0] == 1:
-                    true_label = "YA"
-                else:
-                    true_label = "TIDAK"
-                st.write("Hasil klasifikasi:")
-                st.write("Data termasuk dalam kategori 'Diagnosa':", true_label)
-                if loss is not None:
-                    st.write("Loss:", loss)
-                else:
-                    st.write("Loss was not calculated during training.")
+                y_true, y_pred, loss = result
+                if y_true is not None and len(y_true) > 0:
+                    if y_true[0] == 1:
+                        true_label = "YA"
+                    else:
+                        true_label = "TIDAK"
+                    st.write("Hasil klasifikasi:")
+                    st.write("Data termasuk dalam kategori 'Diagnosa':", true_label)
+                    if loss is not None:
+                        st.write("Loss:", loss)
+                    else:
+                        st.write("Loss was not calculated during training.")
+
     
     
 if __name__ == "__main__":

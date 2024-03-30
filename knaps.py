@@ -16,8 +16,8 @@ def preprocess_data(data):
     numerical_columns = ['IMT']
     data[numerical_columns] = data[numerical_columns].replace({',': '.'}, regex=True).astype(float)
     
-    # Handle missing values using SimpleImputer
-    imputer = SimpleImputer(strategy='mean')
+    # Handle missing values using SimpleImputer with strategy='most_frequent'
+    imputer = SimpleImputer(strategy='most_frequent')
     data = imputer.fit_transform(data)
     data = pd.DataFrame(data, columns=data.columns)
     

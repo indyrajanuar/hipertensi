@@ -36,6 +36,10 @@ def classify_MLP(data):
     # split data fitur, target
     x = data.drop('Diagnosa', axis=1)
     y = data['Diagnosa']
+
+    # Check if the dataset has sufficient samples for splitting
+    if len(data) < 2:
+        return None, None, None, "Insufficient data for classification"
     
     # Split data into training and testing sets
     x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=0)
@@ -78,7 +82,6 @@ def classify_MLP(data):
     y_pred = model.predict(x_test)
     y_pred = (y_pred > 0.5).astype(int)
 
-    #return y_test, y_pred
     # Calculate loss if applicable
     loss = None  # Placeholder for loss value
     if 'val_loss' in history.history:

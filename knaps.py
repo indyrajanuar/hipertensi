@@ -234,6 +234,9 @@ def main():
                 "Diagnosa": [0]  # Placeholder value
             })
             
+            st.write("Data Input:")
+            st.write(input_data)  # Print input data
+            
             # Preprocess and classify input data
             result = preprocess_and_classify(input_data)
     
@@ -249,6 +252,8 @@ def main():
                         true_label = "TIDAK"
                     st.write("Hasil klasifikasi:")
                     st.write("Data termasuk dalam kategori 'Diagnosa':", true_label)
+                    st.write("Hasil Prediksi:")
+                    st.write(y_pred)  # Print classification result
     
 if __name__ == "__main__":
     main()

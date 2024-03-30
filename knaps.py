@@ -11,6 +11,10 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 def preprocess_data(data): 
+    # Drop 'Diagnosa' column if exists
+    if 'Diagnosa' in data.columns:
+        data = data.drop('Diagnosa', axis=1)
+        
     # Replace commas with dots and convert numerical columns to floats
     numerical_columns = ['IMT']
     data[numerical_columns] = data[numerical_columns].replace({',': '.'}, regex=True).astype(float)

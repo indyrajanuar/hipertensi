@@ -11,6 +11,8 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 def preprocess_data(data): 
+    # Handle missing values
+    data.fillna(0, inplace=True)  # Fill missing values with 0, you can choose another method based on your data
     # Replace commas with dots and convert numerical columns to floats
     numerical_columns = ['IMT']
     data[numerical_columns] = data[numerical_columns].replace({',': '.'}, regex=True).astype(float)
@@ -88,6 +90,19 @@ def classify_MLP(data):
         loss = history.history['val_loss'][-1]
 
     return y_test, y_pred, loss
+
+# Preprocessing data before classification
+def preprocess_and_classify(input_data):
+    # Preprocess input data
+    processed_data = preprocess_data(input_data)
+    
+    # Normalize data
+    normalized_data = normalize_data(processed_data)
+    
+    # Perform classification
+    result = classify_MLP(normalized_data)
+    
+    return result
 
 def main():
     with st.sidebar:
@@ -218,13 +233,9 @@ def main():
                 "Jenis Kelamin": [gender_binary],
                 "Diagnosa": [0]  # Placeholder value
             })
-    
-            # Preprocess and normalize input data
-            processed_data = preprocess_data(input_data)
-            normalized_data = normalize_data(processed_data)
-    
-            # Perform classification
-            result = classify_MLP(normalized_data)
+            
+            # Preprocess and classify input data
+            result = preprocess_and_classify(input_data)
     
             # Display result
             if result is None:

@@ -11,8 +11,6 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 def preprocess_data(data): 
-    # Handle missing values
-    data.fillna(0, inplace=True)  # Fill missing values with 0, you can choose another method based on your data
     # Replace commas with dots and convert numerical columns to floats
     numerical_columns = ['IMT']
     data[numerical_columns] = data[numerical_columns].replace({',': '.'}, regex=True).astype(float)
@@ -91,7 +89,7 @@ def classify_MLP(data):
 
     return y_test, y_pred, loss
 
-def run_ernn_bagging(x_train, y_train, x_test, y_test):
+def run_ernn_bagging(data):
     bagging_iterations = [1, 5, 10, 15]
     max_error = 0.001
     models = []
@@ -103,9 +101,8 @@ def run_ernn_bagging(x_train, y_train, x_test, y_test):
         for i in range(iteration):
             print("Training model {} of {}...".format(i+1, iteration))
             # Randomly sample with replacement
-            indices = np.random.choice(len(x_train), len(x_train), replace=True)
-            x_bag = x_train[indices]
-            y_bag = y_train[indices]
+            indices = np.random.choice(len(data), len(data), replace=True)
+            data_bag = data.iloc[indices]
 
             model = keras.models.Sequential()
             model.add(keras.layers.Dense(6, activation='sigmoid', input_shape=(8,)))  # Hidden layer with 6 neurons
@@ -116,12 +113,11 @@ def run_ernn_bagging(x_train, y_train, x_test, y_test):
                           optimizer=keras.optimizers.Adam(learning_rate=0.1),  # Learning rate set to 0.1
                           metrics=[keras.metrics.BinaryAccuracy()])
 
-            history = model.fit(x_bag, y_bag, batch_size=32, epochs=200, verbose=0)  # Set verbose=0 for less output
+            history = model.fit(data_bag.drop('Diagnosa', axis=1), data_bag['Diagnosa'],
+                                batch_size=32, epochs=200, verbose=0)  # Set verbose=0 for less output
             models.append(model)
 
             print("Model {} training complete.".format(i+1))
-
-    print("Processing Time for Classification: %s seconds" % (time.time() - start_time))
 
     threshold = 0.5  # Define your threshold here
 
@@ -129,7 +125,6 @@ def run_ernn_bagging(x_train, y_train, x_test, y_test):
     def apply_threshold(predictions, threshold):
         return (predictions > threshold).astype(int)
 
-    # Accuracy Evaluation Process for Each Bagging Iteration
     accuracies_all_iterations = []
     for iteration in bagging_iterations:
         accuracies = []
@@ -140,9 +135,9 @@ def run_ernn_bagging(x_train, y_train, x_test, y_test):
         iteration_models = models[:iteration]
 
         for model in iteration_models:
-            y_pred_prob = model.predict(x_test)
+            y_pred_prob = model.predict(data.drop('Diagnosa', axis=1))
             y_pred = apply_threshold(y_pred_prob, threshold)
-            accuracy = np.mean(y_pred == y_test)
+            accuracy = np.mean(y_pred == data['Diagnosa'])
             accuracies.append(accuracy)
 
         average_accuracy = np.mean(accuracies)
@@ -248,17 +243,18 @@ def main():
                 
                 st.markdown(html_code, unsafe_allow_html=True)
     
-    elif selected == 'Klasifikasi ERNN + Bagging':
+    elif selected == 'ERNN + Bagging':
         st.write("You are at Klasifikasi ERNN + Bagging")
         
         if upload_file is not None:
             df = pd.read_csv(upload_file)
             if 'preprocessed_data' in st.session_state:  # Check if preprocessed_data exists in session state
                 normalized_data = normalize_data(st.session_state.preprocessed_data.copy())
-                y_true, y_pred, loss = classify_MLP(normalized_data)  # Assuming classify_MLP also returns loss
+                # Assuming classify_MLP also returns loss
+                y_true, y_pred, loss = classify_MLP(normalized_data)  
                 
                 # Perform ERNN + Bagging classification
-                bagging_iterations, accuracies_all_iterations = run_ernn_bagging(x_train, y_train, x_test, y_test)
+                bagging_iterations, accuracies_all_iterations = run_ernn_bagging(normalized_data)
                 
                 # Plotting the accuracy
                 plt.plot(bagging_iterations, accuracies_all_iterations, marker='o')

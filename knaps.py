@@ -106,8 +106,10 @@ def run_ernn_bagging(data):
     models = []
 
     # Classification Process
+    accuracies_all_iterations = []  # List to store accuracies for each iteration
     for iteration in bagging_iterations:
         print("######## ITERATION - {} ########".format(iteration))
+        accuracies_per_iteration = []  # List to store accuracies for the current iteration
 
         for i in range(iteration):
             print("Training model {} of {}...".format(i+1, iteration))
@@ -117,8 +119,7 @@ def run_ernn_bagging(data):
             y_bag = y_train[indices]
 
             model = keras.models.Sequential()
-            model.add(keras.layers.Input(shape=(8,)))  # Input layer with shape specified
-            model.add(keras.layers.Dense(6, activation='sigmoid'))  # Hidden layer with 6 neurons
+            model.add(keras.layers.Dense(6, activation='sigmoid', input_shape=(8,)))  # Hidden layer with 6 neurons
             model.add(keras.layers.Dense(6, activation='sigmoid'))  # Context layer with 6 neurons
             model.add(keras.layers.Dense(1, activation='sigmoid'))
 
@@ -131,6 +132,14 @@ def run_ernn_bagging(data):
             models.append(model)
 
             print("Model {} training complete.".format(i+1))
+
+            # Calculate accuracy for the current model
+            accuracy = model.evaluate(x_test, y_test, verbose=0)[1]  # Evaluate accuracy
+            accuracies_per_iteration.append(accuracy)
+            
+        # Calculate average accuracy for the current iteration
+        avg_accuracy = np.mean(accuracies_per_iteration)
+        accuracies_all_iterations.append(avg_accuracy)
 
     # Apply Threshold
     y_preds = []
@@ -149,7 +158,7 @@ def run_ernn_bagging(data):
     plt.ylabel('Average Accuracy')
     plt.grid(True)
     
-    return y_test, y_pred_avg, plt.gcf()  # Return the figure object along with the accuracies
+    return y_test, y_pred_avg, plt.gcf(), bagging_iterations, accuracies_all_iterations  # Return accuracies along with the figure object
 
 def main():
     with st.sidebar:
@@ -255,7 +264,7 @@ def main():
             if 'preprocessed_data' in st.session_state:  # Check if preprocessed_data exists in session state
                 normalized_data = normalize_data(st.session_state.preprocessed_data.copy())
                 # Perform ERNN + Bagging classification
-                bagging_iterations, accuracies_all_iterations, fig = run_ernn_bagging(normalized_data)
+                y_test, y_pred, fig, bagging_iterations, accuracies_all_iterations = run_ernn_bagging(normalized_data)
                 
                 # Display the plot and accuracies
                 st.pyplot(fig)  # Pass the figure object to st.pyplot()

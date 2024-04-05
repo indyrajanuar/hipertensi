@@ -112,8 +112,9 @@ def run_ernn_bagging(data):
         for i in range(iteration):
             print("Training model {} of {}...".format(i+1, iteration))
             # Randomly sample with replacement
-            indices = np.random.choice(len(data), len(data), replace=True)
-            data_bag = data.iloc[indices]
+            indices = np.random.choice(len(x_train), len(x_train), replace=True)
+            x_bag = x_train.iloc[indices]
+            y_bag = y_train[indices]
 
             model = keras.models.Sequential()
             model.add(keras.layers.Dense(6, activation='sigmoid', input_shape=(8,)))  # Hidden layer with 6 neurons
@@ -124,18 +125,22 @@ def run_ernn_bagging(data):
                           optimizer=keras.optimizers.Adam(learning_rate=0.1),  # Learning rate set to 0.1
                           metrics=[keras.metrics.BinaryAccuracy()])
 
-            history = model.fit(data_bag.drop('Diagnosa', axis=1), data_bag['Diagnosa'],
+            history = model.fit(x_bag, y_bag,
                                 batch_size=32, epochs=200, verbose=0)  # Set verbose=0 for less output
             models.append(model)
 
             print("Model {} training complete.".format(i+1))
 
     # Apply Threshold
-    y_pred = model.predict(x_test)
-    y_pred = (y_pred > 0.5).astype(int)
+    y_preds = []
+    for model in models:
+        y_pred = model.predict(x_test)
+        y_pred = (y_pred > 0.5).astype(int)
+        y_preds.append(y_pred)
     
-    return y_test, y_pred
-
+    y_pred_avg = np.mean(y_preds, axis=0)  # Average predictions from all models
+    
+    return y_test, y_pred_avg
 
 def main():
     with st.sidebar:

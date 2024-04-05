@@ -249,29 +249,29 @@ def main():
                 st.markdown(html_code, unsafe_allow_html=True)
     
     elif selected == 'Klasifikasi ERNN + Bagging':
-    st.write("You are at Klasifikasi ERNN + Bagging")
-    
-    if upload_file is not None:
-        df = pd.read_csv(upload_file)
-        if 'preprocessed_data' in st.session_state:  # Check if preprocessed_data exists in session state
-            normalized_data = normalize_data(st.session_state.preprocessed_data.copy())
-            y_true, y_pred, loss = classify_MLP(normalized_data)  # Assuming classify_MLP also returns loss
-            
-            # Perform ERNN + Bagging classification
-            bagging_iterations, accuracies_all_iterations = run_ernn_bagging(x_train, y_train, x_test, y_test)
-            
-            # Plotting the accuracy
-            plt.plot(bagging_iterations, accuracies_all_iterations, marker='o')
-            plt.title('Accuracy vs Bagging Iterations')
-            plt.xlabel('Number of Bagging Iterations')
-            plt.ylabel('Average Accuracy')
-            plt.grid(True)
-            st.pyplot()  # Display the plot using st.pyplot()
-            
-            # Display the accuracy results
-            st.write("Average accuracies for each bagging iteration:")
-            for iteration, accuracy in zip(bagging_iterations, accuracies_all_iterations):
-                st.write(f"Iteration {iteration}: {accuracy:.2f}%")
+        st.write("You are at Klasifikasi ERNN + Bagging")
+        
+        if upload_file is not None:
+            df = pd.read_csv(upload_file)
+            if 'preprocessed_data' in st.session_state:  # Check if preprocessed_data exists in session state
+                normalized_data = normalize_data(st.session_state.preprocessed_data.copy())
+                y_true, y_pred, loss = classify_MLP(normalized_data)  # Assuming classify_MLP also returns loss
+                
+                # Perform ERNN + Bagging classification
+                bagging_iterations, accuracies_all_iterations = run_ernn_bagging(x_train, y_train, x_test, y_test)
+                
+                # Plotting the accuracy
+                plt.plot(bagging_iterations, accuracies_all_iterations, marker='o')
+                plt.title('Accuracy vs Bagging Iterations')
+                plt.xlabel('Number of Bagging Iterations')
+                plt.ylabel('Average Accuracy')
+                plt.grid(True)
+                st.pyplot()  # Display the plot using st.pyplot()
+                
+                # Display the accuracy results
+                st.write("Average accuracies for each bagging iteration:")
+                for iteration, accuracy in zip(bagging_iterations, accuracies_all_iterations):
+                    st.write(f"Iteration {iteration}: {accuracy:.2f}%")
     
     elif selected == 'Uji Coba':
         st.title("Uji Coba")

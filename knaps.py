@@ -117,7 +117,8 @@ def run_ernn_bagging(data):
             y_bag = y_train[indices]
 
             model = keras.models.Sequential()
-            model.add(keras.layers.Dense(6, activation='sigmoid', input_shape=(8,)))  # Hidden layer with 6 neurons
+            model.add(keras.layers.Input(shape=(8,)))  # Input layer with shape specified
+            model.add(keras.layers.Dense(6, activation='sigmoid'))  # Hidden layer with 6 neurons
             model.add(keras.layers.Dense(6, activation='sigmoid'))  # Context layer with 6 neurons
             model.add(keras.layers.Dense(1, activation='sigmoid'))
 
@@ -140,7 +141,15 @@ def run_ernn_bagging(data):
     
     y_pred_avg = np.mean(y_preds, axis=0)  # Average predictions from all models
     
-    return y_test, y_pred_avg
+    # Plotting the accuracy
+    plt.figure()
+    plt.plot(bagging_iterations, accuracies_all_iterations, marker='o')
+    plt.title('Accuracy vs Bagging Iterations')
+    plt.xlabel('Number of Bagging Iterations')
+    plt.ylabel('Average Accuracy')
+    plt.grid(True)
+    
+    return y_test, y_pred_avg, plt.gcf()  # Return the figure object along with the accuracies
 
 def main():
     with st.sidebar:
@@ -246,17 +255,11 @@ def main():
             if 'preprocessed_data' in st.session_state:  # Check if preprocessed_data exists in session state
                 normalized_data = normalize_data(st.session_state.preprocessed_data.copy())
                 # Perform ERNN + Bagging classification
-                bagging_iterations, accuracies_all_iterations = run_ernn_bagging(normalized_data)
+                bagging_iterations, accuracies_all_iterations, fig = run_ernn_bagging(normalized_data)
                 
-                # Plotting the accuracy
-                plt.plot(bagging_iterations, accuracies_all_iterations, marker='o')
-                plt.title('Accuracy vs Bagging Iterations')
-                plt.xlabel('Number of Bagging Iterations')
-                plt.ylabel('Average Accuracy')
-                plt.grid(True)
-                st.pyplot()  # Display the plot using st.pyplot()
+                # Display the plot and accuracies
+                st.pyplot(fig)  # Pass the figure object to st.pyplot()
                 
-                # Display the accuracy results
                 st.write("Average accuracies for each bagging iteration:")
                 for iteration, accuracy in zip(bagging_iterations, accuracies_all_iterations):
                     st.write(f"Iteration {iteration}: {accuracy:.2f}%")

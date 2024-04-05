@@ -5,3 +5,4 @@ streamlit
 streamlit-option-menu
 tensorflow
 seaborn
+matplotlib

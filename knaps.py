@@ -91,6 +91,66 @@ def classify_MLP(data):
 
     return y_test, y_pred, loss
 
+def run_ernn_bagging(x_train, y_train, x_test, y_test):
+    bagging_iterations = [1, 5, 10, 15]
+    max_error = 0.001
+    models = []
+
+    # Classification Process
+    for iteration in bagging_iterations:
+        print("######## ITERATION - {} ########".format(iteration))
+
+        for i in range(iteration):
+            print("Training model {} of {}...".format(i+1, iteration))
+            # Randomly sample with replacement
+            indices = np.random.choice(len(x_train), len(x_train), replace=True)
+            x_bag = x_train[indices]
+            y_bag = y_train[indices]
+
+            model = keras.models.Sequential()
+            model.add(keras.layers.Dense(6, activation='sigmoid', input_shape=(8,)))  # Hidden layer with 6 neurons
+            model.add(keras.layers.Dense(6, activation='sigmoid'))  # Context layer with 6 neurons
+            model.add(keras.layers.Dense(1, activation='sigmoid'))
+
+            model.compile(loss='mean_squared_error',
+                          optimizer=keras.optimizers.Adam(learning_rate=0.1),  # Learning rate set to 0.1
+                          metrics=[keras.metrics.BinaryAccuracy()])
+
+            history = model.fit(x_bag, y_bag, batch_size=32, epochs=200, verbose=0)  # Set verbose=0 for less output
+            models.append(model)
+
+            print("Model {} training complete.".format(i+1))
+
+    print("Processing Time for Classification: %s seconds" % (time.time() - start_time))
+
+    threshold = 0.5  # Define your threshold here
+
+    # Apply Threshold
+    def apply_threshold(predictions, threshold):
+        return (predictions > threshold).astype(int)
+
+    # Accuracy Evaluation Process for Each Bagging Iteration
+    accuracies_all_iterations = []
+    for iteration in bagging_iterations:
+        accuracies = []
+
+        print("######## ITERATION - {} ########".format(iteration))
+
+        # Retrieve models for the current iteration
+        iteration_models = models[:iteration]
+
+        for model in iteration_models:
+            y_pred_prob = model.predict(x_test)
+            y_pred = apply_threshold(y_pred_prob, threshold)
+            accuracy = np.mean(y_pred == y_test)
+            accuracies.append(accuracy)
+
+        average_accuracy = np.mean(accuracies)
+        accuracies_all_iterations.append(average_accuracy)
+        print("Average accuracy for iteration {}: {:.2f}%".format(iteration, average_accuracy * 100))
+
+    return bagging_iterations, accuracies_all_iterations
+
 def main():
     with st.sidebar:
         selected = option_menu(
@@ -189,7 +249,29 @@ def main():
                 st.markdown(html_code, unsafe_allow_html=True)
     
     elif selected == 'Klasifikasi ERNN + Bagging':
-        st.write("You are at Korelasi Data")
+    st.write("You are at Klasifikasi ERNN + Bagging")
+    
+    if upload_file is not None:
+        df = pd.read_csv(upload_file)
+        if 'preprocessed_data' in st.session_state:  # Check if preprocessed_data exists in session state
+            normalized_data = normalize_data(st.session_state.preprocessed_data.copy())
+            y_true, y_pred, loss = classify_MLP(normalized_data)  # Assuming classify_MLP also returns loss
+            
+            # Perform ERNN + Bagging classification
+            bagging_iterations, accuracies_all_iterations = run_ernn_bagging(x_train, y_train, x_test, y_test)
+            
+            # Plotting the accuracy
+            plt.plot(bagging_iterations, accuracies_all_iterations, marker='o')
+            plt.title('Accuracy vs Bagging Iterations')
+            plt.xlabel('Number of Bagging Iterations')
+            plt.ylabel('Average Accuracy')
+            plt.grid(True)
+            st.pyplot()  # Display the plot using st.pyplot()
+            
+            # Display the accuracy results
+            st.write("Average accuracies for each bagging iteration:")
+            for iteration, accuracy in zip(bagging_iterations, accuracies_all_iterations):
+                st.write(f"Iteration {iteration}: {accuracy:.2f}%")
     
     elif selected == 'Uji Coba':
         st.title("Uji Coba")

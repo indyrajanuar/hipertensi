@@ -78,7 +78,7 @@ def classify_MLP(data):
             
         fold_n += 1
 
-    # Predict using the trained model on the test data
+    # Apply Threshold
     y_pred = model.predict(x_test)
     y_pred = (y_pred > 0.5).astype(int)
 
@@ -90,6 +90,21 @@ def classify_MLP(data):
     return y_test, y_pred, loss
 
 def run_ernn_bagging(data):
+    # split data fitur, target
+    x = data.drop('Diagnosa', axis=1)
+    y = data['Diagnosa']
+
+    # Check if the dataset has sufficient samples for splitting
+    if len(data) < 2:
+        return None, None, "Insufficient data for classification"
+    
+    # Split data into training and testing sets
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=0)
+    
+    # Convert target data to numpy array and reshape
+    y_train = np.array(y_train).reshape(-1,)
+    y_test = np.array(y_test).reshape(-1,)
+    
     bagging_iterations = [1, 5, 10, 15]
     max_error = 0.001
     models = []
@@ -196,7 +211,6 @@ def main():
             df = pd.read_csv(upload_file)
             if 'preprocessed_data' in st.session_state:  # Check if preprocessed_data exists in session state
                 normalized_data = normalize_data(st.session_state.preprocessed_data.copy())
-                #y_true, y_pred = classify_MLP(normalized_data)
                 y_true, y_pred, loss = classify_MLP(normalized_data)  # Assuming classify_MLP also returns loss
                 
                 # Generate confusion matrix
@@ -251,9 +265,6 @@ def main():
             df = pd.read_csv(upload_file)
             if 'preprocessed_data' in st.session_state:  # Check if preprocessed_data exists in session state
                 normalized_data = normalize_data(st.session_state.preprocessed_data.copy())
-                # Assuming classify_MLP also returns loss
-                #y_true, y_pred, loss = classify_MLP(normalized_data)  
-                
                 # Perform ERNN + Bagging classification
                 bagging_iterations, accuracies_all_iterations = run_ernn_bagging(normalized_data)
                 

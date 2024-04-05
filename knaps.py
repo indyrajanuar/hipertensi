@@ -93,10 +93,6 @@ def run_ernn_bagging(data):
     # split data fitur, target
     x = data.drop('Diagnosa', axis=1)
     y = data['Diagnosa']
-
-    # Check if the dataset has sufficient samples for splitting
-    if len(data) < 2:
-        return None, None, "Insufficient data for classification"
     
     # Split data into training and testing sets
     x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=0)
@@ -134,32 +130,12 @@ def run_ernn_bagging(data):
 
             print("Model {} training complete.".format(i+1))
 
-    threshold = 0.5  # Define your threshold here
-
     # Apply Threshold
-    def apply_threshold(predictions, threshold):
-        return (predictions > threshold).astype(int)
+    y_pred = model.predict(x_test)
+    y_pred = (y_pred > 0.5).astype(int)
+    
+    return y_test, y_pred
 
-    accuracies_all_iterations = []
-    for iteration in bagging_iterations:
-        accuracies = []
-
-        print("######## ITERATION - {} ########".format(iteration))
-
-        # Retrieve models for the current iteration
-        iteration_models = models[:iteration]
-
-        for model in iteration_models:
-            y_pred_prob = model.predict(data.drop('Diagnosa', axis=1))
-            y_pred = apply_threshold(y_pred_prob, threshold)
-            accuracy = np.mean(y_pred == data['Diagnosa'])
-            accuracies.append(accuracy)
-
-        average_accuracy = np.mean(accuracies)
-        accuracies_all_iterations.append(average_accuracy)
-        print("Average accuracy for iteration {}: {:.2f}%".format(iteration, average_accuracy * 100))
-
-    return bagging_iterations, accuracies_all_iterations
 
 def main():
     with st.sidebar:

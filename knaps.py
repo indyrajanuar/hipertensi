@@ -251,7 +251,7 @@ def main():
             if 'preprocessed_data' in st.session_state:  # Check if preprocessed_data exists in session state
                 normalized_data = normalize_data(st.session_state.preprocessed_data.copy())
                 # Assuming classify_MLP also returns loss
-                y_true, y_pred, loss = classify_MLP(normalized_data)  
+                #y_true, y_pred, loss = classify_MLP(normalized_data)  
                 
                 # Perform ERNN + Bagging classification
                 bagging_iterations, accuracies_all_iterations = run_ernn_bagging(normalized_data)

@@ -91,19 +91,6 @@ def classify_MLP(data):
 
     return y_test, y_pred, loss
 
-# Preprocessing data before classification
-def preprocess_and_classify(input_data):
-    # Preprocess input data
-    processed_data = preprocess_data(input_data)
-    
-    # Normalize data
-    normalized_data = normalize_data(processed_data)
-    
-    # Perform classification
-    result = classify_MLP(normalized_data)
-    
-    return result
-
 def main():
     with st.sidebar:
         selected = option_menu(
@@ -233,27 +220,6 @@ def main():
                 "Jenis Kelamin": [gender_binary],
                 "Diagnosa": [0]  # Placeholder value
             })
-            
-            st.write("Data Input:")
-            st.write(input_data)  # Print input data
-            
-            # Preprocess and classify input data
-            result = preprocess_and_classify(input_data)
-    
-            # Display result
-            if result is None:
-                st.write("Insufficient data for classification")
-            else:
-                y_true, y_pred, loss = result
-                if y_true is not None and len(y_true) > 0:
-                    if y_true[0] == 1:
-                        true_label = "YA"
-                    else:
-                        true_label = "TIDAK"
-                    st.write("Hasil klasifikasi:")
-                    st.write("Data termasuk dalam kategori 'Diagnosa':", true_label)
-                    st.write("Hasil Prediksi:")
-                    st.write(y_pred)  # Print classification result
     
 if __name__ == "__main__":
     main()

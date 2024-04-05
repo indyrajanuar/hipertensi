@@ -105,7 +105,8 @@ def run_ernn_bagging(data):
             data_bag = data.iloc[indices]
 
             model = keras.models.Sequential()
-            model.add(keras.layers.Dense(6, activation='sigmoid', input_shape=(8,)))  # Hidden layer with 6 neurons
+            model.add(keras.layers.Input(shape=(8,)))  # Input layer with shape specified
+            model.add(keras.layers.Dense(6, activation='sigmoid'))  # Hidden layer with 6 neurons
             model.add(keras.layers.Dense(6, activation='sigmoid'))  # Context layer with 6 neurons
             model.add(keras.layers.Dense(1, activation='sigmoid'))
 

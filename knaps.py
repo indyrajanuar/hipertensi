@@ -216,12 +216,28 @@ def main():
         
                 # Plot confusion matrix
                 plt.figure(figsize=(8, 6))
-                sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
-                plt.xlabel('Predicted')
-                plt.ylabel('True')
-                plt.title('Confusion Matrix')
+                bars = plt.bar(bagging_iterations, accuracies_all_iterations)
+                plt.title('Average Accuracy vs Bagging Iterations')
+                plt.xlabel('Number of Bagging Iterations')
+                plt.ylabel('Average Accuracy')
+                plt.xticks(bagging_iterations)
+                plt.grid(axis='y')
+                
+                # Add text labels above each bar
+                for bar, acc in zip(bars, accuracies_all_iterations):
+                    plt.text(bar.get_x() + bar.get_width()/2, bar.get_height(), '{:.2f}%'.format(acc * 100),
+                             ha='center', va='bottom')
+                
+                # Display the plot using Streamlit
+                st.pyplot(plt)
+                
+                #plt.figure(figsize=(8, 6))
+                #sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
+                #plt.xlabel('Predicted')
+                #plt.ylabel('True')
+                #plt.title('Confusion Matrix')
                 #st.pyplot()
-                st.pyplot(plt.gcf())  # Pass the current figure to st.pyplot()
+                #st.pyplot(plt.gcf())  # Pass the current figure to st.pyplot()
         
                 # Clear the current plot to avoid displaying it multiple times
                 plt.clf()

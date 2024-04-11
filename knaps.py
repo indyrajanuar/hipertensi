@@ -220,7 +220,7 @@ def main():
                 plt.xlabel('Predicted')
                 plt.ylabel('True')
                 plt.title('Confusion Matrix')
-                st.pyplot()
+                #st.pyplot()
                 st.pyplot(plt.gcf())  # Pass the current figure to st.pyplot()
         
                 # Clear the current plot to avoid displaying it multiple times

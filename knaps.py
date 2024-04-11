@@ -151,14 +151,20 @@ def run_ernn_bagging(data):
     y_pred_avg = np.mean(y_preds, axis=0)  # Average predictions from all models
     
     # Plotting the accuracy
-    #plt.figure()
-    #plt.plot(bagging_iterations, accuracies_all_iterations, marker='o')
-    #plt.title('Accuracy vs Bagging Iterations')
-    #plt.xlabel('Number of Bagging Iterations')
-    #plt.ylabel('Average Accuracy')
-    #plt.grid(True)
-    
-    #return y_test, y_pred_avg, plt.gcf(), bagging_iterations, accuracies_all_iterations  # Return accuracies along with the figure object
+    # Display the plot and accuracies
+    plt.figure(figsize=(8, 6))
+    bars = plt.bar(bagging_iterations, accuracies_all_iterations)
+    plt.title('Average Accuracy vs Bagging Iterations')
+    plt.xlabel('Number of Bagging Iterations')
+    plt.ylabel('Average Accuracy')
+    plt.xticks(bagging_iterations)
+    plt.grid(axis='y')
+    # Add text labels above each bar
+    for bar, acc in zip(bars, accuracies_all_iterations):
+        plt.text(bar.get_x() + bar.get_width()/2, bar.get_height(), '{:.2f}%'.format(acc * 100),
+                 ha='center', va='bottom')
+            
+    return y_test, y_pred_avg, plt.gcf(), bagging_iterations, accuracies_all_iterations  # Return accuracies along with the figure object
 
 def main():
     with st.sidebar:
@@ -267,21 +273,7 @@ def main():
                 y_test, y_pred, fig, bagging_iterations, accuracies_all_iterations = run_ernn_bagging(normalized_data)
                 
                 # Display the plot and accuracies
-                plt.figure(figsize=(8, 6))
-                bars = plt.bar(bagging_iterations, accuracies_all_iterations)
-                plt.title('Average Accuracy vs Bagging Iterations')
-                plt.xlabel('Number of Bagging Iterations')
-                plt.ylabel('Average Accuracy')
-                plt.xticks(bagging_iterations)
-                plt.grid(axis='y')
-                
-                # Add text labels above each bar
-                for bar, acc in zip(bars, accuracies_all_iterations):
-                    plt.text(bar.get_x() + bar.get_width()/2, bar.get_height(), '{:.2f}%'.format(acc * 100),
-                             ha='center', va='bottom')
-                
-                # Display the plot using Streamlit
-                st.pyplot(plt)
+                st.pyplot(fig)  # Pass the figure object to st.pyplot()
                 
                 st.write("Average accuracies for each bagging iteration:")
                 for iteration, accuracy in zip(bagging_iterations, accuracies_all_iterations):
